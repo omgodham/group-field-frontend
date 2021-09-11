@@ -1,14 +1,14 @@
 import React from 'react'
-import {useDispatch} from 'react-redux'
+import Form from '../components/signup/Form';
+import Topbar from '../components/Topbar';
+
 function SignUp() {
- 
-
-
     return (
-        <div>
-            SignUp
-        </div>
+        <>
+        <Topbar />
+        <Form />
+        </>
     )
 }
 
-export default SignUp
+export default SignUp;

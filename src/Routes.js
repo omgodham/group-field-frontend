@@ -9,13 +9,14 @@ import Dashboard from './pages/Dashboard'
 export default function Routes() {
     return (
         <Router>
-       <Layout>
         <Switch>
+        <Layout>
             <Route exact path='/dashboard' component={Dashboard} />
             <Route exact path='/signin' component={SignIn} />
             <Route exact path='/signup' component={SignUp} />
+            </Layout>
+         
         </Switch>
-      </Layout>
         </Router>
     )
 }
