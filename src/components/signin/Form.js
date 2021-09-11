@@ -10,9 +10,9 @@ import axios from '../../axios';
 
 const useStyles = makeStyles(theme =>({
     root: {
-        height: '50vh',
+        height: '60vh',
         width: 350,
-        padding: ('50px 20px'),
+        padding: ('10px 20px 30px'),
         margin: '50px auto'
     },
     grid: {
@@ -23,8 +23,14 @@ const useStyles = makeStyles(theme =>({
         width: '90%'
     },
     typoGraphy: {
-        color: 'primary',
-        marginBottom: '7px'
+        fontFamily: ('Roboto ,sans-serif'),
+        marginBottom: '7px',
+        // fontWeight: 300,
+        // fontSize: '10px'
+    },
+    headingTitle: {
+        fontWeight: 700,
+        letterSpacing: '0.1rem'
     },
     linkCont: {
         display: 'flex',
@@ -54,18 +60,55 @@ export default function Form() {
 
     return (
         <Grid height='100vh'>
-            <Paper elevation='5' justify='center' style={{display: 'flex'}} className={classes.root}>
+            <Paper elevation='2' justify='center' style={{display: 'flex',borderRadius:'10px'}} className={classes.root}>
                 <Grid align='center'  className={classes.grid}>
                 <form  onSubmit={handleSubmit}>
-                    <Typography color='primary'  variant='h5' className={classes.typoGraphy} style={{margin: '20px'}}>Group<span style={{color: 'gray'}}>&</span>Field</Typography>
+                    <Typography 
+                        fontStyle='Roboto, sans-serif'
+                        fontWeight='700'
+                        color='primary'
+                        variant='h4' 
+                        className={`${classes.typoGraphy} ${classes.headingTitle}`}
+                        style={{margin: '20px'}}>
+                        Group<span style={{color: 'gray', margin: '.3rem'}}>&</span>Field
+                    </Typography>
 
-                    <Typography color='primary' variant='h6' className={classes.typoGraphy}>Log In to Your Account</Typography>
+                    <Typography 
+                        color='primary'
+                        variant='p'
 
-                    <Typography color='primary' variant='p' className={classes.typoGraphy} style={{marginBottom: '20px'}}>Enter your email & password below</Typography>
+                        fontStyle='Roboto, sans-serif'
+                        fontWeight='300' 
+                        className={classes.typoGraphy}>Log In to Your Account
+                    </Typography>
 
-                    <TextField id="outlined-basic" label="Username" ref={userRef} variant="outlined" size='small'  className={classes.tab} style={{marginTop: '20px'}}/>
+                    {/* <Typography 
+                        color='primary' 
+                        variant='p' 
+                        className={classes.typoGraphy} 
+                        style={{marginBottom: '20px'}}>Enter your email & password below
+                    </Typography> */}
 
-                    <TextField id="outlined-basic" label="Password" ref={passRef} variant="outlined" size='small' type='password' className={classes.tab} style={{marginBottom: '30px'}}/>
+                    <TextField 
+                        id="outlined-basic" 
+                        label="Username" 
+                        ref={userRef} 
+                        variant="outlined" 
+                        size='medium'  
+                        className={classes.tab} 
+                        style={{marginTop: '20px',borderRadius: '10px'}} 
+                    />
+
+                    <TextField 
+                        id="outlined-basic" 
+                        label="Password" 
+                        ref={passRef} 
+                        variant="outlined" 
+                        size='medium' 
+                        type='password' 
+                        className={classes.tab} 
+                        style={{marginBottom: '30px',borderRadius: '10px'}}
+                    />
 
                     <FormControlLabel
                         control={
@@ -76,10 +119,15 @@ export default function Form() {
                             color="primary"
                         />
                         }
-                        label="Primary"
+                        label="Remember me"
                         style={{display: 'flex',marginLeft: '10px'}}
                     />
-                    <Button variant="contained" color="primary" type='submit' className={classes.tab}>Log in</Button>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        type='submit' 
+                        className={classes.tab}>Log in
+                    </Button>
 
                     <div className={classes.linkCont}>
                         <Typography variant='p' style={{}}><Link href="#">Signup</Link></Typography>
