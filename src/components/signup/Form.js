@@ -6,30 +6,35 @@ import { signUpAction } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "60vh",
-    width: 350,
-    padding: "50px 20px",
-    margin: "50px auto",
-  },
-  grid: {
-    margin: "auto",
-  },
-  tab: {
-    margin: "7px auto",
-    width: "90%",
-  },
-  typoGraphy: {
-    color: "primary",
-    marginBottom: "7px",
-  },
-  linkCont: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "2px 20px",
-  },
-}));
+const useStyles = makeStyles(theme =>({
+    root: {
+        height: '60vh',
+        width: 350,
+        padding: ('20px 20px 30px'),
+        margin: '50px auto'
+    },
+    grid: {
+        margin: 'auto'
+    },
+    tab: {
+        margin: '7px auto',
+        width: '90%'
+    },
+    typoGraphy: {
+        fontFamily: 'Roboto, sans-serif',
+        color: 'primary',
+        marginBottom: '7px'
+    },
+    headingTitle: {
+        fontWeight: 700,
+        letterSpacing: '0.1rem'
+    },
+    linkCont: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: ('2px 20px'),
+    }
+}))
 
 export default function Form() {
     const classes = useStyles();
@@ -78,17 +83,17 @@ export default function Form() {
   return (
     <Grid height="100vh">
       <Paper
-        elevation={5}
+        elevation={2}
         justify="center"
-        style={{ display: "flex" }}
+        style={{ display: "flex",borderRadius:'10px' }}
         className={classes.root}
       >
         <Grid align="center" className={classes.grid}>
           <form onSubmit={handleSubmit}>
             <Typography
               color="textPrimary"
-              variant="h5"
-              className={classes.typoGraphy}
+              variant="h4"
+              className={`${classes.typoGraphy} ${classes.headingTitle}`}
               style={{ margin: "20px" }}
             >
               Group<span style={{ color: "gray" }}>&</span>Field
@@ -96,20 +101,20 @@ export default function Form() {
 
             <Typography
               color="textPrimary"
-              variant="h6"
+              variant="body2"
               className={classes.typoGraphy}
             >
               Create Your Account
             </Typography>
 
-            <Typography
+            {/* <Typography
               color="textPrimary"
               variant="body2"
               className={classes.typoGraphy}
               style={{ marginBottom: "20px" }}
             >
               Enter your Name, email & password below
-            </Typography>
+            </Typography> */}
 
             <Collapse in={open}>
         {success ? <Alert
@@ -153,7 +158,7 @@ export default function Form() {
               id="outlined-basic"
               label="Name"
               variant="outlined"
-              size="small"
+              size="medium"
               name="name"
               className={classes.tab}
               style={{ marginTop: "30px" }}
@@ -166,7 +171,7 @@ export default function Form() {
               label="Email"
               type="email"
               variant="outlined"
-              size="small"
+              size="medium"
               name="email"
               className={classes.tab}
               value={email}
@@ -178,7 +183,7 @@ export default function Form() {
               label="Password"
               type="password"
               variant="outlined"
-              size="small"
+              size="medium"
               type="password"
               name="password"
               className={classes.tab}

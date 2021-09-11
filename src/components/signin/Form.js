@@ -11,30 +11,36 @@ import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert';
 import {useHistory} from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "50vh",
-    width: 350,
-    padding: "50px 20px",
-    margin: "50px auto",
-  },
-  grid: {
-    margin: "auto",
-  },
-  tab: {
-    margin: "7px auto",
-    width: "90%",
-  },
-  typoGraphy: {
-    color: "primary",
-    marginBottom: "7px",
-  },
-  linkCont: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "2px 20px",
-  },
-}));
+const useStyles = makeStyles(theme =>({
+    root: {
+        height: '60vh',
+        width: 350,
+        padding: ('10px 20px 30px'),
+        margin: '50px auto'
+    },
+    grid: {
+        margin: 'auto'
+    },
+    tab: {
+        margin: '7px auto',
+        width: '90%'
+    },
+    typoGraphy: {
+        fontFamily: ('Roboto ,sans-serif'),
+        marginBottom: '7px',
+        // fontWeight: 300,
+        // fontSize: '10px'
+    },
+    headingTitle: {
+        fontWeight: 700,
+        letterSpacing: '0.1rem'
+    },
+    linkCont: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: ('2px 20px'),
+    }
+}))
 
 export default function Form() {
   const classes = useStyles();
@@ -69,38 +75,42 @@ const handleChange = (e) => {
   return (
     <Grid height="100vh">
       <Paper
-        elevation={5}
+        elevation={2}
         justify="center"
-        style={{ display: "flex" }}
+        style={{ display: "flex" ,borderRadius:'10px'}}
         className={classes.root}
       >
         <Grid align="center" className={classes.grid}>
           <form onSubmit={handleSubmit}>
             <Typography
+             fontStyle='Roboto, sans-serif'
+             fontWeight='700'
               color="textPrimary"
-              variant="h5"
-              className={classes.typoGraphy}
+              variant="h4"
+              className={`${classes.typoGraphy} ${classes.headingTitle}`}
               style={{ margin: "20px" }}
             >
               Group<span style={{ color: "gray" }}>&</span>Field
             </Typography>
 
             <Typography
+            fontStyle='Roboto, sans-serif'
+            fontWeight='300' 
               color="textPrimary"
-              variant="h6"
+              variant="body2"
               className={classes.typoGraphy}
             >
               Log In to Your Account
             </Typography>
 
-            <Typography
+            {/* <Typography
               color="textPrimary"
               variant="body2"
               className={classes.typoGraphy}
               style={{ marginBottom: "20px" }}
             >
               Enter your email & password below
-            </Typography>
+            </Typography> */}
           
         {!success && 
           <Collapse in={open}>
@@ -127,11 +137,11 @@ const handleChange = (e) => {
               id="outlined-basic"
               label="Email"
               variant="outlined"
-              size="small"
+              size="medium"
               type="email"
               name="email"
               className={classes.tab}
-              style={{ marginTop: "20px" }}
+              style={{ marginTop: "20px",borderRadius: '10px' }}
               required={true}
               value={email}
               onChange={handleChange}
@@ -141,11 +151,11 @@ const handleChange = (e) => {
               id="outlined-basic"
               label="Password"
               variant="outlined"
-              size="small"
+              size="medium"
               type="password"
               name="password"
               className={classes.tab}
-              style={{ marginBottom: "30px" }}
+              style={{ marginBottom: "30px",borderRadius: '10px' }}
               required={true}
               value={password}
               onChange={handleChange}
