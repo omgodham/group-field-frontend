@@ -114,12 +114,12 @@ import {
         {
             text:'Classes',
             icon:<ClassIcon color="primary"/>,
-            path:'/'
+            path:'/signup'
           },
           {
             text:'Payments',
             icon:<PaymentIcon color="primary"/>,
-            path:'/'
+            path:'/signin'
           }
 
     ]
