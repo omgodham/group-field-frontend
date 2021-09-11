@@ -109,17 +109,17 @@ import {
         {
           text:'Calender',
           icon:<CalendarTodayIcon color="primary"/>,
-          path:'/signin'
+          path:'/'
         },
         {
             text:'Classes',
             icon:<ClassIcon color="primary"/>,
-            path:'/signin'
+            path:'/'
           },
           {
             text:'Payments',
             icon:<PaymentIcon color="primary"/>,
-            path:'/signin'
+            path:'/'
           }
 
     ]
