@@ -183,7 +183,7 @@ const handleChange = (e) => {
             </Button>
 
             <div className={classes.linkCont}>
-              <Typography variant="body2" style={{}}>
+              <Typography variant="body2">
                 <Link href="#">Signup</Link>
               </Typography>
               <Typography variant="body2">

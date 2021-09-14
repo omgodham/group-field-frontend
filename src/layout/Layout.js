@@ -14,7 +14,7 @@ import {
     Box
   } from "@material-ui/core";
   import { makeStyles, useTheme } from "@material-ui/core/styles";
-  import React,{useState} from "react";
+  import React,{useState,useEffect} from "react";
   import PropTypes from "prop-types";
   import MenuIcon from "@material-ui/icons/Menu";
 
@@ -24,7 +24,8 @@ import {
   import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
   import ClassIcon from '@material-ui/icons/Class';
   import PaymentIcon from '@material-ui/icons/Payment';
-
+  import {useDispatch} from 'react-redux'  
+import { verifyToken } from "../redux/actions/authActions";
   const drawerWidth = 240;
   
   const useStyles = makeStyles((theme) => ({
@@ -88,7 +89,15 @@ import {
   function Layout(props) {
      const history = useHistory();
      const location = useLocation();
-  
+      const dispatch = useDispatch();
+      
+     
+      useEffect(() => {
+
+        dispatch(verifyToken(history))
+       
+      }, [])
+
     const classes = useStyles();
   
     const { window } = props;
@@ -96,30 +105,32 @@ import {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     
-  
+    
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
     };
+
+
     const menuItems = [
         {
           text:'Dashboard',
           icon:<DashboardIcon color="primary"/>,
-          path:'/'
+          path:'/dashboard'
         },
         {
           text:'Calender',
           icon:<CalendarTodayIcon color="primary"/>,
-          path:'/'
+          path:'/calendar'
         },
         {
             text:'Classes',
             icon:<ClassIcon color="primary"/>,
-            path:'/signup'
+            path:'/'
           },
           {
             text:'Payments',
             icon:<PaymentIcon color="primary"/>,
-            path:'/signin'
+            path:'/'
           }
 
     ]
