@@ -91,7 +91,8 @@ import { verifyToken } from "../redux/actions/authActions";
      const location = useLocation();
       const dispatch = useDispatch();
       
-     
+     console.log(location);
+
       useEffect(() => {
 
         dispatch(verifyToken(history))
