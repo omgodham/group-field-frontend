@@ -76,12 +76,39 @@ import {
     subTitle: {
       fontWeight:"700"
     },
-    listItem:{
-        backgroundColor:'#f4f4f4'
+    and: {
+      color: theme.palette.text.secondary,
+      margin: '2px',
+    },  
+    list: {
+      // alignItems: 'center',
+      // justifyContent: 'center',
+      // // padding: '10px'
+    },
+    listitem: {
+      width: '90%',
+      borderRadius: '10px',
+      color: theme.palette.text.secondary,
+      margin: '5px auto'
+    },
+    activeListItem: {
+      width: '90%',
+      borderRadius: '10px',
+      backgroundColor:'#f4f4f4',
+      color: theme.palette.text.primary,
+      margin: '10px auto'
+
+    },
+    Icon: {
+      color: theme.palette.text.secondary,
+    },
+    activeIcon: {
+      color: theme.palette.text.primary
     },
     date:{
       flexGrow: "1",
-      fontWeight:'600'
+      fontWeight:'500',
+      marginLeft: theme.spacing(1)
     }
   }));
   
@@ -103,22 +130,22 @@ import {
     const menuItems = [
         {
           text:'Dashboard',
-          icon:<DashboardIcon color="primary"/>,
-          path:'/'
+          icon:<DashboardIcon />,
+          path:'/dashboard'
         },
         {
           text:'Calender',
-          icon:<CalendarTodayIcon color="primary"/>,
-          path:'/'
+          icon:<CalendarTodayIcon />,
+          path:'/calender'
         },
         {
             text:'Classes',
-            icon:<ClassIcon color="primary"/>,
+            icon:<ClassIcon />,
             path:'/signup'
           },
           {
             text:'Payments',
-            icon:<PaymentIcon color="primary"/>,
+            icon:<PaymentIcon />,
             path:'/signin'
           }
 
@@ -126,18 +153,18 @@ import {
     const drawer = (
       <div>
           <Link to='/dashboard' style={{textDecoration:'none'}}>
-        <Box display='flex' flexDirection="row" alignItems='center' justifyContent='center' className={classes.title}>
-          <Typography variant="h5" color='textPrimary' className={classes.subTitle}>Group</Typography>
-            <Typography variant="h5" color='textSecondary' style={{margin:'0 10px'}} className={classes.subTitle}>&</Typography>
-            <Typography variant="h5" color='textPrimary' className={classes.subTitle}>Field</Typography>
+        <Box display='flex' flexDirection="row" alignItems='left' justifyContent='left' className={classes.title}>
+          <Typography variant="h5" color='textPrimary' className={classes.subTitle}>
+            Group<span className={classes.and}>&</span>Field
+          </Typography>
         </Box>
         </Link>
         <Divider />
-        <List>
+        <List className={classes.list} display='flex' justifyContent='center' alignItems= 'center'>
           {menuItems.map((item, index) => (
-            <ListItem button key={index} onClick={() => {history.push(item.path)}} className={item.path === location.pathname ? classes.listItem : null }>
-              <ListItemIcon >{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+            <ListItem button key={index} onClick={() => {history.push(item.path)}} className={item.path === location.pathname ? classes.activeListItem : classes.listitem }>
+              <ListItemIcon className={item.path === location.pathname ? classes.activeIcon : classes.Icon}>{item.icon}</ListItemIcon>
+              <ListItemText >{item.text}</ListItemText>
             </ListItem>
           ))}
         </List>
@@ -162,7 +189,7 @@ import {
               <MenuIcon />
             </IconButton>
             <Typography
-              variant="h6"
+              variant="h5"
               noWrap
               color="textPrimary"
               className={classes.date}
