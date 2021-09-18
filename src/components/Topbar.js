@@ -17,13 +17,18 @@ const useStyles = makeStyles(theme => ({
     title: {
       flexGrow: 1,
       fontFamily: 'Roboto, sans-serif',
-      fontWeight: '500',
+      fontWeight: '600',
       marginLeft: theme.spacing(5),
+      letterSpacing: '0.05rem'
     },
     topbarChild: {
       marginRight: theme.spacing(5),
       fontFamily: 'Roboto, sans-serfi',
       fontWeight: '400'
+    },
+    and: {
+      margin: '2px',
+      color: theme.palette.text.secondary
     }
 }));
 
@@ -35,8 +40,13 @@ export default function Topbar() {
     return (
         <div className={classes.root}>
             <Toolbar className={classes.Toolbar}>
-                <Typography variant="h5" color='primary' className={classes.title}>
-                    Group&Field
+                <Typography 
+                  variant="h5" 
+                  color='primary' 
+                  className={classes.title}
+                  fontWeight='300'
+                >
+                    Group<span className={classes.and}>&</span>Field
                 </Typography>
                 <Typography variant="h6" color='primary' className={classes.topbarChild}>
                     About

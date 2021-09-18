@@ -24,8 +24,9 @@ import {
   import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
   import ClassIcon from '@material-ui/icons/Class';
   import PaymentIcon from '@material-ui/icons/Payment';
-  import {useDispatch} from 'react-redux'  
-import { verifyToken } from "../redux/actions/authActions";
+  import {useDispatch,useSelector} from 'react-redux'  
+  import { verifyToken } from "../redux/actions/authActions";
+  import ExitToAppIcon from '@material-ui/icons/ExitToApp';
   const drawerWidth = 240;
   
   const useStyles = makeStyles((theme) => ({
@@ -77,18 +78,50 @@ import { verifyToken } from "../redux/actions/authActions";
     subTitle: {
       fontWeight:"700"
     },
-    listItem:{
-        backgroundColor:'#f4f4f4'
+    and: {
+      color: theme.palette.text.secondary,
+      margin: '2px',
+    },  
+    list: {
+      display:'flex' ,
+      flexDirection:'column',
+      justifyContent:'center',
+       alignItems: 'center'
+    },
+    listitem: {
+      width: '90%',
+      borderRadius: '10px',
+      color: theme.palette.text.secondary,
+      margin: '5px auto'
+    },
+    activeListItem: {
+      width: '90%',
+      borderRadius: '10px',
+      backgroundColor:'#f4f4f4',
+      color: theme.palette.text.primary,
+      margin: '10px auto'
+
+    },
+    Icon: {
+      color: theme.palette.text.secondary,
+    },
+    activeIcon: {
+      color: theme.palette.text.primary
     },
     date:{
       flexGrow: "1",
-      fontWeight:'600'
+      fontWeight:'500',
+      marginLeft: theme.spacing(1)
+    },
+    logoutIcon:{
+      marginLeft:theme.spacing(1)
     }
   }));
   
   function Layout(props) {
      const history = useHistory();
      const location = useLocation();
+     const {user} = useSelector(state => state.user)
       const dispatch = useDispatch();
       
      console.log(location);
@@ -115,41 +148,42 @@ import { verifyToken } from "../redux/actions/authActions";
     const menuItems = [
         {
           text:'Dashboard',
-          icon:<DashboardIcon color="primary"/>,
+          icon:<DashboardIcon />,
           path:'/dashboard'
         },
         {
           text:'Calender',
-          icon:<CalendarTodayIcon color="primary"/>,
+          icon:<CalendarTodayIcon />,
           path:'/calendar'
         },
         {
             text:'Classes',
-            icon:<ClassIcon color="primary"/>,
-            path:'/'
+            icon:<ClassIcon />,
+            path:'/classes'
           },
-          {
+          (user && user.role === 'ROLE_PARENT') ? {
             text:'Payments',
-            icon:<PaymentIcon color="primary"/>,
-            path:'/'
-          }
-
+            icon:<PaymentIcon />,
+            path:'/payments'
+          } : ''
     ]
+
+    
     const drawer = (
       <div>
           <Link to='/dashboard' style={{textDecoration:'none'}}>
-        <Box display='flex' flexDirection="row" alignItems='center' justifyContent='center' className={classes.title}>
-          <Typography variant="h5" color='textPrimary' className={classes.subTitle}>Group</Typography>
-            <Typography variant="h5" color='textSecondary' style={{margin:'0 10px'}} className={classes.subTitle}>&</Typography>
-            <Typography variant="h5" color='textPrimary' className={classes.subTitle}>Field</Typography>
+        <Box display='flex' flexDirection="row" alignItems='left' justifyContent='left' className={classes.title}>
+          <Typography variant="h5" color='textPrimary' className={classes.subTitle}>
+            Group<span className={classes.and}>&</span>Field
+          </Typography>
         </Box>
         </Link>
         <Divider />
-        <List>
+        <List className={classes.list} >
           {menuItems.map((item, index) => (
-            <ListItem button key={index} onClick={() => {history.push(item.path)}} className={item.path === location.pathname ? classes.listItem : null }>
-              <ListItemIcon >{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+            <ListItem button key={index} onClick={() => {history.push(item.path)}} className={item.path === location.pathname ? classes.activeListItem : classes.listitem }>
+              <ListItemIcon className={item.path === location.pathname ? classes.activeIcon : classes.Icon}>{item.icon}</ListItemIcon>
+              <ListItemText >{item.text}</ListItemText>
             </ListItem>
           ))}
         </List>
@@ -159,6 +193,14 @@ import { verifyToken } from "../redux/actions/authActions";
     const container =
       window !== undefined ? () => window().document.body : undefined;
   
+
+     const handleLogout = () => {
+       localStorage.removeItem('jwt');
+       localStorage.removeItem('userId');
+       history.push('/signin'); 
+     }
+
+
     return (
       <div className={classes.root}>
         <AppBar position="fixed" className={classes.appBar} elevation={0}>
@@ -174,7 +216,7 @@ import { verifyToken } from "../redux/actions/authActions";
               <MenuIcon />
             </IconButton>
             <Typography
-              variant="h6"
+              variant="h5"
               noWrap
               color="textPrimary"
               className={classes.date}
@@ -182,9 +224,19 @@ import { verifyToken } from "../redux/actions/authActions";
               Dashboard
             </Typography>
             <Box display='flex'  alignItems='center' justifyContent='center'>
-              <Typography variant='body2' color='textSecondary' style={{marginRight:'10px'}}>Hello, Omkar Godham</Typography>
+              <Typography variant='body2' color='textSecondary' style={{marginRight:'10px'}}>Hello, {user ? user.name : ''}</Typography>
             <Avatar src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fHBlb3BsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" />
             </Box>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              color="primary"
+              onClick={handleLogout}
+              className={classes.logoutIcon}
+            >
+              <ExitToAppIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <nav className={classes.drawer} aria-label="mailbox folders">

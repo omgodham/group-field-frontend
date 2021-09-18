@@ -5,7 +5,8 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Layout from "./layout/Layout";
 import Dashboard from "./pages/Dashboard";
-import CurrentCalendar from "./pages/CurrentCalendar";
+import Calendar from "./pages/Calendar";
+
 
 export default function Routes() {
   return (
@@ -15,7 +16,7 @@ export default function Routes() {
         <Route exact path="/signup" component={SignUp} />
         <Layout>
           <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/calendar" component={CurrentCalendar} />
+          <Route exact path="/calendar" component={Calendar} />
         </Layout>
       </Switch>
     </Router>

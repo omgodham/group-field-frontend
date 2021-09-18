@@ -8,8 +8,9 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {useDispatch} from 'react-redux'
 import { SignInAction } from "../../redux/actions/authActions";
 import CloseIcon from '@material-ui/icons/Close'
-import Alert from '@material-ui/lab/Alert';
+import { Alert } from '@material-ui/lab';
 import {useHistory} from 'react-router-dom';
+import theme from "../../theme";
 
 const useStyles = makeStyles(theme =>({
     root: {
@@ -33,12 +34,16 @@ const useStyles = makeStyles(theme =>({
     },
     headingTitle: {
         fontWeight: 700,
-        letterSpacing: '0.1rem'
+        letterSpacing: '0.05rem'
     },
     linkCont: {
         display: 'flex',
         justifyContent: 'space-between',
         padding: ('2px 20px'),
+    },
+    and:{
+      color: theme.palette.text.secondary,
+      margin: '5px'
     }
 }))
 
@@ -83,14 +88,14 @@ const handleChange = (e) => {
         <Grid align="center" className={classes.grid}>
           <form onSubmit={handleSubmit}>
             <Typography
-             fontStyle='Roboto, sans-serif'
-             fontWeight='700'
+              fontStyle='Roboto, sans-serif'
+              fontWeight='700'
               color="textPrimary"
               variant="h4"
               className={`${classes.typoGraphy} ${classes.headingTitle}`}
               style={{ margin: "20px" }}
             >
-              Group<span style={{ color: "gray" }}>&</span>Field
+              Group<span className={classes.and}>&</span>Field
             </Typography>
 
             <Typography
