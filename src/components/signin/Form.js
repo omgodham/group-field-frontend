@@ -166,7 +166,7 @@ const handleChange = (e) => {
               onChange={handleChange}
             />
 
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   // checked={state.checkedB}
@@ -177,7 +177,7 @@ const handleChange = (e) => {
               }
               label="Keep Me logged In"
               style={{ display: "flex", marginLeft: "10px" }}
-            />
+            /> */}
             <Button
               variant="contained"
               color="primary"
@@ -187,14 +187,14 @@ const handleChange = (e) => {
               Sign In
             </Button>
 
-            <div className={classes.linkCont}>
-              <Typography variant="body2" style={{}}>
+            {/* <div className={classes.linkCont}>
+              <Typography variant="body2">
                 <Link href="#">Signup</Link>
               </Typography>
               <Typography variant="body2">
                 <Link href="#">Forgot password?</Link>
               </Typography>
-            </div>
+            </div> */}
           </form>
         </Grid>
       </Paper>
