@@ -164,8 +164,9 @@ import {
           (user && user.role === 'ROLE_PARENT') ? {
             text:'Payments',
             icon:<PaymentIcon />,
-            path:'/payments'
-          } : ''
+            path:'/payment'
+          }  :''
+
     ]
 
     
