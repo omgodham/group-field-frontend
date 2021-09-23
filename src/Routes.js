@@ -7,6 +7,7 @@ import Layout from "./layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import Payment from "./pages/Payment";
+import AllClasses from "./pages/AllClasses";
 
 export default function Routes() {
   return (
@@ -18,6 +19,7 @@ export default function Routes() {
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/calendar" component={Calendar} />
           <Route exact path="/payment" component={Payment} />
+          <Route exact path="/classes" component={AllClasses} />
         </Layout>
       </Switch>
     </Router>

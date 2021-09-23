@@ -13,6 +13,8 @@ function CurrentCalendar({selectedChild}) {
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
     useEffect(() => {
+
+     const setTheCalendar = () => {
       setIsRendered(false)
       let tempEvents = [];
         var calendarEl = document.getElementById('calendar');
@@ -61,7 +63,9 @@ function CurrentCalendar({selectedChild}) {
             thisCalendar.render() 
            }, 1200);
 
-        
+      }
+      
+        return setTheCalendar()
 
     },[selectedChild])
 

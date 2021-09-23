@@ -1,7 +1,8 @@
 const initialState = {
   user: null,
   loading: true,
-  authenticated:false
+  authenticated:false,
+  childs:[]
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -17,6 +18,11 @@ export const userReducer = (state = initialState, action) => {
         authenticated: true,
         user:action.payload,
         loading: false,
+      };
+      case "SET_CHILDS":
+      return {
+        ...state,
+        childs:action.payload
       };
 
     default:

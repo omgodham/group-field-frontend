@@ -26,7 +26,10 @@ import {
   import PaymentIcon from '@material-ui/icons/Payment';
   import {useDispatch,useSelector} from 'react-redux'  
   import { verifyToken } from "../redux/actions/authActions";
+  
   import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { getUserById } from "../components/Dashboard/helpers";
+import { setChilds } from "../redux/actions/userActions";
   const drawerWidth = 240;
   
   const useStyles = makeStyles((theme) => ({
@@ -124,13 +127,41 @@ import {
      const {user} = useSelector(state => state.user)
       const dispatch = useDispatch();
       
-     console.log(location);
 
       useEffect(() => {
 
         dispatch(verifyToken(history))
        
       }, [])
+
+      useEffect(() => {
+        if(user?.role === "ROLE_PARENT"){
+          let tempChilds = [];
+          if(user){
+              const getChilds = () => {
+              user.childs.forEach(async (element) => {
+                  try {
+                      const response = await getUserById(element);
+                      // console.log(response)
+                      tempChilds.push(response)
+                  
+                     } catch (error) {
+                        console.log(error) 
+                     }
+              });
+  
+              setTimeout(() => {
+                  // setSelectedChild(tempChilds[0])
+                  // setChilds(tempChilds)
+                  dispatch(setChilds(tempChilds))
+              },1000)
+          }
+          return getChilds()
+          }
+        }
+      },[user])
+
+
 
     const classes = useStyles();
   

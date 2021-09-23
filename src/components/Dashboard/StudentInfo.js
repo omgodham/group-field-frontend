@@ -1,6 +1,6 @@
 import { Box, Paper, Table, TableBody, CircularProgress,Typography,TableCell,TableRow, makeStyles, Button, Container } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-
+import {Link} from 'react-router-dom'
 
 import { getUserById } from './helpers';
 
@@ -69,8 +69,8 @@ function StudentInfo({id,role}) {
                     </TableCell>
                     <TableCell  align="left" style={{color: '#878787' }}>{row.className}</TableCell>
                     {index === 0? <TableCell align="center"><Button variant='contained' className={classes.button}>Syllabus</Button></TableCell>
-                    :index === 1 ? <TableCell align="center"><Button  variant='contained'  className={classes.button}>Calender</Button></TableCell>
-                    : (role === 'ROLE_PARENT') && <TableCell align="center"><Button variant='contained' className={classes.button}>Fee Payment</Button></TableCell>}
+                    :index === 1 ? <TableCell align="center"><Link to='/calendar' style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button}>Calender</Button></Link></TableCell>
+                    : (role === 'ROLE_PARENT') && <TableCell align="center"><Link to='/payment' style={{textDecoration:'none'}}><Button variant='contained' className={classes.button}>Fee Payment</Button></Link></TableCell>}
                   </TableRow>
                 ))}
               </TableBody>
