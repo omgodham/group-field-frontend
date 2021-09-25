@@ -23,7 +23,7 @@ import Paypal from "../components/payment/Paypal";
 import { useSelector } from "react-redux";
 import { getClassByPublicId } from "../components/Classes/helpers";
 import { format, getHours } from "date-fns";
-
+import {useHistory} from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
@@ -68,12 +68,20 @@ export default function Payment() {
   const classes = useStyles();
   const [showPaypal, setShowPaypal] = useState(false);
   const [amount, setAmount] = useState(0);
-  const { childs } = useSelector((state) => state.user);
+  const { user , childs } = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
-  
+  const history = useHistory()
+
+
+  useEffect(() => {
+    if(user && user?.role !== 'ROLE_PARENT'){
+      return history.push('/dashboard')
+    }
+  },[user])
 
   useEffect(() => {
    
+    
 
       const setValues = () => {
         if (childs.length) {
@@ -111,12 +119,9 @@ export default function Payment() {
       let tempAmt = 0;
       rows.map(row => {
         tempAmt = tempAmt + (row.hours * row.rateperhour)
+        setAmount(tempAmt);
      })  
-     setTimeout(() => {
-      setAmount(tempAmt)
-     },500)
-    }
-       
+    }    
   },[rows])
 
   function createData(child, hours, rateperhour) {

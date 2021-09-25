@@ -28,7 +28,7 @@ function Classes() {
      const classes = useStyles();   
     useEffect(() => {
         let tempChilds = [];
-        if(user){
+        if(user && user?.role === 'ROLE_PARENT'){
             const getChilds = () => {
             user.childs.forEach(async (element) => {
                 try {
@@ -47,6 +47,8 @@ function Classes() {
             },1000)
         }
         return getChilds()
+        } else if(user?.role === 'ROLE_STUDENT'){
+            setSelectedChild(user)
         }
        
       } , [user])
@@ -56,7 +58,7 @@ function Classes() {
     return (
         <Container>
             <Box >
-{  childs && childs.map((item,index) => {
+{  childs.length ? childs.map((item,index) => {
     return <Box className={classes.paper} key={index}>
         <Typography >{item.name}</Typography>
         <Typography color='textSecondary'>This Month</Typography>
@@ -65,7 +67,7 @@ function Classes() {
         <Typography><Button className={classes.button} onClick={() => setSelectedChild(item)}>Show</Button></Typography>
         </Box>
 
-}) }
+}) : ''}
         <Box  display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
         {selectedChild ? <ClassesTable child={selectedChild}/> : <CircularProgress />}
         </Box>

@@ -57,6 +57,7 @@ function Calendar() {
       console.log(childs)
     return (
         <div>
+          {(user?.role === 'ROLE_PARENT') && <>
               <Typography variant='h5'>Select Your Child</Typography>   
         <FormControl className={classes.formControl}>
         <InputLabel htmlFor="age-native-simple">Age</InputLabel>
@@ -72,8 +73,10 @@ function Calendar() {
 
         </Select>
          </FormControl>
-
-           {childs.length && <CurrentCalendar selectedChild={selectedChild ? selectedChild : childs[0] }/>}
+         </>}
+  
+           {(user?.role === 'ROLE_PARENT') && childs.length && < CurrentCalendar selectedChild={selectedChild ? selectedChild : childs[0] } />}
+           {(user?.role === 'ROLE_STUDENT') && < CurrentCalendar selectedChild={user} />}
 
         </div>
     )

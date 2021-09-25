@@ -35,7 +35,7 @@ function CurrentCalendar({selectedChild}) {
                      className: 'gcal-event'
                 },
                 eventSourceSuccess:function(content, xhr) {
-                  // console.log(content)
+                  console.log(content)
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;
                   setData(content)

@@ -18,6 +18,7 @@ const {user} = useSelector(state => state.user)
         <Container className={classes.root}>
             { user && user.role === 'ROLE_PARENT' &&
             <> {user.childs.map((childId,index) => {
+                // if(index === 0)
                    return <StudentInfo id={childId} role='ROLE_PARENT' key={index}/>
                })}  
             </>}
