@@ -8,8 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { getClassByPublicId } from './helpers';
-import {format , getHours} from 'date-fns'
+import {format , getHours, getTime, getWeek} from 'date-fns'
 import { Box, CircularProgress } from '@material-ui/core';
+import moment from 'moment'
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -22,8 +23,8 @@ export default function ClassesTable({child}) {
   const classes = useStyles();
 
 
-  function createData(date, start, end, topic, hours,paymentStatus) {
-    return { date, start, end, topic, hours,paymentStatus};
+  function createData(date, start, end, topic, hours,paymentStatus,time) {
+    return { date, start, end, topic, hours,paymentStatus,time};
   }
   
  
@@ -46,13 +47,26 @@ export default function ClassesTable({child}) {
 // console.log(lectures);
 
   useEffect(() => {
+
+
+
       let tempRows = [];
       if(lectures.length === child.lectures.length)  
          {    
               lectures.forEach(item => {
-                    tempRows.push(
-                        createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, getHours(new Date(item.end)) - getHours(new Date(item.start)) , item.paid),
-                    )
+              
+           
+       var startOfWeek = moment().startOf('week').toDate();
+       var endOfWeek   = moment().endOf('week').toDate();
+
+        console.log(startOfWeek,endOfWeek);
+        console.log(startOfWeek < new Date(item.start) , item.start);
+
+              tempRows.push(
+                        // createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, getHours(new Date(item.end)) - getHours(new Date(item.start)) , item.paid), Change the format of the time in the update
+                         createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, item.paid, (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
+                  
+                        )
               })
              if(tempRows.toString() === lectures.toString()) 
                 setRows(tempRows)
@@ -68,9 +82,10 @@ export default function ClassesTable({child}) {
             <TableCell align='center'>Date</TableCell>
             <TableCell align='center'>Start Time</TableCell>
             <TableCell align='center'>End Time</TableCell>
-            <TableCell align='center'>Topic</TableCell>
+            {/* <TableCell align='center'>Topic</TableCell> */}
+              {/* In Update hide the class topic from the table  */}
             <TableCell align='center'>Hours</TableCell>
-            <TableCell align='center'>Payment Status</TableCell>
+            <TableCell align='center'>Rate($ {child.learningRate}/ hour)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -81,9 +96,10 @@ export default function ClassesTable({child}) {
               </TableCell>
               <TableCell align='center'>{row.start}</TableCell>
               <TableCell align='center'>{row.end}</TableCell>
-              <TableCell align='center'>{row.topic}</TableCell>
+              {/* <TableCell align='center'>{row.topic}</TableCell> */}
               <TableCell align='center'>{row.hours}</TableCell>
-              <TableCell align='center'>{row.paymentStatus}</TableCell>
+              <TableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</TableCell> 
+              {/* Changed from payment status to the rate per hour in update */}
             </TableRow>
           ))}
         </TableBody>

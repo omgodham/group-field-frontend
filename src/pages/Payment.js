@@ -148,9 +148,9 @@ export default function Payment() {
                 <TableCell align="center" className={classes.tableHeading}>
                   Hours
                 </TableCell>
-                <TableCell align="center" className={classes.tableHeading}>
+                {/* <TableCell align="center" className={classes.tableHeading}>
                   Rate/Hour
-                </TableCell>
+                </TableCell> */}
                 <TableCell align="center" className={classes.tableHeading}>
                   Total
                 </TableCell>
@@ -169,9 +169,10 @@ export default function Payment() {
                   <TableCell align="center" className={classes.tableValues}>
                     {row.hours}
                   </TableCell>
-                  <TableCell align="center" className={classes.tableValues}>
+                  {/* <TableCell align="center" className={classes.tableValues}>
                     ${row.rateperhour}
-                  </TableCell>
+                  // </TableCell> */}
+                   {/* Hide in the update part */}
                   <TableCell align="center" className={classes.tableValues}>
                     ${row.hours * row.rateperhour}
                   </TableCell>

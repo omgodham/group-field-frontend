@@ -1,4 +1,4 @@
-import { Box, Paper, Table, TableBody, CircularProgress,Typography,TableCell,TableRow, makeStyles, Button, Container } from '@material-ui/core'
+import { Box, Paper, Table, TableBody, CircularProgress,Typography,TableCell,TableRow, makeStyles, Button, Container, ListItem } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
 
@@ -6,7 +6,7 @@ import { getUserById } from './helpers';
 import {useSelector} from 'react-redux'
 import { getClassByPublicId } from '../Classes/helpers';
 import moment from 'moment';
-import { format, getHours } from "date-fns";
+import { format, getDate, getHours } from "date-fns";
 import _ from 'lodash'
 const useStyles = makeStyles(theme => ({
     button: {
@@ -26,6 +26,17 @@ const useStyles = makeStyles(theme => ({
     table:{
       marginTop: '20px'
     },
+    weeklyTable:{
+ 
+      display:'flex',
+      alignItems:'center',
+      justifyContent:'space-between',
+      flexWrap:'wrap'
+    },
+    weekLecture:{
+      padding:theme.spacing(2),
+      margin:'20px',
+    }
   }));
   
 
@@ -33,7 +44,7 @@ function StudentInfo({id,role}) {
     
     const classes = useStyles();
     const [currentUser , setCurrentUser] = useState(null);
-    const childs = useSelector(state => state.user)
+    const {user} = useSelector(state => state.user)
     
     function createData(category, className) {
         return { category, className};
@@ -54,6 +65,7 @@ function StudentInfo({id,role}) {
      const [flag , setFlag] = useState(false)
      const [rows , setRows] = useState([]);
      const [hours , setHours] = useState(0);
+     const [weekLectures ,setWeekLectures] = useState([]);
 
       useEffect(() => {
         // console.log(format(new Date("2021-09-16T10:00:00+05:30"),'MM/dd/yyyy'));
@@ -94,8 +106,6 @@ function StudentInfo({id,role}) {
    
           if(flag){
             // console.log(lectures);
-      
-
           let previousLectures =  lectures.filter(lecture => (format(new Date(lecture.start),'yyyy-MM-dd[T]HH:mm:ss') < format(new Date(),'yyyy-MM-dd[T]HH:mm:ss')))
             let nextLectures = lectures.filter(lecture => (format(new Date(lecture.start),'yyyy-MM-dd[T]HH:mm:ss') > format(new Date(),'yyyy-MM-dd[T]HH:mm:ss')))
 
@@ -106,6 +116,14 @@ function StudentInfo({id,role}) {
             setCurrentLecture(previousLectures[0])
             setUpcomingLecture(nextLectures[0])
 
+            var startOfWeek = moment().startOf('week').toDate();
+            var endOfWeek   = moment().endOf('week').toDate();
+         
+            //get lectures of this week only in update this is addition
+            const thisLectures = lectures.filter(lect => (startOfWeek < new Date(lect.start) && endOfWeek > new Date(lect.start)) )
+            console.log(thisLectures)
+            setWeekLectures(thisLectures);
+
           }
 
       },[lectures])
@@ -113,8 +131,8 @@ function StudentInfo({id,role}) {
    
 
       useEffect(() => {
-        console.log(currentLecture,upcomingLecture)
-        console.log(lectures)
+        // console.log(currentLecture,upcomingLecture)
+        // console.log(lectures)
         if(currentLecture && upcomingLecture){
          return setRows([...rows , createData('Now Learning', currentLecture.title) ,createData('Upcoming Class', upcomingLecture.title),role === 'ROLE_PARENT' && createData('Fees Due', hours * currentUser.learningRate)])
         } else if(currentLecture || upcomingLecture){
@@ -128,6 +146,20 @@ function StudentInfo({id,role}) {
     return (
       <>
       { (rows.length) ?
+      <>
+      {weekLectures.length && user?.role === 'ROLE_PARENT' ?  <>
+      <Typography variant='h6'>This Week Classes</Typography>
+      <Box className={classes.weeklyTable}>
+      { weekLectures.map(lect =>  <Paper className={classes.weekLecture} index={lect._id}>
+          <Typography variant='h5'>{lect.title}</Typography>
+          <Typography variant='body2'>{lect.description}</Typography>
+          <Typography variant='body2'>On:{format(new Date(lect.start) ,'MM/dd/yyyy')}</Typography>
+          <Typography variant='body2'>Starts At:{lect.start.split('T')[1].split('+')[0]}</Typography>
+          <Typography variant='body2'>Ends At:{lect.end.split('T')[1].split('+')[0]}</Typography>
+          </Paper>) }
+      </Box> 
+      </>: "" }
+
         <Paper className={classes.paper}>
             <Box flexDirection='column' justifyContent='center'>
                 <Typography variant='h6' style={{color: '#000000'}}>{currentUser.name}</Typography>
@@ -135,8 +167,9 @@ function StudentInfo({id,role}) {
             </Box>
             <Table className={classes.table} aria-label="simple table">
               <TableBody>
-                {rows.map((row,index) => (
-                  <TableRow key={row.category} key={index}> 
+                {rows.map((row,index) => {
+                  if(index !== 0)  //In Updation hide the now learning part
+                 return <TableRow key={row.category} key={index}> 
                     <TableCell align="left" className={classes.category}>
                       {row.category}
                     </TableCell>
@@ -145,10 +178,12 @@ function StudentInfo({id,role}) {
                     :index === 1 ? <TableCell align="center"><Link to='/calendar' style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button}>Calender</Button></Link></TableCell>
                     : (role === 'ROLE_PARENT') && <TableCell align="center"><Link to='/payment' style={{textDecoration:'none'}}><Button variant='contained' className={classes.button}>Fee Payment</Button></Link></TableCell>}
                   </TableRow>
-                ))}
+})}
               </TableBody>
             </Table>
-        </Paper> : <CircularProgress /> }
+        </Paper>
+        
+        </> : <CircularProgress /> }
         </>
     )
 }
