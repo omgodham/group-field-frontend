@@ -8,6 +8,11 @@ import { getClassByPublicId } from '../Classes/helpers';
 import moment from 'moment';
 import { format, getDate, getHours } from "date-fns";
 import _ from 'lodash'
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList';
+
+
+
 const useStyles = makeStyles(theme => ({
     button: {
         backgroundColor:theme.palette.success.main,
@@ -30,7 +35,7 @@ const useStyles = makeStyles(theme => ({
  
       display:'flex',
       alignItems:'center',
-      justifyContent:'space-between',
+      justifyContent:'left',
       flexWrap:'wrap'
     },
     weekLecture:{
@@ -46,8 +51,8 @@ function StudentInfo({id,role}) {
     const [currentUser , setCurrentUser] = useState(null);
     const {user} = useSelector(state => state.user)
     
-    function createData(category, className) {
-        return { category, className};
+    function createData(category, className,url) {
+        return { category, className,url};
       }
 
       useEffect( async () => {
@@ -134,48 +139,67 @@ function StudentInfo({id,role}) {
         // console.log(currentLecture,upcomingLecture)
         // console.log(lectures)
         if(currentLecture && upcomingLecture){
-         return setRows([...rows , createData('Now Learning', currentLecture.title) ,createData('Upcoming Class', upcomingLecture.title),role === 'ROLE_PARENT' && createData('Fees Due', hours * currentUser.learningRate)])
+         return setRows([...rows , createData('Now Learning', currentLecture.title,currentLecture?.url) ,createData('Upcoming Class', upcomingLecture.title,upcomingLecture?.url),role === 'ROLE_PARENT' && createData('Fees Due', hours * currentUser.learningRate)])
         } else if(currentLecture || upcomingLecture){
-          setRows([...rows , createData('Now Learning', currentLecture ? currentLecture.title : 'No current Lecture' ) ,createData('Upcoming Class', upcomingLecture ? upcomingLecture.title : 'No Upcoming Lecture'),role === 'ROLE_PARENT' && createData('Fees Due', hours * currentUser.learningRate)])
+          setRows([...rows , createData('Now Learning', currentLecture ? currentLecture.title : 'No current Lecture',currentLecture?.url ) ,createData('Upcoming Class', upcomingLecture ? upcomingLecture.title : 'No Upcoming Lecture',upcomingLecture?.url),role === 'ROLE_PARENT' && createData('Fees Due', hours * currentUser.learningRate)])
         }
 
       },[currentLecture , upcomingLecture,hours])
 
-    
+    console.log(rows)
 
     return (
       <>
       { (rows.length) ?
       <>
-      {weekLectures.length && user?.role === 'ROLE_PARENT' ?  <>
-      <Typography variant='h6'>This Week Classes</Typography>
+      {weekLectures.length && (user?.role === 'ROLE_PARENT' || user?.role === 'ROLE_STUDENT') ?  <>
+      <Paper>
+        <Box display='flex' justifyContent='left' alignItems='center'>
+        <AccessTimeIcon />
+      <Typography variant='h6'>
+      Weekly Schedule
+        </Typography>
+        </Box>
       <Box className={classes.weeklyTable}>
       { weekLectures.map(lect =>  <Paper className={classes.weekLecture} index={lect._id}>
-          <Typography variant='h5'>{lect.title}</Typography>
+
+        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+          <Typography>{format(new Date(lect.start) ,'ccc')}</Typography>
+          <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+          <Typography>{lect.start.split('T')[1].split('+')[0]}</Typography>
+          <Typography>-</Typography>
+          <Typography>{lect.end.split('T')[1].split('+')[0]}</Typography>
+            </Box>
+          </Box>
+          {/* <Typography variant='h5'>{lect.title}</Typography>
           <Typography variant='body2'>{lect.description}</Typography>
           <Typography variant='body2'>On:{format(new Date(lect.start) ,'MM/dd/yyyy')}</Typography>
           <Typography variant='body2'>Starts At:{lect.start.split('T')[1].split('+')[0]}</Typography>
-          <Typography variant='body2'>Ends At:{lect.end.split('T')[1].split('+')[0]}</Typography>
+          <Typography variant='body2'>Ends At:{lect.end.split('T')[1].split('+')[0]}</Typography> */}
+        
+        
           </Paper>) }
       </Box> 
+      </Paper>
       </>: "" }
 
         <Paper className={classes.paper}>
-            <Box flexDirection='column' justifyContent='center'>
+           {role === 'ROLE_PARENT' && <Box flexDirection='column' justifyContent='center'>
                 <Typography variant='h6' style={{color: '#000000'}}>{currentUser.name}</Typography>
                 <Typography variant='body2' color='textSecondary'>Class {currentUser.std}th, {currentUser.board}</Typography>
-            </Box>
+            </Box>}
             <Table className={classes.table} aria-label="simple table">
               <TableBody>
                 {rows.map((row,index) => {
+                  
                   if(index !== 0)  //In Updation hide the now learning part
-                 return <TableRow key={row.category} key={index}> 
+                 return <TableRow key={index}> 
                     <TableCell align="left" className={classes.category}>
                       {row.category}
                     </TableCell>
                     <TableCell  align="left" style={{color: '#878787' }}>{row.className}</TableCell>
                     {index === 0? <TableCell align="center"><Button variant='contained' className={classes.button}>Syllabus</Button></TableCell>
-                    :index === 1 ? <TableCell align="center"><Link to='/calendar' style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button}>Calender</Button></Link></TableCell>
+                    :index === 1 ? <TableCell align="center"><a href={row.url}  style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button}>Join Lesson</Button></a></TableCell>
                     : (role === 'ROLE_PARENT') && <TableCell align="center"><Link to='/payment' style={{textDecoration:'none'}}><Button variant='contained' className={classes.button}>Fee Payment</Button></Link></TableCell>}
                   </TableRow>
 })}
