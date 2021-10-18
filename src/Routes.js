@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import Payment from "./pages/Payment";
 import AllClasses from "./pages/AllClasses";
+import EachClass from "./pages/EachClass";
 
 export default function Routes() {
   return (
@@ -20,6 +21,7 @@ export default function Routes() {
           <Route exact path="/calendar" component={Calendar} />
           <Route exact path="/payment" component={Payment} />
           <Route exact path="/classes" component={AllClasses} />
+          <Route exact path="/students/:studentId" component={EachClass} />
         </Layout>
       </Switch>
     </Router>

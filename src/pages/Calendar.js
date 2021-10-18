@@ -54,7 +54,7 @@ function Calendar() {
         })
        
       };
-      console.log(childs)
+      // console.log(childs)
     return (
         <div>
           {(user?.role === 'ROLE_PARENT') && <>

@@ -34,7 +34,7 @@ import { setChilds } from "../redux/actions/userActions";
   
   const useStyles = makeStyles((theme) => ({
     page: {
-      background: "#f9f9f9",
+      background: "#F0F5FA",
       width: "100%",
       [theme.breakpoints.up("sm")]: {
         paddingTop: theme.spacing(10),
@@ -52,6 +52,7 @@ import { setChilds } from "../redux/actions/userActions";
     },
     drawerPaper: {
       width: drawerWidth,
+      boxShadow:'2px 0px 5px 0px hsl(0deg 0% 13% / 52%)'
     },
     toolbar: theme.mixins.toolbar,
     drawer: {
@@ -73,6 +74,7 @@ import { setChilds } from "../redux/actions/userActions";
         marginLeft: drawerWidth,
       },
       backgroundColor: "#fefefe",
+      boxShadow:'2px 3px 9px 0px hsl(0deg 0% 13% / 52%)'
     },
     title: {
       flexGrow: "1",
@@ -118,6 +120,9 @@ import { setChilds } from "../redux/actions/userActions";
     },
     logoutIcon:{
       marginLeft:theme.spacing(1)
+    },
+    navbar:{
+
     }
   }));
   
@@ -182,16 +187,16 @@ import { setChilds } from "../redux/actions/userActions";
           icon:<DashboardIcon />,
           path:'/dashboard'
         },
-        {
+        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) ? {
           text:'Calender',
           icon:<CalendarTodayIcon />,
           path:'/calendar'
-        },
-        {
+        } : '',
+        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) ? {
             text:'Classes',
             icon:<ClassIcon />,
             path:'/classes'
-          },
+          } : '',
           (user && user.role === 'ROLE_PARENT') ? {
             text:'Payments',
             icon:<PaymentIcon />,
@@ -235,6 +240,7 @@ import { setChilds } from "../redux/actions/userActions";
 
     return (
       <div className={classes.root}>
+        <Box className={classes.navbar}>
         <AppBar position="fixed" className={classes.appBar} elevation={0}>
           <Toolbar>
             <IconButton
@@ -253,11 +259,11 @@ import { setChilds } from "../redux/actions/userActions";
               color="textPrimary"
               className={classes.date}
             >
-              Dashboard
+              
             </Typography>
             <Box display='flex'  alignItems='center' justifyContent='center'>
-              <Typography variant='body2' color='textSecondary' style={{marginRight:'10px'}}>Hello, {user ? user.name : ''}</Typography>
-            <Avatar src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fHBlb3BsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" />
+              <Typography variant='body2' color='textSecondary' style={{marginRight:'10px',textTransform:'capitalize'}}>Hello, {user ? user.name : ''}</Typography>
+            <Avatar src="http://rtablada.github.io/ember-profile-upload/profile.jpg" />
             </Box>
             <IconButton
               color="inherit"
@@ -271,6 +277,7 @@ import { setChilds } from "../redux/actions/userActions";
             </IconButton>
           </Toolbar>
         </AppBar>
+        </Box>
         <nav className={classes.drawer} aria-label="mailbox folders">
           <Hidden smUp implementation="css">
             <Drawer

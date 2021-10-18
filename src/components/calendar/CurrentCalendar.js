@@ -7,9 +7,13 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import moment from 'moment'
 import { format } from 'date-fns'
 import { Box, CircularProgress } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { setAllClasses } from '../../redux/actions/classActions';
+import { classReducer } from '../../redux/reducers/classReduer';
 
-function CurrentCalendar({selectedChild}) {
-// console.log(selectedChild)
+function CurrentCalendar({selectedChild,admin}) {
+console.log(selectedChild,admin)
+      const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
     useEffect(() => {
@@ -36,6 +40,7 @@ function CurrentCalendar({selectedChild}) {
                 },
                 eventSourceSuccess:function(content, xhr) {
                   console.log(content)
+           
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;
                   setData(content)
@@ -49,19 +54,32 @@ function CurrentCalendar({selectedChild}) {
           //beacause the rendering take some time we have to wait for few seconds to access thisCalendar
           setTimeout(function(){ 
             //we can remove our events from here which we want
-
+            // let newLectures = [];
+         
+            if(admin)  
+            dispatch(setAllClasses(tempEvents))
+            
             tempEvents.forEach(thisEvent => {
              if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
               let event = thisCalendar.getEventById(thisEvent.id)
+              
+              // newLectures.push(thisEvent);
+
               event.remove();
-             }
+
+             } 
+
            })
+          //  console.log(newLectures)
            }, 1000);
 
            setTimeout(function(){ 
             setIsRendered(true);
+            
+            if(!admin)
             thisCalendar.render() 
-           }, 1200);
+           
+          }, 1200);
 
       }
       
@@ -92,7 +110,7 @@ useEffect(() => {
     return (
       <>
      <Box display='flex' alignItems='center' justifyContent='center' >
-      {!rendered && <CircularProgress />}
+      {(!rendered && !admin) && <CircularProgress />}
       </Box>
         <div id='calendar' style={{maxWidth: "900px",margin: "0 auto" , display:!rendered ? 'none' : ''}}>
        

@@ -1,7 +1,8 @@
-import { Container, makeStyles, Typography } from '@material-ui/core'
+import { Box, Container, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import StudentInfo from '../components/Dashboard/StudentInfo'
 import {useDispatch,useSelector} from 'react-redux' 
+import AdminDashboard from '../components/Home.js/AdminDashboard'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -15,7 +16,7 @@ const classes = useStyles();
 const {user} = useSelector(state => state.user)
 
     return (
-        <Container className={classes.root}>
+        <Box className={classes.root}>
             { user && user.role === 'ROLE_PARENT' &&
             <> {user.childs.map((childId,index) => {
                 // if(index === 0)
@@ -25,10 +26,10 @@ const {user} = useSelector(state => state.user)
             { user && user.role === 'ROLE_STUDENT' &&
             <StudentInfo id={user._id} role='ROLE_STUDENT'/>
             }
-            {user && (user.role === 'ROLE_TEACHER' || user.role === 'ROLE_ADMIN')  && 
-            <Typography variant='h6'>Not Available for teacher and admin yet</Typography>
+            {user && (user.role === 'ROLE_TEACHER' || user.role === 'ROLE_ADMIN') &&
+            <AdminDashboard /> 
             }
-        </Container>
+        </Box>
 
     )
 }
