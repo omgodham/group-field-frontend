@@ -5,7 +5,9 @@ import {useDispatch,useSelector} from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
     root:{
-        padding:theme.spacing(2)
+        width: '95%',
+        padding:theme.spacing(2),
+        // backgroundColor: '#fff', 
     }
 }))
 

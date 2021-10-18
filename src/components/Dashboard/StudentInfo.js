@@ -36,11 +36,13 @@ const useStyles = makeStyles(theme => ({
       display:'flex',
       alignItems:'center',
       justifyContent:'left',
-      flexWrap:'wrap'
+      flexWrap:'wrap',
     },
     weekLecture:{
       padding:theme.spacing(2),
       margin:'20px',
+      backgroundColor: "rgb(0,119,182)",
+      color: 'white' 
     }
   }));
   
@@ -153,17 +155,17 @@ function StudentInfo({id,role}) {
       { (rows.length) ?
       <>
       {weekLectures.length && (user?.role === 'ROLE_PARENT' || user?.role === 'ROLE_STUDENT') ?  <>
-      <Paper>
+      <Paper className={classes.paper}>
         <Box display='flex' justifyContent='left' alignItems='center'>
-        <AccessTimeIcon />
-      <Typography variant='h6'>
+        <AccessTimeIcon style={{color: 'black'}}/>
+      <Typography variant='h6' style={{color: 'black', marginLeft: '7px'}}>
       Weekly Schedule
         </Typography>
         </Box>
       <Box className={classes.weeklyTable}>
       { weekLectures.map(lect =>  <Paper className={classes.weekLecture} index={lect._id}>
 
-        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' className={classes.weeklyTableItems}>
           <Typography>{format(new Date(lect.start) ,'ccc')}</Typography>
           <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
           <Typography>{lect.start.split('T')[1].split('+')[0]}</Typography>
@@ -197,7 +199,7 @@ function StudentInfo({id,role}) {
                     <TableCell align="left" className={classes.category}>
                       {row.category}
                     </TableCell>
-                    <TableCell  align="left" style={{color: '#878787' }}>{row.className}</TableCell>
+                    <TableCell  align="center" style={{color: '#878787' }}>{row.className}</TableCell>
                     {index === 0? <TableCell align="center"><Button variant='contained' className={classes.button}>Syllabus</Button></TableCell>
                     :index === 1 ? <TableCell align="center"><a href={row.url}  style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button}>Join Lesson</Button></a></TableCell>
                     : (role === 'ROLE_PARENT') && <TableCell align="center"><Link to='/payment' style={{textDecoration:'none'}}><Button variant='contained' className={classes.button}>Fee Payment</Button></Link></TableCell>}

@@ -11,6 +11,8 @@ import { getClassByPublicId } from './helpers';
 import {format , getHours, getTime, getWeek} from 'date-fns'
 import { Box, CircularProgress } from '@material-ui/core';
 import moment from 'moment'
+
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -19,7 +21,7 @@ const useStyles = makeStyles({
 
 
 
-export default function ClassesTable({child}) {
+export default function   ClassesTable({child}) {
   const classes = useStyles();
 
 
@@ -78,7 +80,7 @@ export default function ClassesTable({child}) {
       <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
       {rows.length === child.lectures.length ? <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow >
             <TableCell align='center'>Date</TableCell>
             <TableCell align='center'>Start Time</TableCell>
             <TableCell align='center'>End Time</TableCell>
@@ -91,7 +93,7 @@ export default function ClassesTable({child}) {
         <TableBody>
           {rows.map((row,index) => (
             <TableRow key={row.name} key={index}>
-              <TableCell component="th" scope="row">
+              <TableCell align='center' component="th" scope="row">
                 {row.date}
               </TableCell>
               <TableCell align='center'>{row.start}</TableCell>
