@@ -1,9 +1,10 @@
-import { Box, Container, Typography,Divider, CircularProgress } from '@material-ui/core';
+import { Box, Container, Typography,Divider, CircularProgress, Paper } from '@material-ui/core';
 import { makeStyles, mergeClasses } from '@material-ui/styles';
 import React, { useEffect, useState } from 'react'
 import StudentInfo from '../components/Dashboard/StudentInfo';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-
+import ClassesTable from '../components/Classes/ClassesTable';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 const useStyles = makeStyles(theme => ({
     root:{
        padding:'30px'
@@ -31,7 +32,17 @@ const useStyles = makeStyles(theme => ({
     subjects:{
         display:'flex',
         alignItems:'center'
-    }
+    },
+    icons:{
+        color:theme.palette.success.main,
+        // backgroundColor: "rgb(0,119,182)",
+   
+      },
+      weeklyBlock:{
+        padding:'20px',
+        borderRadius:'5px',
+        marginBottom:'20px'
+      },
 }))
 
 function EachClass({match}) {
@@ -62,6 +73,15 @@ function EachClass({match}) {
             
         </>:<CircularProgress />}
         <StudentInfo id={studentId} role='ROLE_TEACHER' admin={false} setThisLecture={setThisLecture} setUser={setUser}/>
+        { user &&     <Paper className={classes.weeklyBlock}>
+            <Box display='flex' justifyContent='left' alignItems='center'>
+            <DoneAllIcon className={classes.icons}/>
+          <Typography variant='subtitle1' style={{marginLeft:'10px',marginBottom:'10px'}}>
+          Completed Lessons
+            </Typography>
+            </Box>
+        <ClassesTable child={user}/> 
+        </Paper>}
         </Box>
     )
 }

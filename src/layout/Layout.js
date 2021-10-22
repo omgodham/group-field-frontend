@@ -1,35 +1,36 @@
 import {
-    Drawer,
-    Divider,
-    List,
-    ListItem,
-    ListItemText,
-    Hidden,
-    AppBar,
-    Toolbar,
-    IconButton,
-    Typography,
-    Avatar,
-    ListItemIcon,
-    Box
-  } from "@material-ui/core";
-  import { makeStyles, useTheme } from "@material-ui/core/styles";
-  import React,{useState,useEffect} from "react";
-  import PropTypes from "prop-types";
-  import MenuIcon from "@material-ui/icons/Menu";
+	Drawer,
+	Divider,
+	List,
+	ListItem,
+	ListItemText,
+	Hidden,
+	AppBar,
+	Toolbar,
+	IconButton,
+	Typography,
+	Avatar,
+	ListItemIcon,
+	Box,
+} from "@material-ui/core";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import MenuIcon from "@material-ui/icons/Menu";
 
-  import {  SubjectOutlined } from "@material-ui/icons";
-  import { Link, useHistory, useLocation } from "react-router-dom";
-  import DashboardIcon from '@material-ui/icons/Dashboard';
-  import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-  import ClassIcon from '@material-ui/icons/Class';
-  import PaymentIcon from '@material-ui/icons/Payment';
-  import {useDispatch,useSelector} from 'react-redux'  
-  import { verifyToken } from "../redux/actions/authActions";
-  
-  import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { SubjectOutlined } from "@material-ui/icons";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import ClassIcon from "@material-ui/icons/Class";
+import PaymentIcon from "@material-ui/icons/Payment";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyToken } from "../redux/actions/authActions";
+
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
 import { setChilds } from "../redux/actions/userActions";
+import Logo from "../images/logo.png";
   const drawerWidth = 240;
   
   const useStyles = makeStyles((theme) => ({
@@ -49,6 +50,10 @@ import { setChilds } from "../redux/actions/userActions";
     },
     root: {
       display: "flex",
+    },
+    logo: {
+      margin: 'auto',
+      width: "80%",
     },
     drawerPaper: {
       width: drawerWidth,
@@ -133,53 +138,47 @@ import { setChilds } from "../redux/actions/userActions";
       const dispatch = useDispatch();
       
 
-      useEffect(() => {
+	useEffect(() => {
+		dispatch(verifyToken(history));
+	}, []);
 
-        dispatch(verifyToken(history))
-       
-      }, [])
+	useEffect(() => {
 
-      useEffect(() => {
-        if(user?.role === "ROLE_PARENT"){
-          let tempChilds = [];
-          if(user){
-              const getChilds = () => {
-              user.childs.forEach(async (element) => {
-                  try {
-                      const response = await getUserById(element);
-                      // console.log(response)
-                      tempChilds.push(response)
-                  
-                     } catch (error) {
-                        console.log(error) 
-                     }
-              });
-  
-              setTimeout(() => {
-                  // setSelectedChild(tempChilds[0])
-                  // setChilds(tempChilds)
-                  dispatch(setChilds(tempChilds))
-              },1000)
-          }
-          return getChilds()
-          }
-        }
-      },[user])
+		if (user?.role === "ROLE_PARENT") {
+			let tempChilds = [];
+			if (user) {
+				const getChilds = () => {
+					user.childs.forEach(async (element) => {
+						try {
+							const response = await getUserById(element);
+							// console.log(response)
+							tempChilds.push(response);
+						} catch (error) {
+							console.log(error);
+						}
+					});
 
+					setTimeout(() => {
+						// setSelectedChild(tempChilds[0])
+						// setChilds(tempChilds)
+						dispatch(setChilds(tempChilds));
+					}, 1000);
+				};
+				return getChilds();
+			}
+		}
+	}, [user]);
 
+	const classes = useStyles();
 
-    const classes = useStyles();
-  
-    const { window } = props;
-  
-    const theme = useTheme();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    
-    
-    const handleDrawerToggle = () => {
-      setMobileOpen(!mobileOpen);
-    };
+	const { window } = props;
 
+	const theme = useTheme();
+	const [mobileOpen, setMobileOpen] = React.useState(false);
+
+	const handleDrawerToggle = () => {
+		setMobileOpen(!mobileOpen);
+	};
 
     const menuItems = [
         {
@@ -201,41 +200,59 @@ import { setChilds } from "../redux/actions/userActions";
             text:'Payments',
             icon:<PaymentIcon />,
             path:'/payment'
-          }  :''
+          }  :'']
 
-    ]
+	const drawer = (
+		<div>
+			<Link to="/dashboard" style={{ textDecoration: "none" }}>
+				<Box
+					display="flex"
+					// alignItems="left"
+					// justifyContent="left"
+					className={classes.title}
+				>
+					<img src={Logo} className={classes.logo}></img>
+				</Box>
+			</Link>
+			<Divider />
+			<List className={classes.list}>
+				{menuItems.map((item, index) => (
+					<ListItem
+						button
+						key={index}
+						onClick={() => {
+							history.push(item.path);
+						}}
+						className={
+							item.path === location.pathname
+								? classes.activeListItem
+								: classes.listitem
+						}
+					>
+						<ListItemIcon
+							className={
+								item.path === location.pathname
+									? classes.activeIcon
+									: classes.Icon
+							}
+						>
+							{item.icon}
+						</ListItemIcon>
+						<ListItemText>{item.text}</ListItemText>
+					</ListItem>
+				))}
+			</List>
+		</div>
+	);
 
-    
-    const drawer = (
-      <div>
-          <Link to='/dashboard' style={{textDecoration:'none'}}>
-        <Box display='flex' flexDirection="row" alignItems='left' justifyContent='left' className={classes.title}>
-          <Typography variant="h5" color='textPrimary' className={classes.subTitle}>
-            Group<span className={classes.and}>&</span>Field
-          </Typography>
-        </Box>
-        </Link>
-        <Divider />
-        <List className={classes.list} >
-          {menuItems.map((item, index) => (
-            <ListItem button key={index} onClick={() => {history.push(item.path)}} className={item.path === location.pathname ? classes.activeListItem : classes.listitem }>
-              <ListItemIcon className={item.path === location.pathname ? classes.activeIcon : classes.Icon}>{item.icon}</ListItemIcon>
-              <ListItemText >{item.text}</ListItemText>
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    );
-  
-    const container =
-      window !== undefined ? () => window().document.body : undefined;
-  
+	const container =
+		window !== undefined ? () => window().document.body : undefined;
 
-     const handleLogout = () => {
-       localStorage.removeItem('jwt');
-       localStorage.removeItem('userId');
-       history.push('/signin'); 
-     }
+	const handleLogout = () => {
+		localStorage.removeItem("jwt");
+		localStorage.removeItem("userId");
+		history.push("/signin");
+	};
 
 
     return (

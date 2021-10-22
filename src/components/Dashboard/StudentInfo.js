@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
       display:'flex',
       alignItems:'center',
       justifyContent:'left',
-      flexWrap:'wrap'
+      flexWrap:'wrap',
     },
     weekLecture:{
       // padding:theme.spacing(2),
@@ -61,6 +61,8 @@ const useStyles = makeStyles(theme => ({
     },
     icons:{
       color:theme.palette.success.main,
+      // backgroundColor: "rgb(0,119,182)",
+ 
     }
   }));
   
@@ -262,7 +264,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
                     <TableCell align="left" className={classes.category}>
                       {row.category}
                     </TableCell>
-                    <TableCell  align="left" style={{color: '#878787' }}>{row.className}</TableCell>
+                    <TableCell  align="center" style={{color: '#878787' }}>{row.className}</TableCell>
                     {index === 0? <TableCell align="center"><Button variant='contained' className={classes.button}>Syllabus</Button></TableCell>
                     :index === 1 ? <TableCell align="center"><a href={row.url}  style={{textDecoration:'none'}}><Button  variant='contained'  className={classes.button} style={{minWidth:'150px'}}>Join Lesson <NavigateNextIcon /></Button></a></TableCell>
                     : (role === 'ROLE_PARENT') && <TableCell align="center"><Link to='/payment' style={{textDecoration:'none'}}><Button variant='contained' className={classes.button} style={{minWidth:'150px'}}>Fee Payment <AccountBalanceWalletIcon /></Button></Link></TableCell>}

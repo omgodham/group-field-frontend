@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles,withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,6 +11,8 @@ import { getClassByPublicId } from './helpers';
 import {format , getHours, getTime, getWeek} from 'date-fns'
 import { Box, CircularProgress } from '@material-ui/core';
 import moment from 'moment'
+
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -18,8 +20,25 @@ const useStyles = makeStyles({
 });
 
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
-export default function ClassesTable({child}) {
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
+export default function   ClassesTable({child}) {
   const classes = useStyles();
 
 
@@ -28,6 +47,7 @@ export default function ClassesTable({child}) {
   }
   
  
+  // console.log(child);
 
   const [lectures,setLectures] = useState([])
   const [rows ,setRows] = useState([])  
@@ -36,7 +56,8 @@ export default function ClassesTable({child}) {
     child.lectures.map(lecture => {
         getClassByPublicId(lecture.id).then(data => {
             data.paid = lecture.due ? 'Unpaid' : 'Paid'
-            // setLectures([...lectures , data])
+              // console.log(data)
+            if(new Date(data.start) < new Date())
             tempLectues.push(data);
         }).catch(error => console.log(error))
     })
@@ -47,21 +68,20 @@ export default function ClassesTable({child}) {
 // console.log(lectures);
 
   useEffect(() => {
-
-
-
       let tempRows = [];
-      if(lectures.length === child.lectures.length)  
-         {    
+      // if(lectures.length === child.lectures.length)  
+      //    {  
+        if(lectures.length)  
+        {      
               lectures.forEach(item => {
               
            
-       var startOfWeek = moment().startOf('week').toDate();
-       var endOfWeek   = moment().endOf('week').toDate();
-
-        console.log(startOfWeek,endOfWeek);
-        console.log(startOfWeek < new Date(item.start) , item.start);
-
+                // var startOfWeek = moment().startOf('week').toDate();
+                // var endOfWeek   = moment().endOf('week').toDate();
+         
+                //  console.log(startOfWeek,endOfWeek);
+                //  console.log(startOfWeek < new Date(item.start) , item.start);
+       
               tempRows.push(
                         // createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, getHours(new Date(item.end)) - getHours(new Date(item.start)) , item.paid), Change the format of the time in the update
                          createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, item.paid, (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
@@ -73,34 +93,35 @@ export default function ClassesTable({child}) {
            } 
   },[lectures])
 
+  // console.log(rows);
   return (
     <TableContainer component={Paper}>
       <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-      {rows.length === child.lectures.length ? <Table className={classes.table} aria-label="simple table">
+      {rows.length ? <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow>
-            <TableCell align='center'>Date</TableCell>
-            <TableCell align='center'>Start Time</TableCell>
-            <TableCell align='center'>End Time</TableCell>
+          <TableRow >
+            <StyledTableCell align='center'>Date</StyledTableCell>
+            <StyledTableCell align='center'>Start Time</StyledTableCell>
+            <StyledTableCell align='center'>End Time</StyledTableCell>
             {/* <TableCell align='center'>Topic</TableCell> */}
               {/* In Update hide the class topic from the table  */}
-            <TableCell align='center'>Hours</TableCell>
-            <TableCell align='center'>Rate($ {child.learningRate}/ hour)</TableCell>
+            <StyledTableCell align='center'>Hours</StyledTableCell>
+            <StyledTableCell align='center'>Rate($ {child.learningRate}/ hour)</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row,index) => (
-            <TableRow key={row.name} key={index}>
-              <TableCell component="th" scope="row">
+            <StyledTableRow key={row.name} key={index}>
+              <StyledTableCell align='center' component="th" scope="row">
                 {row.date}
-              </TableCell>
-              <TableCell align='center'>{row.start}</TableCell>
-              <TableCell align='center'>{row.end}</TableCell>
+              </StyledTableCell>
+              <StyledTableCell align='center'>{row.start}</StyledTableCell>
+              <StyledTableCell align='center'>{row.end}</StyledTableCell>
               {/* <TableCell align='center'>{row.topic}</TableCell> */}
-              <TableCell align='center'>{row.hours}</TableCell>
-              <TableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</TableCell> 
+              <StyledTableCell align='center'>{row.hours}</StyledTableCell>
+              <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell> 
               {/* Changed from payment status to the rate per hour in update */}
-            </TableRow>
+            </StyledTableRow>
           ))}
         </TableBody>
       </Table> : <CircularProgress />}
