@@ -38,7 +38,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-export default function   ClassesTable({child}) {
+export default function ClassesTable({child}) {
   const classes = useStyles();
 
 

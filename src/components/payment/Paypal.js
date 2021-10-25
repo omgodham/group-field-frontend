@@ -1,5 +1,6 @@
 import React, {useRef,useState,useEffect} from 'react'
-import {Typography,makeStyles} from '@material-ui/core'
+import {Typography,makeStyles, Button} from '@material-ui/core'
+import { updateLectures } from './helpers';
 
 const useStyles = makeStyles(theme => ({
     
@@ -12,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     
 }))
 
-export default function Paypal(props) {
+export default function Paypal({amount,lectureIds,childIds}) {
     
     const classes = useStyles();
     const paypal = useRef();
@@ -30,7 +31,7 @@ export default function Paypal(props) {
                                 description: 'Group And Field',
                                 amount: {
                                     currency_code: 'USD',
-                                    value: props.amount,
+                                    value: amount,
                                 },
                             },
                         ],
@@ -40,6 +41,11 @@ export default function Paypal(props) {
                     const order = await actions.order.capture()
                     console.log(order);
                     setSuccess(true);
+                    updateLectures(lectureIds,childIds).then(data => {
+                        console.log(data)
+                }).catch(err => console.log(err))
+
+
                 },
                 onError: (err) => {
                     console.log(err);
@@ -48,14 +54,17 @@ export default function Paypal(props) {
                 
             })
             .render(paypal.current);
-            
+     
+          
+   
+
         }, []);
 
     return (
 
         
         <div style={{display: 'flex',flexDirection: 'column'}}>
-
+          
             <div ref={paypal}></div>
             {success && 
                 <Typography variant='p' className={classes.msg}>

@@ -24,6 +24,9 @@ import { useSelector } from "react-redux";
 import { getClassByPublicId } from "../components/Classes/helpers";
 import { format, getHours } from "date-fns";
 import {useHistory} from 'react-router-dom'
+
+import {getTime} from 'date-fns'
+import { updateLectures } from "../components/payment/helpers";
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
@@ -79,20 +82,32 @@ export default function Payment() {
     }
   },[user])
 
+
+  const [lectureIds , setLecturesIds] = useState([]);
+  const [childIds,setChildIds] = useState([]);
+
   useEffect(() => {
-   
-    
 
       const setValues = () => {
         if (childs.length) {
         let tempRows = [];
+        let thislectureIds = [];
+        let thisChilds = [];
         childs.map((thisChild) => {
+          // setChildIds(childIds => [...childIds , thisChild._id])
+          thisChilds.push(thisChild._id)
           let hours = 0;
           thisChild.lectures.map((lecture) => {
             if(lecture.due){
               getClassByPublicId(lecture.id)
               .then((item) => {
-                hours = hours +(getHours(new Date(item.end)) - getHours(new Date(item.start)));
+                if(new Date(item.end) < new Date()){
+                  //  console.log(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)
+                  // setLecturesIds(prevValues => [...prevValues , lecture.id])
+                  thislectureIds.push(lecture.id);
+                  hours = parseFloat(hours) + parseFloat(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60);
+                }
+               
               })
               .catch((error) => console.log(error));
             }
@@ -102,11 +117,13 @@ export default function Payment() {
             tempRows.push(
               createData(thisChild.name, hours, thisChild.learningRate)
             );
-          }, 500);
+          }, 1000);
         });
         setTimeout(() => {
           if (childs.length === tempRows.length) setRows(tempRows);
-        }, 1500);
+          setLecturesIds(thislectureIds)
+          setChildIds(thisChilds)
+        }, 2000);
       }
     }
     return setValues();
@@ -124,8 +141,8 @@ export default function Payment() {
     }    
   },[rows])
 
-  function createData(child, hours, rateperhour) {
-    return { child, hours, rateperhour };
+  function createData(child, hours, rateperhour,lectureId) {
+    return { child, hours, rateperhour,lectureId };
   }
 
   const handleChange = (e) => {
@@ -136,6 +153,16 @@ export default function Payment() {
   const handleOpen = () => {
     setShowPaypal(true);
   };
+  const handleClick = () => {
+
+    childs.map(child => {
+      updateLectures({lectureIds},child._id)
+      .then(data => {
+        console.log(data)
+  }).catch(err => console.log(err))
+    })
+ 
+  }
 
   return (
     <>
@@ -167,14 +194,14 @@ export default function Payment() {
                     {row.child}
                   </TableCell>
                   <TableCell align="center" className={classes.tableValues}>
-                    {row.hours}
+                    {(row.hours).toFixed(2)}
                   </TableCell>
                   {/* <TableCell align="center" className={classes.tableValues}>
                     ${row.rateperhour}
                   // </TableCell> */}
                    {/* Hide in the update part */}
                   <TableCell align="center" className={classes.tableValues}>
-                    ${row.hours * row.rateperhour}
+                    ${(row.hours * row.rateperhour).toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -187,7 +214,7 @@ export default function Payment() {
               </InputLabel>
               <FilledInput
                 id="filled-adornment-amount"
-                value={amount}
+                value={amount.toFixed(2)}
                 onChange={handleChange}
                 startAdornment={
                   <InputAdornment position="start">$</InputAdornment>
@@ -198,9 +225,10 @@ export default function Payment() {
             </FormControl>
             {showPaypal ? (
               <Box className={classes.paymentPopup}>
-                <Paypal amount={amount} />
+                <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds}/>
               </Box>
             ) : (
+              <>
               <Button
                 type="button"
                 onClick={handleOpen}
@@ -210,6 +238,8 @@ export default function Payment() {
               >
                 Pay With Paypal
               </Button>
+                <Button onClick={handleClick}>Thisi s</Button>
+                </>
             )}
           </Box>
         </Paper>
