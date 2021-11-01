@@ -15,6 +15,9 @@ import DvrIcon from '@material-ui/icons/Dvr';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 const useStyles = makeStyles(theme => ({
+    root: {
+      margin: 'auto',
+    },
     button: {
         backgroundColor:theme.palette.success.main,
         borderRadius:'20px',
@@ -202,7 +205,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
    
 
     return (
-      <Box style={{display:admin ? 'none': '',marginTop:'20px'}}>
+      <Box style={{display:admin ? 'none': ''}} className= {classes.root}>
       
       { (rows.length) ?
       <>

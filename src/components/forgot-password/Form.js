@@ -28,6 +28,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { ForgotPasswordHelper } from "./helper";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -76,30 +77,17 @@ export default function Form() {
 	const [message, setMessage] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const dispatch = useDispatch();
-	const [values, setValues] = useState({
-		email: "",
-		password: "",
-	});
+	const [email, setEmail] = useState('');
 	const history = useHistory();
 
-	const { email, password } = values;
-
 	const handleChange = (e) => {
-		setValues((prevValues) => ({
-			...prevValues,
-			[e.target.name]: e.target.value,
-		}));
+		setEmail(e.target.value);
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		try {
-			dispatch(SignInAction(values, history));
-		} catch (error) {
-			setMessage(error.message);
-			setOpen(true);
-			setSuccess(false);
-		}
+		console.log('in form',email)
+		ForgotPasswordHelper(email)
 	};
 
 	const handleClickShowPassword = () => {
@@ -141,7 +129,7 @@ export default function Form() {
 								variant="body2"
 								className={classes.typoGraphy}
 							>
-								Log In to Your Account
+								Please enter your email ID
 							</Typography>
 
 							{!success && (
@@ -182,94 +170,18 @@ export default function Form() {
 								onChange={handleChange}
 							/>
 
-							{/* <TextField
-								className={classes.margin}
-								variant="outlined"
-								id="input-with-icon-textfield"
-								label="Password"
-								size="medium"
-								type={showPassword ? 'text' : 'password'}
-								name="password"
-								className={classes.tab}
-								style={{ marginBottom: "30px"}}
-								required={true}
-								value={password}
-								onChange={handleChange}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-										>
-										{values.showPassword ? <Visibility /> : <VisibilityOff />}
-										</IconButton>
-									</InputAdornment>
-									}
-								/> */}
 
-
-
-							<FormControl variant="outlined" className={classes.tab}>
-							<InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-							<OutlinedInput
-								className={classes.margin}
-								id="outlined-adornment-password"
-								size="medium"
-								type={showPassword ? 'text' : 'password'}
-								name="password"
-								required={true}
-								value={password}
-								onChange={handleChange}
-								endAdornment={
-								<InputAdornment position="end">
-									<IconButton
-									aria-label="toggle password visibility"
-									onClick={handleClickShowPassword}
-									onMouseDown={handleMouseDownPassword}
-									edge="end"
-									>
-									{showPassword ? <Visibility /> : <VisibilityOff />}
-									</IconButton>
-								</InputAdornment>
-								}
-								labelWidth={70}
-							/>
-							</FormControl>
-
-							{/* <FormControlLabel
-              control={
-                <Checkbox
-                  // checked={state.checkedB}
-                  // onChange={handleChange}
-                  name="checkedB"
-                  color="primary"
-                />
-              }
-              label="Keep Me logged In"
-              style={{ display: "flex", marginLeft: "10px" }}
-            /> */}
 							<Button
 								variant="contained"
 								color="primary"
 								type="submit"
 								className={classes.tab}
 							>
-								Sign In
+								Reset Password
 							</Button>
-
-							<div className={classes.linkCont}>
-							<Typography variant="body2">
-								<Link href="/forgot-password">Forgot Password ?</Link>
-							</Typography>
-							</div>
 						</form>
 					</Grid>
 				</Box>
-			</Grid>
-			<Grid item xs>
-				<img src={signinImg} className={classes.signinImg}></img>
 			</Grid>
 		</Grid>
 	);

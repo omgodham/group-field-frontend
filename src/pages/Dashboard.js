@@ -6,8 +6,8 @@ import AdminDashboard from '../components/Home.js/AdminDashboard'
 
 const useStyles = makeStyles(theme => ({
     root:{
-        width: '95%',
-        padding:theme.spacing(2),
+        // width: '95%',
+        padding:theme.spacing(3),
         // backgroundColor: '#fff', 
     }
 }))

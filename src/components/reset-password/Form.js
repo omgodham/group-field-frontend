@@ -28,6 +28,10 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { ResetPasswordHelper } from "./helper";
+import { useLocation } from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -75,14 +79,19 @@ export default function Form() {
 	const [success, setSuccess] = useState(false);
 	const [message, setMessage] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
+	const [openSuccess, setOpenSuccess] = useState(false);
+	const [openFail, setOpenFail] = useState(false);
+
+  
 	const dispatch = useDispatch();
 	const [values, setValues] = useState({
-		email: "",
 		password: "",
+		confirmPass: "",
 	});
 	const history = useHistory();
+	const location = useLocation();
 
-	const { email, password } = values;
+	const { confirmPass, password } = values;
 
 	const handleChange = (e) => {
 		setValues((prevValues) => ({
@@ -91,14 +100,51 @@ export default function Form() {
 		}));
 	};
 
+
+	
+	const handleCloseSuccess = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setOpenSuccess(false);
+	};
+
+	const handleCloseFail = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setOpenFail(false);
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		try {
-			dispatch(SignInAction(values, history));
-		} catch (error) {
-			setMessage(error.message);
+		console.log('COMPARE',password,confirmPass);
+		
+
+		if(password === confirmPass){
+
+			const userData = { id: location.pathname.split('/')[2],token: location.pathname.split('/')[3], password: password}
+
+			ResetPasswordHelper(userData)
+			.then(res=>{
+				setOpenSuccess(true);
+				setTimeout(function(){ window.location.replace('/login'); }, 3000);
+
+			})
+			.catch(error=>{
+				setOpenFail(true);
+				setTimeout(function(){ window.location.replace('/forgot-password'); }, 3000);
+			})
+
+		}
+		else{
+
+			setMessage('Both passwords should be same');
 			setOpen(true);
 			setSuccess(false);
+
 		}
 	};
 
@@ -141,7 +187,7 @@ export default function Form() {
 								variant="body2"
 								className={classes.typoGraphy}
 							>
-								Log In to Your Account
+								Enter your new password
 							</Typography>
 
 							{!success && (
@@ -166,62 +212,47 @@ export default function Form() {
 								</Collapse>
 							)}
 
-
-							<TextField
-								className={classes.margin}
-								id="input-with-icon-textfield"
-								variant="outlined"	
-								label="Email"
-								size="medium"
-								type="email"
-								name="email"
-								className={classes.tab}
-								style={{ marginTop: "20px"}}
-								required={true}
-								value={email}
-								onChange={handleChange}
-							/>
-
-							{/* <TextField
-								className={classes.margin}
-								variant="outlined"
-								id="input-with-icon-textfield"
-								label="Password"
-								size="medium"
-								type={showPassword ? 'text' : 'password'}
-								name="password"
-								className={classes.tab}
-								style={{ marginBottom: "30px"}}
-								required={true}
-								value={password}
-								onChange={handleChange}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-										>
-										{values.showPassword ? <Visibility /> : <VisibilityOff />}
-										</IconButton>
-									</InputAdornment>
-									}
-								/> */}
-
+                            <FormControl variant="outlined" className={classes.tab}>
+                            <InputLabel htmlFor="outlined-adornment-password">New Password</InputLabel>
+                            <OutlinedInput
+                                className={classes.margin}
+                                id="outlined-adornment-password"
+                                size="medium"
+                                type={showPassword ? 'text' : 'password'}
+                                name="password"
+                                required={true}
+                                value={password}
+                                onChange={handleChange}
+                                endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                    >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                                }
+                                labelWidth={70}
+                            />
+                            </FormControl>
 
 
 							<FormControl variant="outlined" className={classes.tab}>
-							<InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+							<InputLabel htmlFor="outlined-adornment-password">Confirm New Password</InputLabel>
 							<OutlinedInput
+								error
 								className={classes.margin}
 								id="outlined-adornment-password"
 								size="medium"
 								type={showPassword ? 'text' : 'password'}
-								name="password"
+								name="confirmPass"
 								required={true}
-								value={password}
+								value={confirmPass}
 								onChange={handleChange}
+								helperText="Incorrect entry."
 								endAdornment={
 								<InputAdornment position="end">
 									<IconButton
@@ -238,38 +269,28 @@ export default function Form() {
 							/>
 							</FormControl>
 
-							{/* <FormControlLabel
-              control={
-                <Checkbox
-                  // checked={state.checkedB}
-                  // onChange={handleChange}
-                  name="checkedB"
-                  color="primary"
-                />
-              }
-              label="Keep Me logged In"
-              style={{ display: "flex", marginLeft: "10px" }}
-            /> */}
+                            
 							<Button
 								variant="contained"
 								color="primary"
 								type="submit"
 								className={classes.tab}
 							>
-								Sign In
+								Reset Password
 							</Button>
-
-							<div className={classes.linkCont}>
-							<Typography variant="body2">
-								<Link href="/forgot-password">Forgot Password ?</Link>
-							</Typography>
-							</div>
 						</form>
+						<Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess}>
+							<Alert onClose={handleCloseSuccess} severity="success">
+								Password Reset Successfully
+							</Alert>
+						</Snackbar>
+						<Snackbar open={openFail} autoHideDuration={6000} onClose={handleCloseFail}>
+							<Alert onClose={handleCloseFail} severity="error">
+								Please try again.
+							</Alert>
+						</Snackbar>
 					</Grid>
 				</Box>
-			</Grid>
-			<Grid item xs>
-				<img src={signinImg} className={classes.signinImg}></img>
 			</Grid>
 		</Grid>
 	);
