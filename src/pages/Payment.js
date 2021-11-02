@@ -238,7 +238,7 @@ export default function Payment() {
               >
                 Pay With Paypal
               </Button>
-                <Button onClick={handleClick}>Thisi s</Button>
+                {/* <Button onClick={handleClick}>Thisi s</Button> */}
                 </>
             )}
           </Box>

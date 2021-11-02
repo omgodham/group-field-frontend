@@ -103,27 +103,32 @@ import FaceIcon from '@material-ui/icons/Face';
       display:'flex' ,
       flexDirection:'column',
       justifyContent:'center',
-       alignItems: 'center'
+      alignItems: 'center'
     },
     listitem: {
       width: '90%',
       borderRadius: '10px',
-      color: theme.palette.text.secondary,
-      margin: '5px auto'
+      color: theme.palette.text.black,
+      margin: '15px auto',
+      '&:hover' : {
+        backgroundColor: '#C6E5F3',
+      }
     },
     activeListItem: {
       width: '90%',
       borderRadius: '10px',
-      backgroundColor:'#f4f4f4',
-      color: theme.palette.text.primary,
-      margin: '10px auto'
-
+      backgroundColor: '#0077B6',
+      color: '#fff',
+      margin: '15px auto',
+      '&:hover' : {
+        backgroundColor: '#0077B6',
+      }
     },
     Icon: {
-      color: theme.palette.text.secondary,
+      color: theme.palette.text.black,
     },
     activeIcon: {
-      color: theme.palette.text.primary
+      color: '#fff',
     },
     date:{
       flexGrow: "1",

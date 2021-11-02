@@ -9,6 +9,8 @@ import Calendar from "./pages/Calendar";
 import Payment from "./pages/Payment";
 import AllClasses from "./pages/AllClasses";
 import EachClass from "./pages/EachClass";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function Routes() {
   return (
@@ -16,6 +18,8 @@ export default function Routes() {
       <Switch>
         <Route exact path="/signin" component={SignIn} />
         <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/forgot-password" component={ForgotPassword} />
+        <Route exact path="/reset-password/:userId/:toke" component={ResetPassword} />
         <Layout>
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/calendar" component={Calendar} />

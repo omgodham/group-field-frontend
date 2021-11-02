@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
     button:{
         width: '100px',
-        backgroundColor:theme.palette.success.main,
+        backgroundColor:theme.palette.text.secondary,
         borderRadius:'20px',
         color:"black",
         marginRight: '30px'
@@ -59,6 +59,11 @@ function Classes() {
        
       } , [user])
 
+      const handleChange = (e)=>{
+        // setSelectedChild(e.target.value)
+        console.log('ITEM',e.target.value);
+      }
+
     //   console.log(selectedChild);
 
     return (
@@ -73,15 +78,20 @@ function Classes() {
                     <Typography color='textSecondary'>This Month</Typography>
                     <Typography color='textSecondary'>Start Date</Typography>
                     <Typography color='textSecondary'>End Date</Typography> */}
-                    <Typography><Button className={classes.button} onClick={() => setSelectedChild(item)}>{item.name}</Button></Typography>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={() => {setSelectedChild(item)
+                        console.log(item)}
+                    }>{item.name}</Button>
+                    {/* <Typography> */}
+                    {/* </Typography> */}
 
 
                     {/* <FormControl className={classes.formControl} variant="outlined">
                         <InputLabel htmlFor="outlined-age-native-simple">Childrens</InputLabel>
                         <Select
                             native
-                            value={item.name}
-                            onChange={() => setSelectedChild(item)}
+                            value={selectedChild}
+                            // value='select'
+                            onChange={handleChange}
                             label="Childrens"
                             inputProps={{
                             name: 'Childrens',
@@ -90,7 +100,7 @@ function Classes() {
                         >
                             <option aria-label="None" value="" />
                             {childs.length && childs.map((child,index) => {
-                                return <option value={child._id} key={index}>{child.name}</option>
+                                return <option value={child} key={index}>{child.name}</option>
                             })}
 
                         </Select>
@@ -104,7 +114,7 @@ function Classes() {
         
 
         <Box  display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-        {selectedChild ? <ClassesTable child={selectedChild}/> : <CircularProgress />}
+            {selectedChild ? <ClassesTable child={selectedChild}/> : <CircularProgress />}
         </Box>
 
         </Box>

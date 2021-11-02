@@ -17,9 +17,10 @@ const theme = createTheme({
         main: "#29CC97"
       },
     text: {
-      primary: '#0077B6',
+      primary: '#2eb7ff',
       secondary: 'gray',
-      hint:'#388e3c'
+      hint:'#388e3c',
+      black: 'black'
     }
   }
 });

@@ -94,6 +94,7 @@ function Calendar() {
                   value={childId}
                   onChange={handleChange}
                   label="Childrens"
+                  size='sm'
                   inputProps={{
                     name: 'Childrens',
                     id: 'outlined-age-native-simple',
