@@ -1,8 +1,9 @@
-import { Box, Container, makeStyles, Typography } from '@material-ui/core'
+import { Box, Container, makeStyles, Typography,Button } from '@material-ui/core'
 import React from 'react'
 import StudentInfo from '../components/Dashboard/StudentInfo'
 import {useDispatch,useSelector} from 'react-redux' 
 import AdminDashboard from '../components/Home.js/AdminDashboard'
+import { Payout } from '../components/payout/helper'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -16,6 +17,11 @@ function Dashboard() {
 
 const classes = useStyles();
 const {user} = useSelector(state => state.user)
+
+const getToken = ()=>{
+    let email = 'sb-t8fjd7703249@personal.example.com';
+    Payout(email);
+}
 
     return (
         <Box className={classes.root}>
@@ -31,6 +37,7 @@ const {user} = useSelector(state => state.user)
             {user && (user.role === 'ROLE_TEACHER' || user.role === 'ROLE_ADMIN') &&
             <AdminDashboard /> 
             }
+            <Button variant='contained' onClick={getToken}>send money</Button>
         </Box>
 
     )
