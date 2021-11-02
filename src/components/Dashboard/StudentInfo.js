@@ -102,6 +102,8 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
       }
     } , [reload])
 
+    // console.log(currentUser);
+    
   const handleOpen = () => {
     setOpen(true);
   };
@@ -204,7 +206,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
     return (
       <Box style={{display:admin ? 'none': '',marginTop:'20px'}}>
       
-      { (rows.length) ?
+      {/* { (rows.length) ? */}
       <>
       {weekLectures.length ?  <>
       <Paper className={classes.weeklyBlock}>
@@ -257,7 +259,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
             </Box>}
             <Table className={classes.table} aria-label="simple table">
               <TableBody>
-                {rows.map((row,index) => {
+                {rows.length && rows.map((row,index) => {
                 
                   if(index !== 0)  //In Updation hide the now learning part
                  return <TableRow key={index}> 
@@ -296,7 +298,9 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
       </Modal>
     </div>
 
-        </> : <CircularProgress /> }
+        </> 
+        {/* : <CircularProgress />
+         } */}
        
         </Box>
     )

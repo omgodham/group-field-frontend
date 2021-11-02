@@ -7,6 +7,7 @@ import { Button, CircularProgress, FormControl, Input, InputLabel, MenuItem, Sel
 import { makeStyles } from '@material-ui/styles'
 import CloseIcon from '@material-ui/icons/Close';
 
+
 const useStyles = makeStyles((theme) => ({
     container: {
       display: 'flex',
@@ -33,6 +34,7 @@ function ClassAssign({id,setOpen,setReload,reload}) {
 
  const [selectedChild , setSelectedChild] = useState(null)
    const {allClasses} = useSelector(state => state.classes) 
+   const {user} = useSelector(state => state.user) 
     const [classesToShow , setClassesToShow] = useState([]);
     const [thisClasses , setThisClasses] = useState([]);
     const [teachers , setTeachers] = useState([])
@@ -61,12 +63,15 @@ function ClassAssign({id,setOpen,setReload,reload}) {
              }).catch(error => console.log(error))
             }).catch(error => console.log(error))
         }).catch(error => console.log(error) )
+
     },[])
 
-
-
+//TODO:Logged In teacher should be preseleceted
+// useEffect(() => {
+//     setSelectedTeacher(user)
+// },[ user])
     useEffect(() =>{
-        console.log(thisClasses,allClasses);
+        // console.log(thisClasses,allClasses);
         let da = [];
      if(thisClasses.length && allClasses.length){
         allClasses.forEach(thisEvent => {
@@ -92,6 +97,7 @@ function ClassAssign({id,setOpen,setReload,reload}) {
         }).catch(error => console.log(error))
     }
 
+  
     return (
         <div style={{position:'relative'}}>
           <CloseIcon className={classes.closeIcon} onClick={() => setOpen(false)}/>

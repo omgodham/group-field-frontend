@@ -29,7 +29,7 @@ const {user} = useSelector(state => state.user)
             <StudentInfo id={user._id} role='ROLE_STUDENT'/>
             }
             {user && (user.role === 'ROLE_TEACHER' || user.role === 'ROLE_ADMIN') &&
-            <AdminDashboard /> 
+            <AdminDashboard _id={user._id} role={user.role}/> 
             }
         </Box>
 

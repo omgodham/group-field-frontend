@@ -12,25 +12,32 @@ import {
 	Avatar,
 	ListItemIcon,
 	Box,
+  Collapse,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import { SubjectOutlined } from "@material-ui/icons";
+import { ExpandLess, ExpandMore, StarBorder, SubjectOutlined } from "@material-ui/icons";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import ClassIcon from "@material-ui/icons/Class";
 import PaymentIcon from "@material-ui/icons/Payment";
 import { useDispatch, useSelector } from "react-redux";
-import { verifyToken } from "../redux/actions/authActions";
+import { logoutAction, verifyToken } from "../redux/actions/authActions";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
 import { setChilds } from "../redux/actions/userActions";
 import Logo from "../images/logo.png";
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import FaceIcon from '@material-ui/icons/Face';
+
+
+
   const drawerWidth = 240;
   
   const useStyles = makeStyles((theme) => ({
@@ -126,9 +133,14 @@ import Logo from "../images/logo.png";
     logoutIcon:{
       marginLeft:theme.spacing(1)
     },
-    navbar:{
-
-    }
+    rootList: {
+      width: '100%',
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper,
+    },
+    nested: {
+      paddingLeft: theme.spacing(2),
+    },
   }));
   
   function Layout(props) {
@@ -179,6 +191,12 @@ import Logo from "../images/logo.png";
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
+  const [open, setOpen] = React.useState(true);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
 
     const menuItems = [
         {
@@ -186,21 +204,23 @@ import Logo from "../images/logo.png";
           icon:<DashboardIcon />,
           path:'/dashboard'
         },
-        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) ? {
+        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) && {
           text:'Calender',
           icon:<CalendarTodayIcon />,
           path:'/calendar'
-        } : '',
-        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) ? {
+        } ,
+        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) && {
             text:'Classes',
             icon:<ClassIcon />,
             path:'/classes'
-          } : '',
-          (user && user.role === 'ROLE_PARENT') ? {
+          } ,
+          (user && user.role === 'ROLE_PARENT') && {
             text:'Payments',
             icon:<PaymentIcon />,
             path:'/payment'
-          }  :'']
+          }  
+          ]
+
 
 	const drawer = (
 		<div>
@@ -216,8 +236,8 @@ import Logo from "../images/logo.png";
 			</Link>
 			<Divider />
 			<List className={classes.list}>
-				{menuItems.map((item, index) => (
-					<ListItem
+				{menuItems.map((item, index) => {
+				return <>{item && <ListItem
 						button
 						key={index}
 						onClick={() => {
@@ -239,9 +259,34 @@ import Logo from "../images/logo.png";
 							{item.icon}
 						</ListItemIcon>
 						<ListItemText>{item.text}</ListItemText>
-					</ListItem>
-				))}
+					</ListItem>}
+          </>
+  })}
+        <ListItem button onClick={handleClick}>
+        <ListItemIcon>
+          <FaceIcon />
+        </ListItemIcon>
+        <ListItemText primary="Profile" />
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem button className={classes.nested}>
+            <ListItemIcon>
+              <ChevronRightIcon />
+            </ListItemIcon>
+            <ListItemText primary="Account Details" />
+          </ListItem>
+          <ListItem button className={classes.nested}>
+            <ListItemIcon>
+              <ChevronRightIcon />
+            </ListItemIcon>
+            <ListItemText primary="Create User" />
+          </ListItem>
+        </List>
+      </Collapse>
 			</List>
+
 		</div>
 	);
 
@@ -249,9 +294,14 @@ import Logo from "../images/logo.png";
 		window !== undefined ? () => window().document.body : undefined;
 
 	const handleLogout = () => {
-		localStorage.removeItem("jwt");
-		localStorage.removeItem("userId");
-		history.push("/signin");
+		// localStorage.removeItem("jwt");
+		// localStorage.removeItem("userId");
+    // dispatch({
+    //   type: "USER_LOGOUT",
+    //   payload: null,
+    // });
+    dispatch(logoutAction(history));
+		// history.push("/signin");
 	};
 
 

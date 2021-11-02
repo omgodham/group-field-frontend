@@ -1,11 +1,11 @@
-import React,{useState} from "react";
-import { Grid, Paper, Button, Link, IconButton,Collapse,TextField,Typography } from "@material-ui/core";
+import React,{useState,useEffect} from "react";
+import { Grid, Paper, Button, Link, IconButton,Collapse,TextField,Typography, InputLabel, Select, Input, MenuItem, FormControl } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {useDispatch} from 'react-redux'
-import { signUpAction } from "./helpers";
+import { getAvailableChilds, signUpAction } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert';
-
+import ReactSelect from 'react-select'
 const useStyles = makeStyles(theme =>({
     root: {
         height: '60vh',
@@ -33,7 +33,11 @@ const useStyles = makeStyles(theme =>({
         display: 'flex',
         justifyContent: 'space-between',
         padding: ('2px 20px'),
-    }
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 150,
+    },
 }))
 
 export default function Form() {
@@ -43,22 +47,27 @@ export default function Form() {
     const [success, setSuccess] = useState(false);
     const [message,setMessage] = useState("");
     
-
+    
     const [values , setValues] = useState({
         name:"",
         email:"",
-        password:""
+        password:"",
+        role:"STUDENT",
+        childs:[]
     })
-    const {name,email,password} = values;
+
+    const {name,email,password,role,childs} = values;
 
     const handleChange = (e) => {
         setValues(prevValues => ({...prevValues , [e.target.name]:e.target.value}))
     }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
      try {
        let user = await signUpAction(values);
-       console.log(user)
+      //  console.log(user)
        if(user.error){
         setMessage(user.error)
         setOpen(true)
@@ -79,7 +88,34 @@ export default function Form() {
         setSuccess(false)
      }
   };
+const [availableChilds, setAvailableChilds] = useState([]);
 
+ useEffect(() => {
+   setValues(prevValues => ({...prevValues , childs:[]}))
+   if(role === 'ROLE_PARENT')
+  getAvailableChilds()
+  .then(data => setAvailableChilds(data))
+  .catch(error => console.log(error))
+ },[role])
+  const [updatedChilds,setUpdatedChilds] = useState([]);
+
+ useEffect(() => {
+  //  console.log(availableChilds)
+  if(availableChilds.length){
+    let temp = availableChilds;
+    for(const item of temp){
+      item.value = item._id;
+      item.label= item.name
+    }
+    setUpdatedChilds(temp);
+  }
+ },[availableChilds])
+ 
+
+ const handleSearchChange = (data) => {
+  setValues(prevValues => ({...prevValues , childs : data.map(item => item._id)}))
+ }
+ console.log(values);
   return (
     <Grid height="100vh">
       <Paper
@@ -104,7 +140,7 @@ export default function Form() {
               variant="body2"
               className={classes.typoGraphy}
             >
-              Create Your Account
+              Create Account For User
             </Typography>
 
             {/* <Typography
@@ -191,7 +227,42 @@ export default function Form() {
               value={password}
               onChange={handleChange}
             />
-
+        
+                       {/* <FormControl className={classes.formControl}> */}
+             <InputLabel id="demo-dialog-select-label">Select Role For User</InputLabel>
+              <Select
+                labelId="demo-dialog-select-label"
+                id="demo-dialog-select"
+                value={role}
+                onChange={(e) => setValues(prevValues => ({...prevValues,role:e.target.value}))}
+                input={<Input />}
+                className={classes.tab}
+              >
+                {['STUDENT','TEACHER','PARENT'].map(item => {
+                    return  <MenuItem value={'ROLE_' + item}>{item}</MenuItem>
+                })}
+              </Select>
+              {/* {role === 'ROLE_PARENT' && <><InputLabel id="demo-dialog-select-label">Select children of this parent</InputLabel>
+              <Select
+                labelId="demo-dialog-select-label"
+                id="demo-dialog-select"
+                value={childs}
+                onChange={(e) => setValues(prevValues => ({...prevValues,childs:[...childs , e.target.value]}))}
+                input={<Input />}
+                className={classes.tab}
+              >
+                {updatedChilds.map(item => {
+                    return  <MenuItem value={item._id}>{item.name}</MenuItem>
+                })}
+              </Select></>} */}
+              {role === 'ROLE_PARENT' &&
+              <><InputLabel >Select children of this parent</InputLabel>
+               <ReactSelect 
+              options={updatedChilds}
+               isMulti={true}
+              onChange={handleSearchChange}
+              /></>}
+              {/* </FormControl> */}
             <Button
               variant="contained"
               color="primary"
