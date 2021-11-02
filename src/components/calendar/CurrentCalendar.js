@@ -12,7 +12,7 @@ import { setAllClasses } from '../../redux/actions/classActions';
 import { classReducer } from '../../redux/reducers/classReduer';
 
 function CurrentCalendar({selectedChild,admin}) {
-console.log(selectedChild,admin)
+// console.log(selectedChild,admin)
       const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
@@ -39,7 +39,7 @@ console.log(selectedChild,admin)
                      className: 'gcal-event'
                 },
                 eventSourceSuccess:function(content, xhr) {
-                  console.log(content)
+                  // console.log(content)
            
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;

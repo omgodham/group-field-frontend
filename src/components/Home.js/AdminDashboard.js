@@ -1,9 +1,11 @@
 import { Box, Button, Card, CardActions, CardContent, CircularProgress, Divider, makeStyles, Typography } from '@material-ui/core';
 import React,{useEffect,useState} from 'react'
-import { getAllStudents } from './helpers';
+import { getAllStudents, getAllStudentsForTeacher } from './helpers';
 import DuoIcon from '@material-ui/icons/Duo';
 import StudentInfo from '../Dashboard/StudentInfo';
 import ClassroomCard from './ClassroomCard';
+import { useSelector } from 'react-redux';
+import { getClassByPublicId } from '../Classes/helpers';
 
 const useStyles = makeStyles({
   root: {
@@ -26,27 +28,45 @@ const useStyles = makeStyles({
   }
 });
 
-function AdminDashboard() {
+function AdminDashboard({_id,role}) {
 
   const [students , setStudents] = useState([]);
   const classes = useStyles();
-  
+  // const {_id,role} = useSelector(state => state.user.user);
+
     useEffect(() => {
       const getStudents = () => {
-        getAllStudents().then(data =>{
-          //  console.log(data)
-            setStudents(data)
-          })
+        if(role === 'ROLE_ADMIN')
+        {
+          console.log("one")
+          getAllStudents().then(data =>{
+              setStudents(data)
+            })
+          .catch(error => console.log(error))
+        }
+      else if(role === 'ROLE_TEACHER'){
+        getAllStudents().then(async (data) =>{  
+          for (const item of data){
+              let thisClasses = [];
+             for (const lect of item.lectures){
+               let res = await getClassByPublicId(lect.id);
+               thisClasses.push(res)
+             }
+                if(thisClasses.length && thisClasses.some(thisClass => thisClass.teacher == _id))
+                setStudents(prevValues => [...prevValues , item])
+        }})
         .catch(error => console.log(error))
       }
-        return getStudents();
+   
+      }
+
+      getStudents();
 
     }, [])
 
-   
 
-
-    // console.log(currentStudentLectures);
+console.log(role)
+    
 
     return (
       <Box>
@@ -56,9 +76,8 @@ function AdminDashboard() {
       <Divider />
         <div className={classes.lects}>
           {students.length ? 
-          students.map(student => {
-      
-          return  <ClassroomCard key={student._id} student={student} students={students}/>
+          students.map((student,index) => {
+          return  <ClassroomCard key={index} student={student} students={students}/>
              {/* <Card className={classes.root} key={student._id}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" variant='h4' gutterBottom style={{textTransform: 'capitalize'}}>

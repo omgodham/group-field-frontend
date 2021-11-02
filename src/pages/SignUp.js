@@ -7,8 +7,8 @@ function SignUp() {
 
     const history = useHistory()
     useEffect(() => {
-        if(localStorage.getItem('jwt'))
-            history.push('/dashboard')
+        // if(localStorage.getItem('jwt'))
+        //     history.push('/dashboard')
     } , [])
 
     return (

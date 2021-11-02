@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { getClassByPublicId } from './helpers';
 import {format , getHours, getTime, getWeek} from 'date-fns'
-import { Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@material-ui/core';
 import moment from 'moment'
 
 
@@ -124,7 +124,7 @@ export default function ClassesTable({child}) {
             </StyledTableRow>
           ))}
         </TableBody>
-      </Table> : <CircularProgress />}
+      </Table> : <Typography>No past classes are available</Typography>}
       </Box>
     </TableContainer>
   );
