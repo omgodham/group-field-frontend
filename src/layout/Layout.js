@@ -276,18 +276,24 @@ import FaceIcon from '@material-ui/icons/Face';
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
+        <Link to='/account-details' style={{textDecoration:'none'}}>
           <ListItem button className={classes.nested}>
             <ListItemIcon>
               <ChevronRightIcon />
             </ListItemIcon>
             <ListItemText primary="Account Details" />
           </ListItem>
+          </Link>
+          <Link to='/signup' style={{textDecoration:'none'}}>
           <ListItem button className={classes.nested}>
+    
             <ListItemIcon>
               <ChevronRightIcon />
             </ListItemIcon>
             <ListItemText primary="Create User" />
+       
           </ListItem>
+          </Link>
         </List>
       </Collapse>
 			</List>
