@@ -11,6 +11,7 @@ import AllClasses from "./pages/AllClasses";
 import EachClass from "./pages/EachClass";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import AccountDetails from "./pages/AccountDetails";
 
 export default function Routes() {
   return (
@@ -26,6 +27,7 @@ export default function Routes() {
           <Route exact path="/payment" component={Payment} />
           <Route exact path="/classes" component={AllClasses} />
           <Route exact path="/students/:studentId" component={EachClass} />
+          <Route exact path="/account-details" component={AccountDetails} />  
         </Layout>
       </Switch>
     </Router>
