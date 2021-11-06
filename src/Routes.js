@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AccountDetails from "./pages/AccountDetails";
 import MakePayment from "./pages/MakePayment";
+import Payout from "./pages/Payout";
 
 export default function Routes() {
   return (
@@ -27,6 +28,7 @@ export default function Routes() {
           <Route exact path="/calendar" component={Calendar} />
           <Route exact path="/payment" component={Payment} />
           <Route exact path="/classes" component={AllClasses} />
+          <Route exact path="/payout" component={Payout} />  
           <Route exact path="/students/:studentId" component={EachClass} />
           <Route exact path="/account-details" component={AccountDetails} />  
           <Route exact path="/make-payment" component={MakePayment} />  

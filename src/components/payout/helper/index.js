@@ -2,16 +2,16 @@ import axios from "../../../axios";
 import qs from 'qs';
 
 
-export const Payout =  (email) => {
+export const PayoutHelper =  (data) => {
 
-    // let data = email;
-
-    return axios
-    .post("/payment/payout",{"email":email})
+    axios
+    .post("/payment/payout",data)
     .then((response) => {
       console.log(response)
+      return(response)
     })
     .catch((error) => {
-      console.error("There was an error!", error);
+      console.log(error);
+      return(error)
     });
 }
