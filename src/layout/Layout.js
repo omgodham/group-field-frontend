@@ -215,16 +215,21 @@ import FaceIcon from '@material-ui/icons/Face';
           path:'/calendar'
         } ,
         (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) && {
-            text:'Classes',
-            icon:<ClassIcon />,
-            path:'/classes'
-          } ,
-          (user && user.role === 'ROLE_PARENT') && {
-            text:'Payments',
-            icon:<PaymentIcon />,
-            path:'/payment'
-          }  
-          ]
+          text:'Classes',
+          icon:<ClassIcon />,
+          path:'/classes'
+        } ,
+        (user && user.role === 'ROLE_PARENT') && {
+          text:'Payments',
+          icon:<PaymentIcon />,
+          path:'/payment'
+        },
+        (user && user.role === "ROLE_ADMIN") && {
+          text:'Payout',
+          icon:<PaymentIcon />,
+          path:'/payout'
+        },
+    ]
 
 
 	const drawer = (
