@@ -53,7 +53,7 @@ function Classes() {
             },1000)
         }
         return getChilds()
-        } else if(user?.role === 'ROLE_STUDENT'){
+        } else if(user?.role === 'ROLE_STUDENT' || user?.role === 'ROLE_TEACHER'){
             setSelectedChild(user)
         }
        
