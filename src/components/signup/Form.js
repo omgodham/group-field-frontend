@@ -53,10 +53,11 @@ export default function Form() {
         email:"",
         password:"",
         role:"STUDENT",
-        childs:[]
+        childs:[],
+        learningRate:0
     })
 
-    const {name,email,password,role,childs} = values;
+    const {name,email,password,role,childs,learningRate} = values;
 
     const handleChange = (e) => {
         setValues(prevValues => ({...prevValues , [e.target.name]:e.target.value}))
@@ -263,6 +264,18 @@ const [availableChilds, setAvailableChilds] = useState([]);
               onChange={handleSearchChange}
               /></>}
               {/* </FormControl> */}
+              {(role === 'ROLE_STUDENT' ||role === 'ROLE_TEACHER')  && <TextField
+              id="outlined-basic"
+              label="Per Hour Rate"
+              type="number"
+              variant="outlined"
+              size="medium"
+              name="learningRate"
+              className={classes.tab}
+              style={{ marginBottom: "30px" }}
+              value={learningRate}
+              onChange={handleChange}
+            />}
             <Button
               variant="contained"
               color="primary"

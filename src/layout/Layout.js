@@ -284,7 +284,7 @@ import FaceIcon from '@material-ui/icons/Face';
             <ListItemText primary="Account Details" />
           </ListItem>
           </Link>
-          <Link to='/signup' style={{textDecoration:'none'}}>
+          {user?.role === 'ROLE_ADMIN' && <Link to='/signup' style={{textDecoration:'none'}}>
           <ListItem button className={classes.nested}>
     
             <ListItemIcon>
@@ -293,7 +293,17 @@ import FaceIcon from '@material-ui/icons/Face';
             <ListItemText primary="Create User" />
        
           </ListItem>
-          </Link>
+          </Link>}
+          {user?.role === 'ROLE_ADMIN' && <Link to='/make-payment' style={{textDecoration:'none'}}>
+          <ListItem button className={classes.nested}>
+    
+            <ListItemIcon>
+              <ChevronRightIcon />
+            </ListItemIcon>
+            <ListItemText primary="Make Payment To Teacher" />
+       
+          </ListItem>
+          </Link>}
         </List>
       </Collapse>
 			</List>
