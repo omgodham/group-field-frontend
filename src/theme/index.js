@@ -1,28 +1,27 @@
 import {colors } from '@material-ui/core';
 import {createTheme} from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 
 const theme = createTheme({
   palette: {
     background: {
-      default: '#F7F8FC',
+      default: '#F4F6F8',
       paper: colors.common.white
     },
     primary: {
-      main: '#0077B6'
+      contrastText: '#ffffff',
+      main: '#5664d2'
+    },
+    text: {
+      primary: '#172b4d',
+      secondary: '#6b778c'
     },
     secondary: {
-        main: '#9FA2B4'
-      },
-      success:{
-        main: "#29CC97"
-      },
-    text: {
-      primary: '#2eb7ff',
-      secondary: 'gray',
-      hint:'#388e3c',
-      black: 'black'
+      main: '#F4F6F8',
     }
-  }
+  },
 });
+
+
 
 export default theme;

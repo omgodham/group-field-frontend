@@ -8,17 +8,24 @@ import Alert from '@material-ui/lab/Alert';
 import ReactSelect from 'react-select'
 const useStyles = makeStyles(theme =>({
     root: {
-        height: '60vh',
-        width: 350,
         padding: ('20px 20px 30px'),
-        margin: '50px auto'
+        // margin: '50px auto'
     },
     grid: {
-        margin: 'auto'
+        margin: 'auto',
+        width: '100%',
+        height: '100%'
     },
     tab: {
-        margin: '7px auto',
-        width: '90%'
+        margin: '20px',
+        width: '400px'
+    },
+    selectTab:{
+      display: 'block',
+      border: '1px solid #6b778c',
+      borderRadius: '5px',
+      padding: '5px',
+      width: '400px'
     },
     typoGraphy: {
         fontFamily: 'Roboto, sans-serif',
@@ -46,7 +53,7 @@ export default function Form() {
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
     const [message,setMessage] = useState("");
-    
+    const [confirmPassword,setConfirmPassword] = useState("");
     
     const [values , setValues] = useState({
         name:"",
@@ -66,28 +73,34 @@ export default function Form() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     try {
-       let user = await signUpAction(values);
-      //  console.log(user)
-       if(user.error){
-        setMessage(user.error)
-        setOpen(true)
-        setSuccess(false)
-       }else{
-       setMessage("Sign Up Successfully")
-       setOpen(true)
-       setSuccess(true)
-       setValues({
-        name:"",
-        email:"",
-        password:""
-    })
+		if (confirmPassword === password) {
+			try {
+				let user = await signUpAction(values);
+				//  console.log(user)
+				if (user.error) {
+					setMessage(user.error);
+					setOpen(true);
+					setSuccess(false);
+				} else {
+					setMessage("Sign Up Successfully");
+					setOpen(true);
+					setSuccess(true);
+					setValues({
+						name: "",
+						email: "",
+						password: "",
+					});
+				}
+			} catch (error) {
+				setMessage(error);
+				setOpen(true);
+				setSuccess(false);
+			}
+		} else {
+      setMessage('Both passwords should be same');
+      setOpen(true);
+      setSuccess(false);
     }
-     } catch (error) {
-        setMessage(error)
-        setOpen(true)
-        setSuccess(false)
-     }
   };
 const [availableChilds, setAvailableChilds] = useState([]);
 
@@ -118,30 +131,20 @@ const [availableChilds, setAvailableChilds] = useState([]);
  }
  console.log(values);
   return (
-    <Grid height="100vh">
+    <Grid>
       <Paper
-        elevation={2}
-        justify="center"
         style={{ display: "flex",borderRadius:'10px' }}
         className={classes.root}
       >
         <Grid align="center" className={classes.grid}>
           <form onSubmit={handleSubmit}>
-            <Typography
-              color="textPrimary"
-              variant="h4"
-              className={`${classes.typoGraphy} ${classes.headingTitle}`}
-              style={{ margin: "20px" }}
-            >
-              Group<span style={{ color: "gray" }}>&</span>Field
-            </Typography>
 
             <Typography
               color="textPrimary"
-              variant="body2"
+              variant="h6"
               className={classes.typoGraphy}
             >
-              Create Account For User
+              Please Enter Required Details
             </Typography>
 
             {/* <Typography
@@ -198,7 +201,6 @@ const [availableChilds, setAvailableChilds] = useState([]);
               size="medium"
               name="name"
               className={classes.tab}
-              style={{ marginTop: "30px" }}
               value={name}
               onChange={handleChange}
             />
@@ -228,16 +230,30 @@ const [availableChilds, setAvailableChilds] = useState([]);
               value={password}
               onChange={handleChange}
             />
+            <TextField
+              id="outlined-basic"
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              size="medium"
+              type="password"
+              name="confirmPassword"
+              className={classes.tab}
+              style={{ marginBottom: "30px" }}
+              value={confirmPassword}
+              onChange={(e)=>setConfirmPassword(e.target.value)}
+            />
         
                        {/* <FormControl className={classes.formControl}> */}
              <InputLabel id="demo-dialog-select-label">Select Role For User</InputLabel>
               <Select
                 labelId="demo-dialog-select-label"
                 id="demo-dialog-select"
+                variant='outlined'
                 value={role}
                 onChange={(e) => setValues(prevValues => ({...prevValues,role:e.target.value}))}
                 input={<Input />}
-                className={classes.tab}
+                className={[classes.tab,classes.selectTab]}
               >
                 {['STUDENT','TEACHER','PARENT'].map(item => {
                     return  <MenuItem value={'ROLE_' + item}>{item}</MenuItem>
@@ -260,7 +276,7 @@ const [availableChilds, setAvailableChilds] = useState([]);
               <><InputLabel >Select children of this parent</InputLabel>
                <ReactSelect 
               options={updatedChilds}
-               isMulti={true}
+              isMulti={true}
               onChange={handleSearchChange}
               /></>}
               {/* </FormControl> */}
@@ -285,11 +301,6 @@ const [availableChilds, setAvailableChilds] = useState([]);
               Sign Up
             </Button>
 
-            <div className={classes.linkCont}>
-              <Typography variant="body2" style={{}}>
-                <Link href="#">Already Have Account?</Link>
-              </Typography>
-            </div>
           </form>
         </Grid>
       </Paper>

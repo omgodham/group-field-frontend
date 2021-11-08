@@ -1,22 +1,37 @@
-import React, { useEffect } from 'react'
-import { useHistory } from 'react-router';
-import Form from '../components/signup/Form';
-import Topbar from '../components/Topbar';
+import { Box, Container, Divider, Paper, Typography } from '@material-ui/core'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { makeStyles } from '@material-ui/core'
+import Form from '../components/signup/Form'
+import { Divide } from 'react-feather'
+
+const useStyles = makeStyles((theme) => ({
+
+    root:{
+        width: '90%',
+        minHeight: '80vh',
+        margin: 'auto',
+        padding: '30px',
+    }
+
+}))
+
 
 function SignUp() {
 
-    const history = useHistory()
-    useEffect(() => {
-        // if(localStorage.getItem('jwt'))
-        //     history.push('/dashboard')
-    } , [])
+    const classes = useStyles();
+
+    const {user} = useSelector(state => state.user)
+    console.log('USER',user)   
 
     return (
-        <>
-        {/* <Topbar /> */}
-        <Form />
-        </>
+        <Paper className={classes.root}>
+            <Typography variant='h5' color='textPrimary'>CREATE NEW USER</Typography>
+            <Divider />
+            <Form />
+        </Paper>
     )
 }
 
-export default SignUp;
+export default SignUp 
+

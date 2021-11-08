@@ -255,7 +255,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
         </Box>
          {(role === 'ROLE_ADMIN' || role === 'ROLE_TEACHER') && <Button color='primary' onClick={handleOpen} >Create Lesson</Button>} 
         </Box>
-           {role === 'ROLE_PARENT' && <Box flexDirection='column' justifyContent='center' style={{marginLeft:'20px'}}>
+           {role === 'ROLE_PARENT' && currentUser && <Box flexDirection='column' justifyContent='center' style={{marginLeft:'20px'}}>
              <Divider />
                 <Typography variant='h6' style={{color: '#000000',textTransform: 'capitalize',marginTop:'20px'}}>{currentUser.name}</Typography>
                 <Typography variant='body2' color='textSecondary'>Class {currentUser.std}th, {currentUser.board}</Typography>
