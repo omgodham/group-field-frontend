@@ -10,6 +10,7 @@ import { Box, CircularProgress } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { setAllClasses } from '../../redux/actions/classActions';
 import { classReducer } from '../../redux/reducers/classReduer';
+import './calendar.css'
 
 function CurrentCalendar({selectedChild,admin}) {
 // console.log(selectedChild,admin)
@@ -112,7 +113,7 @@ useEffect(() => {
      <Box display='flex' alignItems='center' justifyContent='center' >
       {(!rendered && !admin) && <CircularProgress />}
       </Box>
-        <div id='calendar' style={{maxWidth: "900px",margin: "0 auto" , display:!rendered ? 'none' : ''}}>
+        <div id='calendar' style={{display:'flex',width:'100%',justifyContent:'center' , display:!rendered ? 'none' : ''}}>
        
         </div>
         </>

@@ -4,41 +4,35 @@ import {useDispatch,useSelector} from 'react-redux'
 import { Box, FormControl, InputLabel, makeStyles, Select, Typography, Divider } from '@material-ui/core'
 
 import { getUserById } from '../components/Dashboard/helpers';
+// import './calendar.css'
 
 
 const useStyles = makeStyles((theme) => ({
     calendarWrapper: {
       display: 'flex',
-      width: '80%',
+      width: '90%',
       backgroundColor: 'white',
       flexDirection: 'column',
       margin: 'auto',
-      padding: '20px'
+      padding: '20px 30px'
 
     },
     selectChildCont: {
       display: 'flex',
-      width: '40%',
       alignItems: 'center',
-      margin: '20px auto ',
       justifyContent: 'left',
-      
-      // backgroundColor: '#0077B6'
+      paddingBottom:'10px',
     },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
-      // backgroundColor: '#0077B6',
-      // color: '#fff',
-
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
     formBox: {
-      width: '70%',
-      // height: '300px',
-      margin: '20px auto',
+      width: '100%',
+      margin: '20px auto'
     }
   }));
 
@@ -85,7 +79,7 @@ function Calendar() {
         <div className={classes.calendarWrapper}>
           <Box className={classes.selectChildCont}>
           {(user?.role === 'ROLE_PARENT') && <>
-              <Typography variant='h5'>SELECT YOUR CHILD</Typography>   
+              <Typography variant='h6'>SELECT YOUR CHILD</Typography>   
               <FormControl className={classes.formControl} variant="outlined">
                 {/* <InputLabel htmlFor="age-native-simple">Age</InputLabel> */}
                 <InputLabel htmlFor="outlined-age-native-simple">Childrens</InputLabel>
@@ -100,11 +94,6 @@ function Calendar() {
                     id: 'outlined-age-native-simple',
                   }}
                 >
-                {/* <Select
-                  // native
-                  value={childId}
-                  onChange={handleChange}
-                > */}
                     <option aria-label="None" value="" />
                     {childs.length && childs.map((child,index) => {
                         return <option value={child._id} key={index}>{child.name}</option>
@@ -117,7 +106,7 @@ function Calendar() {
 
           <Divider />
 
-          <Box className={classes.formBox}>
+          <Box className={classes.formBox} boxShadow='2'>
            {(user?.role === 'ROLE_PARENT') && childs.length && < CurrentCalendar selectedChild={selectedChild ? selectedChild : childs[0] } />}
            {(user?.role === 'ROLE_STUDENT') && < CurrentCalendar selectedChild={user} />}
           </Box>

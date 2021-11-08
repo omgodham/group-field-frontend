@@ -19,7 +19,6 @@ export default function Routes() {
     <Router>
       <Switch>
         <Route exact path="/signin" component={SignIn} />
-        <Route exact path="/signup" component={SignUp} />
         <Route exact path="/forgot-password" component={ForgotPassword} />
         <Route exact path="/reset-password/:userId/:toke" component={ResetPassword} />
         <Layout>
@@ -29,7 +28,8 @@ export default function Routes() {
           <Route exact path="/classes" component={AllClasses} />
           <Route exact path="/payout" component={Payout} />  
           <Route exact path="/students/:studentId" component={EachClass} />
-          <Route exact path="/account-details" component={AccountDetails} />  
+          <Route exact path="/account-details" component={AccountDetails} />
+          <Route exact path="/signup" component={SignUp} />  
         </Layout>
       </Switch>
     </Router>

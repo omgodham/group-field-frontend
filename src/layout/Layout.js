@@ -12,14 +12,19 @@ import {
 	Avatar,
 	ListItemIcon,
 	Box,
-  Collapse,
+	Collapse,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import { ExpandLess, ExpandMore, StarBorder, SubjectOutlined } from "@material-ui/icons";
+import {
+	ExpandLess,
+	ExpandMore,
+	StarBorder,
+	SubjectOutlined,
+} from "@material-ui/icons";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
@@ -32,135 +37,135 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
 import { setChilds } from "../redux/actions/userActions";
 import Logo from "../images/logo.png";
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import FaceIcon from '@material-ui/icons/Face';
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import FaceIcon from "@material-ui/icons/Face";
 
+const drawerWidth = 240;
 
+const useStyles = makeStyles((theme) => ({
+	page: {
+		background: "#F0F5FA",
+		width: "100%",
+		[theme.breakpoints.up("sm")]: {
+			paddingTop: theme.spacing(10),
+		},
+		[theme.breakpoints.up("xs")]: {
+			paddingTop: theme.spacing(10),
+		},
 
-  const drawerWidth = 240;
-  
-  const useStyles = makeStyles((theme) => ({
-    page: {
-      background: "#F0F5FA",
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        paddingTop: theme.spacing(10),
-      },
-      [theme.breakpoints.up("xs")]: {
-        paddingTop: theme.spacing(10),
-      },
-  
-      [theme.breakpoints.up("md")]: {
-        paddingTop: theme.spacing(9),
-      },
-    },
-    root: {
-      display: "flex",
-    },
-    logo: {
-      margin: 'auto',
-      width: "80%",
-    },
-    drawerPaper: {
-      width: drawerWidth,
-      boxShadow:'2px 0px 5px 0px hsl(0deg 0% 13% / 52%)'
-    },
-    toolbar: theme.mixins.toolbar,
-    drawer: {
-      [theme.breakpoints.up("sm")]: {
-        width: drawerWidth,
-        flexShrink: 0,
-      },
-      height: "100vh",
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-      [theme.breakpoints.up("sm")]: {
-        display: "none",
-      },
-    },
-    appBar: {
-      [theme.breakpoints.up("sm")]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-      },
-      backgroundColor: "#fefefe",
-      boxShadow:'2px 3px 9px 0px hsl(0deg 0% 13% / 52%)'
-    },
-    title: {
-      flexGrow: "1",
-      padding: theme.spacing(2),
-    },
-    subTitle: {
-      fontWeight:"700"
-    },
-    and: {
-      color: theme.palette.text.secondary,
-      margin: '2px',
-    },  
-    list: {
-      display:'flex' ,
-      flexDirection:'column',
-      justifyContent:'center',
-      alignItems: 'center'
-    },
-    listitem: {
-      width: '90%',
-      borderRadius: '10px',
-      color: theme.palette.text.black,
-      margin: '15px auto',
-      '&:hover' : {
-        backgroundColor: '#C6E5F3',
-      }
-    },
-    activeListItem: {
-      width: '90%',
-      borderRadius: '10px',
-      backgroundColor: '#0077B6',
-      color: '#fff',
-      margin: '15px auto',
-      '&:hover' : {
-        backgroundColor: '#0077B6',
-      }
-    },
-    Icon: {
-      color: theme.palette.text.black,
-    },
-    activeIcon: {
-      color: '#fff',
-    },
-    date:{
-      flexGrow: "1",
-      fontWeight:'500',
-      marginLeft: theme.spacing(1)
-    },
-    logoutIcon:{
-      marginLeft:theme.spacing(1)
-    },
-    rootList: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
-    },
-    nested: {
-      paddingLeft: theme.spacing(2),
-    },
-  }));
-  
-  function Layout(props) {
-     const history = useHistory();
-     const location = useLocation();
-     const {user} = useSelector(state => state.user)
-      const dispatch = useDispatch();
-      
+		[theme.breakpoints.up("md")]: {
+			paddingTop: theme.spacing(9),
+		},
+	},
+	root: {
+		display: "flex",
+	},
+	logo: {
+		margin: "auto",
+		width: "80%",
+	},
+	drawerPaper: {
+		width: drawerWidth,
+		// boxShadow:'2px 0px 5px 0px hsl(0deg 0% 13% / 52%)'
+	},
+	toolbar: theme.mixins.toolbar,
+	drawer: {
+		[theme.breakpoints.up("sm")]: {
+			width: drawerWidth,
+			flexShrink: 0,
+		},
+		height: "100vh",
+	},
+	menuButton: {
+		marginRight: theme.spacing(2),
+		[theme.breakpoints.up("sm")]: {
+			display: "none",
+		},
+	},
+	appBar: {
+		// [theme.breakpoints.up("sm")]: {
+		//   width: `calc(100% - ${drawerWidth}px)`,
+		//   // marginLeft: drawerWidth,
+		// },
+		backgroundColor: "#fefefe",
+		backgroundColor: theme.palette.primary,
+		// boxShadow:'2px 3px 9px 0px hsl(0deg 0% 13% / 52%)'
+		zIndex: theme.zIndex.drawer + 1,
+		display: "100%",
+		// padding:'10px'
+	},
+	title: {
+		flexGrow: "1",
+		padding: theme.spacing(2),
+	},
+	subTitle: {
+		fontWeight: "700",
+	},
+	and: {
+		color: theme.palette.text.secondary,
+		margin: "2px",
+	},
+	list: {
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	listitem: {
+		width: "90%",
+		borderRadius: "10px",
+		color: theme.palette.text.black,
+		margin: "10px auto",
+		"&:hover": {
+			backgroundColor: "secondary",
+		},
+	},
+	activeListItem: {
+		width: "90%",
+		borderRadius: "10px",
+		backgroundColor: theme.palette.primary.main,
+		color: "#fff",
+		margin: "10px auto",
+    "&:hover": {
+			backgroundColor: "#434fa8",
+		},
+	},
+	Icon: {
+		color: theme.palette.text.black,
+	},
+	activeIcon: {
+		color: "#fff",
+	},
+	date: {
+		flexGrow: "1",
+		fontWeight: "500",
+		marginLeft: theme.spacing(1),
+	},
+	logoutIcon: {
+		marginLeft: theme.spacing(1),
+	},
+	rootList: {
+		width: "100%",
+		maxWidth: 360,
+		backgroundColor: theme.palette.background.paper,
+	},
+	nested: {
+		paddingLeft: theme.spacing(2),
+	},
+}));
+
+function Layout(props) {
+	const history = useHistory();
+	const location = useLocation();
+	const { user } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(verifyToken(history));
 	}, []);
 
 	useEffect(() => {
-
 		if (user?.role === "ROLE_PARENT") {
 			let tempChilds = [];
 			if (user) {
@@ -196,41 +201,43 @@ import FaceIcon from '@material-ui/icons/Face';
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
-  const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(true);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+	const handleClick = () => {
+		setOpen(!open);
+	};
 
-
-    const menuItems = [
-        {
-          text:'Dashboard',
-          icon:<DashboardIcon />,
-          path:'/dashboard'
-        },
-        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) && {
-          text:'Calender',
-          icon:<CalendarTodayIcon />,
-          path:'/calendar'
-        } ,
-        (user && (user.role === 'ROLE_PARENT' || user.role === 'ROLE_STUDENT')) && {
-          text:'Classes',
-          icon:<ClassIcon />,
-          path:'/classes'
-        } ,
-        (user && user.role === 'ROLE_PARENT') && {
-          text:'Payments',
-          icon:<PaymentIcon />,
-          path:'/payment'
-        },
-        (user && user.role === "ROLE_ADMIN") && {
-          text:'Payout',
-          icon:<PaymentIcon />,
-          path:'/payout'
-        },
-    ]
-
+	const menuItems = [
+		{
+			text: "Dashboard",
+			icon: <DashboardIcon />,
+			path: "/dashboard",
+		},
+		user &&
+			(user.role === "ROLE_PARENT" || user.role === "ROLE_STUDENT") && {
+				text: "Calender",
+				icon: <CalendarTodayIcon />,
+				path: "/calendar",
+			},
+		user &&
+			(user.role === "ROLE_PARENT" || user.role === "ROLE_STUDENT") && {
+				text: "Classes",
+				icon: <ClassIcon />,
+				path: "/classes",
+			},
+		user &&
+			user.role === "ROLE_PARENT" && {
+				text: "Payments",
+				icon: <PaymentIcon />,
+				path: "/payment",
+			},
+		user &&
+			user.role === "ROLE_ADMIN" && {
+				text: "Payout",
+				icon: <PaymentIcon />,
+				path: "/payout",
+			},
+	];
 
 	const drawer = (
 		<div>
@@ -244,65 +251,67 @@ import FaceIcon from '@material-ui/icons/Face';
 					<img src={Logo} className={classes.logo}></img>
 				</Box>
 			</Link>
-			<Divider />
+			{/* <Divider /> */}
 			<List className={classes.list}>
 				{menuItems.map((item, index) => {
-				return <>{item && <ListItem
-						button
-						key={index}
-						onClick={() => {
-							history.push(item.path);
-						}}
-						className={
-							item.path === location.pathname
-								? classes.activeListItem
-								: classes.listitem
-						}
-					>
-						<ListItemIcon
-							className={
-								item.path === location.pathname
-									? classes.activeIcon
-									: classes.Icon
-							}
-						>
-							{item.icon}
-						</ListItemIcon>
-						<ListItemText>{item.text}</ListItemText>
-					</ListItem>}
-          </>
-  })}
-        <ListItem button onClick={handleClick}>
-        <ListItemIcon>
-          <FaceIcon />
-        </ListItemIcon>
-        <ListItemText primary="Profile" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-        <Link to='/account-details' style={{textDecoration:'none'}}>
-          <ListItem button className={classes.nested}>
-            <ListItemIcon>
-              <ChevronRightIcon />
-            </ListItemIcon>
-            <ListItemText primary="Account Details" />
-          </ListItem>
-          </Link>
-          <Link to='/signup' style={{textDecoration:'none'}}>
-          <ListItem button className={classes.nested}>
-    
-            <ListItemIcon>
-              <ChevronRightIcon />
-            </ListItemIcon>
-            <ListItemText primary="Create User" />
-       
-          </ListItem>
-          </Link>
-        </List>
-      </Collapse>
+					return (
+						<>
+							{item && (
+								<ListItem
+									button
+									key={index}
+									onClick={() => {
+										history.push(item.path);
+									}}
+									className={
+										item.path === location.pathname
+											? classes.activeListItem
+											: classes.listitem
+									}
+								>
+									<ListItemIcon
+										className={
+											item.path === location.pathname
+												? classes.activeIcon
+												: classes.Icon
+										}
+									>
+										{item.icon}
+									</ListItemIcon>
+									<ListItemText>{item.text}</ListItemText>
+								</ListItem>
+							)}
+						</>
+					);
+				})}
+				<ListItem button onClick={handleClick} className={classes.listitem}>
+					<ListItemIcon>
+						<FaceIcon />
+					</ListItemIcon>
+					<ListItemText primary="Profile" />
+					{open ? <ExpandLess /> : <ExpandMore />}
+				</ListItem>
+				<Collapse in={open} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding>
+						<Link to="/account-details" style={{ textDecoration: "none" }}>
+							<ListItem button className={classes.nested}>
+								<ListItemIcon>
+									<ChevronRightIcon />
+								</ListItemIcon>
+								<ListItemText primary="Account Details" />
+							</ListItem>
+						</Link>
+						<Link to="/signup" style={{ textDecoration: "none" }}>
+							<ListItem button className={classes.nested}>
+								<ListItemIcon>
+									<ChevronRightIcon />
+								</ListItemIcon>
+								<ListItemText primary="Create User" />
+							</ListItem>
+						</Link>
+					</List>
+				</Collapse>
 			</List>
-
 		</div>
 	);
 
@@ -312,96 +321,99 @@ import FaceIcon from '@material-ui/icons/Face';
 	const handleLogout = () => {
 		// localStorage.removeItem("jwt");
 		// localStorage.removeItem("userId");
-    // dispatch({
-    //   type: "USER_LOGOUT",
-    //   payload: null,
-    // });
-    dispatch(logoutAction(history));
+		// dispatch({
+		//   type: "USER_LOGOUT",
+		//   payload: null,
+		// });
+		dispatch(logoutAction(history));
 		// history.push("/signin");
 	};
 
+	return (
+		<div className={classes.root}>
+			<Box className={classes.navbar}>
+				<AppBar position="fixed" className={classes.appBar} elevation={0}>
+					<Toolbar>
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							edge="start"
+							color="primary"
+							onClick={handleDrawerToggle}
+							className={classes.menuButton}
+						>
+							<MenuIcon />
+						</IconButton>
+						<Typography
+							variant="h5"
+							noWrap
+							color="textPrimary"
+							className={classes.date}
+						></Typography>
+						<Box display="flex" alignItems="center" justifyContent="center">
+							<Typography
+								variant="body2"
+								color="background"
+								style={{ marginRight: "10px", textTransform: "capitalize" }}
+							>
+								Hello, {user ? user.name : ""}
+							</Typography>
+							<Avatar src="http://rtablada.github.io/ember-profile-upload/profile.jpg" />
+						</Box>
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							edge="start"
+							color="primary"
+							onClick={handleLogout}
+							className={classes.logoutIcon}
+						>
+							<ExitToAppIcon />
+						</IconButton>
+					</Toolbar>
+				</AppBar>
+			</Box>
+			<nav className={classes.drawer} aria-label="mailbox folders">
+				<Hidden smUp implementation="css">
+					<Drawer
+						container={container}
+						variant="temporary"
+						anchor={theme.direction === "rtl" ? "right" : "left"}
+						open={mobileOpen}
+						onClose={handleDrawerToggle}
+						classes={{
+							paper: classes.drawerPaper,
+						}}
+						ModalProps={{
+							keepMounted: true, // Better open performance on mobile.
+						}}
+					>
+						{drawer}
+					</Drawer>
+				</Hidden>
+				<Hidden xsDown implementation="css">
+					<Drawer
+						classes={{
+							paper: classes.drawerPaper,
+						}}
+						variant="permanent"
+						open
+					>
+						{drawer}
+					</Drawer>
+				</Hidden>
+			</nav>
+			<div className={classes.toolbar} />
+			<div className={classes.page}>{props.children}</div>
+		</div>
+	);
+}
+Layout.propTypes = {
+	/**
+	 * Injected by the documentation to work in an iframe.
+	 * You won't need it on your project.
+	 */
+	window: PropTypes.func,
+};
 
-    return (
-      <div className={classes.root}>
-        <Box className={classes.navbar}>
-        <AppBar position="fixed" className={classes.appBar} elevation={0}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              color="primary"
-              onClick={handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              variant="h5"
-              noWrap
-              color="textPrimary"
-              className={classes.date}
-            >
-              
-            </Typography>
-            <Box display='flex'  alignItems='center' justifyContent='center'>
-              <Typography variant='body2' color='textSecondary' style={{marginRight:'10px',textTransform:'capitalize'}}>Hello, {user ? user.name : ''}</Typography>
-            <Avatar src="http://rtablada.github.io/ember-profile-upload/profile.jpg" />
-            </Box>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              color="primary"
-              onClick={handleLogout}
-              className={classes.logoutIcon}
-            >
-              <ExitToAppIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        </Box>
-        <nav className={classes.drawer} aria-label="mailbox folders">
-          <Hidden smUp implementation="css">
-            <Drawer
-              container={container}
-              variant="temporary"
-              anchor={theme.direction === "rtl" ? "right" : "left"}
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Drawer
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              variant="permanent"
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
-        <div className={classes.toolbar} />
-        <div className={classes.page}>{props.children}</div>
-      </div>
-    );
-  }
-  Layout.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
-  };
-  
-  export default Layout;
+export default Layout;

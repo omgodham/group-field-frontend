@@ -31,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
     flexDirection: "column",
-    width: "80%",
+    width: "90%",
     padding: "30px",
-    margin: "50px auto",
+    margin: "auto",
   },
   table: {
     //   width: '80%',
