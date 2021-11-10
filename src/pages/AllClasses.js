@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Classes() {
+function Classes({unpaidLectures,setUnpaidLectures}) {
 	const { user } = useSelector((state) => state.user);
 	const [childs, setChilds] = useState([]);
 	const [selectedChild, setSelectedChild] = useState(null);
@@ -111,7 +111,7 @@ function Classes() {
 							
 		<Divider />
         <Box  display='flex' flexDirection='column' alignItems='center' justifyContent='center' sx={{p:2}}>
-            {selectedChild ? <ClassesTable child={selectedChild}/> : <CircularProgress />}
+            {selectedChild ? <ClassesTable child={selectedChild} setUnpaidLectures={setUnpaidLectures}/> : <CircularProgress />}
         </Box>
 		</Paper>
 

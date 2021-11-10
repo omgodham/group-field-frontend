@@ -38,7 +38,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-export default function ClassesTable({child}) {
+export default function ClassesTable({child,setUnpaidLectures}) {
   const classes = useStyles();
 
 
@@ -63,6 +63,8 @@ export default function ClassesTable({child}) {
     })
     setTimeout(() => {
         setLectures(tempLectues)
+        if(setUnpaidLectures)
+        setUnpaidLectures(tempLectues)
     },1500)
   },[child])
 // console.log(lectures);

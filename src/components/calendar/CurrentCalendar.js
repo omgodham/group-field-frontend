@@ -17,6 +17,9 @@ function CurrentCalendar({selectedChild,admin}) {
       const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
+
+
+
     useEffect(() => {
 
      const setTheCalendar = () => {
@@ -45,6 +48,7 @@ function CurrentCalendar({selectedChild,admin}) {
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;
                   setData(content)
+     
                   return content.eventArray;
                 },
                 
@@ -77,8 +81,10 @@ function CurrentCalendar({selectedChild,admin}) {
            setTimeout(function(){ 
             setIsRendered(true);
             console.log(admin)
-            if(!admin)
-            thisCalendar.render() 
+            if(!admin){         
+              thisCalendar.render() 
+            }
+   
            
           }, 2000);
 

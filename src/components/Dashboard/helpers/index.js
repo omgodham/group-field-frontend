@@ -12,3 +12,9 @@ export const getUserById = async (id) => {
     }
     
 }
+
+export const makeRequest = async (data) => {
+    return axios.post(`/request/make-request/${data.from.id}`,data)
+    .then(res => res.data)
+    .catch(error => console.log(error))
+}
