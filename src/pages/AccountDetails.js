@@ -1,11 +1,11 @@
-import { Box, Button, Container, Divider, Paper, Typography } from '@material-ui/core'
+import { Box, Button, Container, Divider, FilledInput, FormControl, Input, InputAdornment, InputLabel, OutlinedInput, Paper, Select, TextField, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AllClasses from './AllClasses';
 import { makeStyles } from '@material-ui/core'
 import {getTime} from 'date-fns'
 import { getClassByPublicId } from '../components/Classes/helpers';
-import { makeRequest } from '../components/Dashboard/helpers';
+import { makeRequest, updateUser } from '../components/Dashboard/helpers';
 const useStyles = makeStyles((theme) => ({
 
     root:{
@@ -27,7 +27,7 @@ function AccountDetails() {
 
     const [unpaidLectures,setUnpaidLectures] = useState([]);
     const [amount,setAmount] = useState(0);
-
+    const [calendarId,setCalendarId] = useState("");
     // console.log(unpaidLectures)
     // const [lectureIds,setLectureIds] = useState([]);
     // let thislectureIds = [];
@@ -49,15 +49,25 @@ function AccountDetails() {
             .catch((error) => console.log(error));
           }
         }
+        setCalendarId(user?.calendarId)
         // setLectureIds(thislectureIds)
 
     },[user])
 
-    
+console.log(calendarId);
+
 const handleRequestClick = (e) => {
     makeRequest({description:`Please make the pending payment of ${amount}`,from:{name:user.name,id:user._id},amount:amount})
     .then(data => console.log(data))
     .catch(error => console.log(error))
+}
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(calendarId)
+    updateUser(calendarId,localStorage.getItem('userId')).then(data => {
+        console.log(data)
+    }).catch(error => console.log(error))
 }
     return (
         <Paper className={classes.root}>
@@ -71,8 +81,17 @@ const handleRequestClick = (e) => {
                 <Typography variant='h6'>Email: </Typography>
                 <Typography variant='h6'>{user.email}</Typography>
                 </Box>
-                <AllClasses setUnpaidLectures={setUnpaidLectures} unpaidLectures={unpaidLectures}/>
-
+                {user?.role === 'ROLE_TEACHER' && <AllClasses setUnpaidLectures={setUnpaidLectures} unpaidLectures={unpaidLectures}/>}
+                <form onSubmit={handleSubmit}>
+                <FormControl>
+                <TextField id="outlined-basic" label="Enter Your Calendar Id" variant="outlined"
+                    onChange={(e) => setCalendarId(e.target.value)}
+                    value={calendarId}
+                />
+                <Button variant='contained' type='submit' color='primary' >Submit</Button>
+                </FormControl>
+                </form>
+             
         </Paper>
     )
 }

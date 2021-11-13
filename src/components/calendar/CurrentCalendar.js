@@ -17,7 +17,7 @@ function CurrentCalendar({selectedChild,admin}) {
       const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
-
+  const [calendarElement,setCalendarElement] = useState(null);
 
 
     useEffect(() => {
@@ -80,22 +80,25 @@ function CurrentCalendar({selectedChild,admin}) {
 
            setTimeout(function(){ 
             setIsRendered(true);
-            console.log(admin)
+            // console.log(admin)
             if(!admin){         
               thisCalendar.render() 
+              setCalendarElement(thisCalendar)
             }
-   
+      
            
           }, 2000);
 
+       
+
       }
       
+  
         return setTheCalendar()
 
     },[selectedChild])
 
-
-
+// console.log(calendarElement)
 
 useEffect(() => {
   if(data.length){
@@ -113,7 +116,47 @@ useEffect(() => {
   
 },[data])
     
+useEffect(()=>{
 
+  // setTimeout(() =>{
+    if(calendarElement && selectedChild && data.length){
+      let prevBtn = document.querySelector('.fc-prev-button')
+      let nextBtn = document.querySelector('.fc-prev-button')
+      // console.log(test)
+      prevBtn?.addEventListener('click', function() {
+        console.log(data);
+      //   data.forEach(thisEvent => {
+      //     if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
+      //      let event = calendarElement.getEventById(thisEvent.id)
+      //      console.log(event)
+      //      // newLectures.push(thisEvent);
+      //       if(event)
+      //      event.remove();
+  
+      //     } 
+  
+      // });
+    })
+    nextBtn?.addEventListener('click', function() {
+  console.log(data);
+    //   data.forEach(thisEvent => {
+    //     if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
+    //      let event = calendarElement.getEventById(thisEvent.id)
+    //      console.log(event)
+    //      // newLectures.push(thisEvent);
+    //      if(event)
+    //      event.remove();
+
+    //     } 
+
+    // });
+  })
+    }
+   
+  // },1000)
+
+
+},[rendered,data,calendarElement,selectedChild])
     return (
       <>
      <Box display='flex' alignItems='center' justifyContent='center' >

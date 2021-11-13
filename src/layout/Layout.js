@@ -229,7 +229,6 @@ function Layout(props) {
 ;
 
 useEffect(() => {
-
 	getAllNotifications().then(data => {
 		// console.log(data)
 		setNotifications(data);
@@ -237,7 +236,6 @@ useEffect(() => {
 },[])
 
 	useEffect(() => {
-		if(notificationsOn)
 		getAllNotifications().then(data => {
 			console.log(data)
 			setNotifications(data);
@@ -297,6 +295,7 @@ useEffect(() => {
 const handleDeleteNotification = (id) => {
 	deleteNotification(id).then(data => {
 		console.log(data)
+		setNotifications(notifications.filter(item => item._id !== id))
 	}).catch(error => console.log(error))
 }
 	const drawer = (
@@ -445,7 +444,7 @@ const handleDeleteNotification = (id) => {
 						</IconButton>
 							
 					</Toolbar>
-					{notificationsOn && <Paper className={classes.notificationBlock}>
+					{notificationsOn && notifications.length ? <Paper className={classes.notificationBlock}>
 					<CloseIcon className={classes.closeIcon} onClick={() => setNotificationsOn(false)}/>
 					<div className={classes.demo}>
             <List dense={true}>
@@ -471,7 +470,7 @@ const handleDeleteNotification = (id) => {
 			  : ''}
             </List>
           </div>
-				</Paper>}
+				</Paper>:''}
 				</AppBar>
 			
 			</Box>
