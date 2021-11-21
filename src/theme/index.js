@@ -18,7 +18,10 @@ const theme = createTheme({
     },
     secondary: {
       main: '#F4F6F8',
-    }
+    },
+    danger: {
+      main: '#f44336'
+    },
   },
 });
 

@@ -222,7 +222,7 @@ function StudentInfo({id,role,admin,setThisLecture,setUser}) {
       <Box className={classes.weeklyTable}>
       { weekLectures.map(lect =>  <Paper className={classes.weekLecture} index={lect._id}>
 
-        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' style={{backgroundColor:'#A180FF',border:'3px solid #A180FF',borderRadius:'10px',overflow:'hidden'}}>
+        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' style={{backgroundColor:'#5664d2',border:'3px solid #5664d2',borderRadius:'10px',overflow:'hidden'}}>
           <Typography style={{textTransform:'uppercase',color:'#ffffff' }}>{format(new Date(lect.start) ,'ccc')}</Typography> 
           <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' style={{backgroundColor:'#ffffff',padding:'5px 10px'}}>
           <Typography>{lect.start.split('T')[1].split('+')[0]}</Typography>

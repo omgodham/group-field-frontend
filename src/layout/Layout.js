@@ -364,7 +364,7 @@ function Layout(props) {
 							color="inherit"
 							aria-label="open drawer"
 							edge="start"
-							color="primary"
+							// color="primary"
 							onClick={handleLogout}
 							className={classes.logoutIcon}
 						>

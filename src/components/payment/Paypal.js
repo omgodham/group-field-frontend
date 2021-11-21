@@ -1,6 +1,8 @@
 import React, {useRef,useState,useEffect} from 'react'
-import {Typography,makeStyles, Button} from '@material-ui/core'
+import {Typography,makeStyles, Button, Snackbar} from '@material-ui/core'
 import { updateLectures } from './helpers';
+import Alert from '@material-ui/lab/Alert';
+
 
 const useStyles = makeStyles(theme => ({
     
@@ -13,12 +15,13 @@ const useStyles = makeStyles(theme => ({
     
 }))
 
-export default function Paypal({amount,lectureIds,childIds}) {
+export default function Paypal({amount,lectureIds,childIds,setShowPaypal}) {
     
     const classes = useStyles();
     const paypal = useRef();
     const [success,setSuccess] = useState(false);
     const [fail,setFail] = useState(false);
+
     
     useEffect(() => {
         
@@ -60,22 +63,33 @@ export default function Paypal({amount,lectureIds,childIds}) {
 
         }, []);
 
+        const handleClose = (event, reason) => {
+            if (reason === 'clickaway') {
+              return;
+            }
+            setShowPaypal(false);
+            setFail(false)
+            setSuccess(false)
+            window.location.reload()
+        }
+
     return (
 
+        <>
+
+
+        <div ref={paypal}></div>
+        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} variant='filled' severity="success">
+            Thanks, we got your payment!
+            </Alert>
+        </Snackbar>
+        <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} variant='filled' severity="error">
+            Something went wrong please try again!
+            </Alert>
+        </Snackbar>
         
-        <div style={{display: 'flex',flexDirection: 'column'}}>
-          
-            <div ref={paypal}></div>
-            {success && 
-                <Typography variant='p' className={classes.msg}>
-                    Thank You for the payment.
-                </Typography>
-            }
-            {fail &&  
-                <Typography vaiant='p' align='center' color='error'>
-                    Please Try again.
-                </Typography>
-            }
-        </div>
+        </>
     )
 }

@@ -6,6 +6,10 @@ import { getAvailableChilds, signUpAction } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert';
 import ReactSelect from 'react-select'
+import moment from 'moment-timezone';
+
+
+
 const useStyles = makeStyles(theme =>({
     root: {
         padding: ('20px 20px 30px'),
@@ -61,10 +65,12 @@ export default function Form() {
         password:"",
         role:"STUDENT",
         childs:[],
-        learningRate:0
+        learningRate:0,
+        phone:'',
+        timeZone:''
     })
 
-    const {name,email,password,role,childs,learningRate} = values;
+    const {name,email,password,role,childs,learningRate,phone,timeZone} = values;
 
     const handleChange = (e) => {
         setValues(prevValues => ({...prevValues , [e.target.name]:e.target.value}))
@@ -130,6 +136,9 @@ const [availableChilds, setAvailableChilds] = useState([]);
   setValues(prevValues => ({...prevValues , childs : data.map(item => item._id)}))
  }
  console.log(values);
+ console.log('timeZones',moment.tz());
+
+
   return (
     <Grid>
       <Paper
@@ -243,6 +252,38 @@ const [availableChilds, setAvailableChilds] = useState([]);
               value={confirmPassword}
               onChange={(e)=>setConfirmPassword(e.target.value)}
             />
+
+            <FormControl variant="outlined" className={[classes.formControl,classes.tab]}>
+              <InputLabel id="demo-simple-select-outlined-label">Select Time Zone</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={timeZone}
+                onChange={handleChange}
+                label="Select Time Zone"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+
+            
+            <TextField
+              id="outlined-basic"
+              label="Phone No."
+              variant="outlined"
+              size="medium"
+              name="phone"
+              className={classes.tab}
+              value={phone}
+              onChange={handleChange}
+              type='number'
+              style={{ marginBottom: "30px" }}
+              InputProps={{ inputProps: { min: 0, max: 10 } }}
+            />
+            
         
                        {/* <FormControl className={classes.formControl}> */}
              <InputLabel id="demo-dialog-select-label">Select Role For User</InputLabel>

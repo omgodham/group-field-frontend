@@ -27,6 +27,8 @@ import {useHistory} from 'react-router-dom'
 
 import {getTime} from 'date-fns'
 import { updateLectures } from "../components/payment/helpers";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
     padding: "30px",
     margin: "auto",
+    minHeight:'500px',
   },
   table: {
     //   width: '80%',
@@ -49,12 +52,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.success.main,
   },
   paymentPopup: {
-    width: "96%",
+    display:'flex',
+    flexDirection:'column',
+    // width: "96%",
     backgroundColor: theme.palette.background.paper,
     borderRadius: "10px",
     padding: theme.spacing(1),
     marginTop: "10px",
     boxShadow: theme.shadows[5],
+
   },
   amount: {
     backgroundColor: "white",
@@ -65,6 +71,13 @@ const useStyles = makeStyles((theme) => ({
   tableValues: {
     color: "#2b2d2f",
   },
+  cancelBtn:{
+    border:'solid 1px #f44336',
+    color: '#f44336',
+    width:'70px',
+    margin:'auto', 
+    // marginLeft: 'auto',
+  }
 }));
 
 export default function Payment() {
@@ -225,7 +238,8 @@ export default function Payment() {
             </FormControl>
             {showPaypal ? (
               <Box className={classes.paymentPopup}>
-                <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds}/>
+                <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds} setShowPaypal={setShowPaypal}/>
+                <Button variant="outlined" className={classes.cancelBtn} onClick={()=>setShowPaypal(false)}>CANCLE</Button>
               </Box>
             ) : (
               <>
