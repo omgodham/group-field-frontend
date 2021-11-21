@@ -73,7 +73,7 @@ const handleSubmit = (e) => {
         <Paper className={classes.root}>
             <Typography variant='h5' color='textPrimary'>Account Details</Typography>
             {user?.role === 'ROLE_TEACHER' ? <Box display='flex'  justifyContent='space-between'>
-         <Typography variant='h5' color='textPrimary'>Amout for lectures is unpaid: {amount.toFixed(2)}</Typography>
+         <Typography variant='h5' color='textPrimary'>Amout for classes is unpaid: {amount.toFixed(2)}</Typography>
                <Button color='primary' variant='contained' onClick={handleRequestClick}>Request payment</Button> 
                </Box> : ''}
                 <Divider />

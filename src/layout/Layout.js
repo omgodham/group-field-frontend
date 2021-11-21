@@ -275,7 +275,7 @@ useEffect(() => {
 			},
 		user &&
 			(user.role === "ROLE_PARENT" || user.role === "ROLE_STUDENT") && {
-				text: "Classes",
+				text: "Past Classes",
 				icon: <ClassIcon />,
 				path: "/classes",
 			},

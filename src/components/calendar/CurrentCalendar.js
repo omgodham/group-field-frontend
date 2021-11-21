@@ -26,17 +26,17 @@ function CurrentCalendar({selectedChild,admin}) {
       setIsRendered(false)
       let tempEvents = [];
         var calendarEl = document.getElementById('calendar');
-     
+
         let thisCalendar =  new Calendar(calendarEl, {
-          eventRenderWait:20,
+          // eventRenderWait:20,
             plugins: [ dayGridPlugin, timeGridPlugin, listPlugin,googleCalendarPlugin ],
              googleCalendarApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-             initialView: 'dayGridMonth',
+             initialView: 'listMonth',
              themeSystem:'bootstrap',
              headerToolbar: {
-                left: 'prev,next today',
+                left:'listMonth',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,listWeek,timeGridDay'
+                right: 'listWeek,timeGridDay'
               },
              events: {
                      googleCalendarId: process.env.REACT_APP_CALENDAR_ID,
@@ -47,10 +47,12 @@ function CurrentCalendar({selectedChild,admin}) {
            
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;
-                  setData(content)
-     
+
+
                   return content.eventArray;
                 },
+
+    
                 
           });
           
@@ -63,11 +65,15 @@ function CurrentCalendar({selectedChild,admin}) {
          
             if(admin)  
             dispatch(setAllClasses(tempEvents))
-            
+          
+            // console.log(tempEvents);
+            // let count = 0;
+            setData(tempEvents);
             tempEvents.forEach(thisEvent => {
              if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
+              // console.log(++count);
               let event = thisCalendar.getEventById(thisEvent.id)
-              
+       
               // newLectures.push(thisEvent);
 
               event.remove();
@@ -76,17 +82,24 @@ function CurrentCalendar({selectedChild,admin}) {
 
            })
           //  console.log(newLectures)
+          // console.log("asd");
            }, 1000);
+
+     
 
            setTimeout(function(){ 
             setIsRendered(true);
-            // console.log(admin)
+            // console.log("admin")
             if(!admin){         
               thisCalendar.render() 
               setCalendarElement(thisCalendar)
             }
-      
-           
+            
+       
+            document.querySelector('.fc-listMonth-button').innerText = 'Month'
+            // document.querySelector('.fc-listWeek-button').innerText = 'Week'
+            // document.querySelector('.fc-timeGridDay-button').innerText = 'Day'
+       
           }, 2000);
 
        
@@ -116,47 +129,11 @@ useEffect(() => {
   
 },[data])
     
-useEffect(()=>{
-
-  // setTimeout(() =>{
-    if(calendarElement && selectedChild && data.length){
-      let prevBtn = document.querySelector('.fc-prev-button')
-      let nextBtn = document.querySelector('.fc-prev-button')
-      // console.log(test)
-      prevBtn?.addEventListener('click', function() {
-        console.log(data);
-      //   data.forEach(thisEvent => {
-      //     if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
-      //      let event = calendarElement.getEventById(thisEvent.id)
-      //      console.log(event)
-      //      // newLectures.push(thisEvent);
-      //       if(event)
-      //      event.remove();
-  
-      //     } 
-  
-      // });
-    })
-    nextBtn?.addEventListener('click', function() {
-  console.log(data);
-    //   data.forEach(thisEvent => {
-    //     if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
-    //      let event = calendarElement.getEventById(thisEvent.id)
-    //      console.log(event)
-    //      // newLectures.push(thisEvent);
-    //      if(event)
-    //      event.remove();
-
-    //     } 
-
-    // });
-  })
-    }
-   
-  // },1000)
+let flag = true;
 
 
-},[rendered,data,calendarElement,selectedChild])
+
+
     return (
       <>
      <Box display='flex' alignItems='center' justifyContent='center' >

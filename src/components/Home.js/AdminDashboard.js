@@ -87,7 +87,7 @@ console.log(role)
           Mathematics 
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          Next Lesson at 5:00
+          Next Class at 5:00
         </Typography>
       </CardContent>
       <CardActions>
