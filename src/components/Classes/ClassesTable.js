@@ -11,7 +11,7 @@ import { getClassByPublicId } from './helpers';
 import {format , getHours, getTime, getWeek, parseJSON} from 'date-fns'
 import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
 import moment from 'moment'
-import { getLocalTime } from '../../utils/momenttz';
+import { convertMoneyToLocalCurrency, getLocalTime } from '../../utils/momenttz';
 import _ from 'lodash' 
 import { ExportToExcel } from './ExportToExcel';
 import { useSelector } from 'react-redux';
@@ -44,7 +44,7 @@ const StyledTableRow = withStyles((theme) => ({
 export default function ClassesTable({child,setUnpaidLectures}) {
   const classes = useStyles();
   const { user } = useSelector((state) => state.user);
-  const { timeZone } = useSelector((state) => state.user);
+  const { timeZone ,localCurrency} = useSelector((state) => state.user);
 
   function createData(date, start, end, topic, hours,paymentStatus,time) {
     return { date, start, end, topic, hours,paymentStatus,time};
@@ -56,8 +56,14 @@ export default function ClassesTable({child,setUnpaidLectures}) {
 
   const [lectures,setLectures] = useState([])
   const [rows ,setRows] = useState([])  
+  const [localLearningRate,setLocalLearningRate] = useState(0);
   useEffect(async () => {
     let tempLectues = [] ;
+    if(child){
+      let value = await convertMoneyToLocalCurrency('USD',localCurrency,child.learningRate);
+      setLocalLearningRate(value)
+    }
+ 
     for(const lecture of child.lectures){
     // child.lectures.map(lecture => {
       try {
@@ -82,7 +88,7 @@ export default function ClassesTable({child,setUnpaidLectures}) {
     },1500)
   },[child])
 // console.log(lectures);
-
+const [localValues ,setlocalValues] = useState([]);
   useEffect(() => {
       let tempRows = [];
       // if(lectures.length === child.lectures.length)  
@@ -100,21 +106,40 @@ export default function ClassesTable({child,setUnpaidLectures}) {
        
               tempRows.push(
                         // createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, getHours(new Date(item.end)) - getHours(new Date(item.start)) , item.paid), Change the format of the time in the update
-                         createData(format(new Date(item.start.split('T')[0]),'do MMM yyy'), `${getLocalTime(item.start,timeZone ? timeZone : "Asia/Kolkata")}`, `${getLocalTime(item.end,timeZone ? timeZone :"Asia/Kolkata")}`,item.title, `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, item.paid, (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
+                         createData(format(new Date(item.start.split('T')[0]),'do MMM yyy'),
+                          `${getLocalTime(item.start,timeZone ? timeZone : "Asia/Kolkata")}`,
+                           `${getLocalTime(item.end,timeZone ? timeZone :"Asia/Kolkata")}`,
+                           item.title, 
+                           `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, 
+                           item.paid, 
+                           (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
                   
                         )
               })
-             if(tempRows.toString() === lectures.toString()) 
-                setRows(tempRows)
+             if(tempRows.toString() === lectures.toString()) {
+              setlocalValues([])
+              setRows(tempRows)
+             }
+              
            } 
   },[lectures])
 
-  useEffect(() => {
-    console.log(rows);
-  },[rows])
 
+useEffect(async () =>{
+  let temp = [];
+  if(rows.length == child.lectures.length){
+    for(const item of rows){
+      let value = await convertMoneyToLocalCurrency('USD',localCurrency,item.time * child.learningRate)
+      console.log(value)
+      temp.push(value);
+
+    }
+    setlocalValues(temp)
+  }
   
-  // console.log(rows);
+},[rows])
+
+// console.log(localValues)
   return (
     <TableContainer component={Paper}>
 
@@ -143,8 +168,10 @@ export default function ClassesTable({child,setUnpaidLectures}) {
               <StyledTableCell align='center'>{row.end}</StyledTableCell>
               {/* <TableCell align='center'>{row.topic}</TableCell> */}
               <StyledTableCell align='center'>{row.hours}</StyledTableCell>
-              <StyledTableCell align='center'>$ {child.learningRate.toFixed(2)}</StyledTableCell>
-              <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell> 
+              {/* <StyledTableCell align='center'>$ {child.learningRate.toFixed(2)}</StyledTableCell> */}
+              <StyledTableCell align='center'>{localCurrency} {localLearningRate?.toFixed(2)}</StyledTableCell>
+              {/* <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell>  */}
+              <StyledTableCell align='center'>{localCurrency} {localValues[index]?.toFixed(2)}</StyledTableCell> 
               {/* Changed from payment status to the rate per hour in update */}
             </StyledTableRow>
           ))}

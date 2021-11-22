@@ -32,7 +32,8 @@ import ClassAssign from "../Classes/ClassAssign";
 import DvrIcon from "@material-ui/icons/Dvr";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import { getLocalTime } from "../../utils/momenttz";
+import { getLocalTime, getTimeZone, localCurrency } from "../../utils/momenttz";
+import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "auto",
@@ -227,7 +228,7 @@ useEffect(() => {
           upcomingLecture.title,
           upcomingLecture?.url
         ),
-        role === "ROLE_PARENT" &&
+        (role === "ROLE_PARENT"  || role === "ROLE_STUDENT")  &&
           createData("Fees Due", hours * currentUser.learningRate),
       ];
     } else if (currentLecture || upcomingLecture) {
@@ -243,7 +244,7 @@ useEffect(() => {
           upcomingLecture ? upcomingLecture.title : "No Upcoming Lecture",
           upcomingLecture?.url
         ),
-        role === "ROLE_PARENT" &&
+        (role === "ROLE_PARENT"  || role === "ROLE_STUDENT") &&
           createData("Fees Due", hours * currentUser.learningRate),
       ];
     }
@@ -251,6 +252,8 @@ useEffect(() => {
     // console.log(tempRows)
     setRows(tempRows);
   }, [currentLecture, upcomingLecture, hours]);
+
+
 
   return (
     <Box style={{ display: admin ? "none" : "" }} className={classes.root}>
@@ -400,7 +403,7 @@ useEffect(() => {
                             </a>
                           </TableCell>
                         ) : (
-                          role === "ROLE_PARENT" && (
+                          (role === "ROLE_PARENT" || role === "ROLE_STUDENT") && (
                             <TableCell align="center">
                               <Link
                                 to="/payment"

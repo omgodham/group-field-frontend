@@ -12,3 +12,10 @@ export const setChilds = (data) => {
       payload:data
     }
   }
+
+  export const setLocalCurrency = (data) => {
+    return {
+      type:'SET_CURRENCY',
+      payload:data
+    }
+  }

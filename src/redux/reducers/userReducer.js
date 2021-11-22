@@ -3,7 +3,8 @@ const initialState = {
   loading: true,
   authenticated:false,
   childs:[],
-  timeZone:""
+  timeZone:"",
+  localCurrency:""
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -30,6 +31,11 @@ export const userReducer = (state = initialState, action) => {
           ...state,
           timeZone:action.payload
         };
+        case "SET_CURRENCY":
+          return {
+            ...state,
+            localCurrency:action.payload
+          };
 
     default:
       return state;

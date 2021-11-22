@@ -28,6 +28,7 @@ import {useHistory} from 'react-router-dom'
 import {getTime} from 'date-fns'
 import { updateLectures } from "../components/payment/helpers";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { convertMoneyToLocalCurrency } from "../utils/momenttz";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -84,10 +85,9 @@ export default function Payment() {
   const classes = useStyles();
   const [showPaypal, setShowPaypal] = useState(false);
   const [amount, setAmount] = useState(0);
-  const { user  } = useSelector((state) => state.user);
+  const { user ,localCurrency } = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
   const history = useHistory()
-
   const [childs , setChilds ] = useState([]);
 
 
@@ -101,6 +101,7 @@ export default function Payment() {
 
   const [lectureIds , setLecturesIds] = useState([]);
   const [childIds,setChildIds] = useState([]);
+
 
   useEffect(() => {
 
@@ -147,15 +148,29 @@ export default function Payment() {
     // console.log(childs);
   }, [childs]);
 
-  useEffect(() => {
+  const [localValues ,setlocalValues] = useState([]);
+  useEffect(async() => {
     if(rows.length === childs.length){
       let tempAmt = 0;
-      rows.map(row => {
-        tempAmt = tempAmt + (row.hours * row.rateperhour)
+      
+    //   rows.map(row => {
+    //     tempAmt = tempAmt + (item.hours * item.rateperhour)
+    //     setAmount(tempAmt);
+    //  })
+    let temp = [];
+    //  if(rows.length == child.lectures.length){
+      for(const item of rows){
+        tempAmt = tempAmt + (item.hours * item.rateperhour)
         setAmount(tempAmt);
-     })  
+        let value = await convertMoneyToLocalCurrency('USD',localCurrency,item.hours * item.rateperhour)
+        temp.push(value);
+      }
+
+      setlocalValues(temp)
+    // }  
     }    
   },[rows])
+
 
   function createData(child, hours, rateperhour,lectureId) {
     return { child, hours, rateperhour,lectureId };
@@ -200,7 +215,7 @@ export default function Payment() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {rows.map((row,index) => (
                 <TableRow key={row.child}>
                   <TableCell
                     component="th"
@@ -217,7 +232,8 @@ export default function Payment() {
                   // </TableCell> */}
                    {/* Hide in the update part */}
                   <TableCell align="center" className={classes.tableValues}>
-                    ${(row.hours * row.rateperhour).toFixed(2)}
+                    {/* ${(row.hours * row.rateperhour).toFixed(2)} */}
+                    {localCurrency} {localValues[index]?.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

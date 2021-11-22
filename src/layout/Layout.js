@@ -38,7 +38,7 @@ import { logoutAction, verifyToken } from "../redux/actions/authActions";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
-import { setChilds, setTimeZone } from "../redux/actions/userActions";
+import { setChilds, setLocalCurrency, setTimeZone } from "../redux/actions/userActions";
 import Logo from "../images/logo.png";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -47,7 +47,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { deleteNotification, getAllNotifications } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close';
-import { getTimeZone } from "../utils/momenttz";
+import { getTimeZone, localCurrency } from "../utils/momenttz";
+import axios from "axios";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -210,6 +211,8 @@ function Layout(props) {
 		try {
 			let thisZone = await getTimeZone();
 			dispatch(setTimeZone(thisZone));
+			let thisCurrency = await localCurrency();
+			dispatch(setLocalCurrency(thisCurrency));
 		} catch (error) {
 			console.log(error)
 		}
@@ -257,6 +260,8 @@ useEffect(() => {
 			setNotifications(data);
 		}).catch(error => console.log(error))		
 	},[notificationsOn])
+
+
 
 	
 
