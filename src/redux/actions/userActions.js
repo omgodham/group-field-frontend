@@ -5,3 +5,10 @@ export const setChilds = (data) => {
       payload:data
     }
   }
+
+  export const setTimeZone = (data) => {
+    return {
+      type:'SET_TIMEZONE',
+      payload:data
+    }
+  }

@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 function StudentInfo({ id, role, admin, setThisLecture, setUser }) {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState(null);
-  const { user } = useSelector((state) => state.user);
+  const { timeZone } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
   function createData(category, className, url) {
     return { category, className, url };
@@ -296,12 +296,12 @@ useEffect(() => {
                         }}
                       >
                         <Typography>
-                          {getLocalTime(lect.start,"Asia/Kolkata")}
+                          {getLocalTime(lect.start, timeZone ? timeZone : "Asia/Kolkata")}
                           {/* {lect.start.split("T")[1].split("+")[0]} */}
                         </Typography>
                         <Typography>-</Typography>
                         <Typography>
-                        {getLocalTime(lect.end,"Asia/Kolkata")}
+                        {getLocalTime(lect.end, timeZone ? timeZone : "Asia/Kolkata")}
                           {/* {lect.end.split("T")[1].split("+")[0]} */}
                         </Typography>
                       </Box>

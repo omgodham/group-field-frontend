@@ -34,7 +34,7 @@ function AccountDetails() {
     useEffect(() => {
         // console.log(user.lectures)
         let hours = 0;
-        if(user.lectures.length && user.role === 'ROLE_TEACHER')
+        if(user && user?.lectures.length && user?.role === 'ROLE_TEACHER')
         for(const lecture of user.lectures){
           if(lecture.due){
             getClassByPublicId(lecture.id)
@@ -79,10 +79,9 @@ const handleSubmit = (e) => {
                 <Divider />
                 <Box display='flex'>
                 <Typography variant='h6'>Email: </Typography>
-                <Typography variant='h6'>{user.email}</Typography>
+                <Typography variant='h6'>{user?.email}</Typography>
                 </Box>
-                {user?.role === 'ROLE_TEACHER' && <AllClasses setUnpaidLectures={setUnpaidLectures} unpaidLectures={unpaidLectures}/>}
-                <form onSubmit={handleSubmit}>
+               {user?.role === 'ROLE_ADMIN' && <form onSubmit={handleSubmit}>
                 <FormControl>
                 <TextField id="outlined-basic" label="Enter Your Calendar Id" variant="outlined"
                     onChange={(e) => setCalendarId(e.target.value)}
@@ -90,7 +89,7 @@ const handleSubmit = (e) => {
                 />
                 <Button variant='contained' type='submit' color='primary' >Submit</Button>
                 </FormControl>
-                </form>
+                </form>}
              
         </Paper>
     )

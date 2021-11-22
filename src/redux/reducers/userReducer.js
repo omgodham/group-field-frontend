@@ -2,7 +2,8 @@ const initialState = {
   user: null,
   loading: true,
   authenticated:false,
-  childs:[]
+  childs:[],
+  timeZone:""
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -24,6 +25,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         childs:action.payload
       };
+      case "SET_TIMEZONE":
+        return {
+          ...state,
+          timeZone:action.payload
+        };
 
     default:
       return state;

@@ -12,8 +12,9 @@ import {format , getHours, getTime, getWeek, parseJSON} from 'date-fns'
 import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
 import moment from 'moment'
 import { getLocalTime } from '../../utils/momenttz';
-
+import _ from 'lodash' 
 import { ExportToExcel } from './ExportToExcel';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   table: {
@@ -42,7 +43,8 @@ const StyledTableRow = withStyles((theme) => ({
 
 export default function ClassesTable({child,setUnpaidLectures}) {
   const classes = useStyles();
-
+  const { user } = useSelector((state) => state.user);
+  const { timeZone } = useSelector((state) => state.user);
 
   function createData(date, start, end, topic, hours,paymentStatus,time) {
     return { date, start, end, topic, hours,paymentStatus,time};
@@ -54,18 +56,27 @@ export default function ClassesTable({child,setUnpaidLectures}) {
 
   const [lectures,setLectures] = useState([])
   const [rows ,setRows] = useState([])  
-  useEffect(() => {
+  useEffect(async () => {
     let tempLectues = [] ;
-    child.lectures.map(lecture => {
-        getClassByPublicId(lecture.id).then(data => {
+    for(const lecture of child.lectures){
+    // child.lectures.map(lecture => {
+      try {
+      let data = await getClassByPublicId(lecture.id); 
+        // getClassByPublicId(lecture.id).then(data => {
             data.paid = lecture.due ? 'Unpaid' : 'Paid'
               // console.log(data)
             if(new Date(data.start) < new Date())
             tempLectues.push(data);
-        }).catch(error => console.log(error))
-    })
+        // }).catch(error => console.log(error))
+                
+      } catch (error) {
+       console.log(error)
+      }
+    }
+    // )
     setTimeout(() => {
         setLectures(tempLectues)
+        setLectures(_.orderBy(tempLectues, ['start'], ['desc']))
         if(setUnpaidLectures)
         setUnpaidLectures(tempLectues)
     },1500)
@@ -89,7 +100,7 @@ export default function ClassesTable({child,setUnpaidLectures}) {
        
               tempRows.push(
                         // createData(format(new Date(item.start.split('T')[0]),'MM/dd/yyyy'), `${getHours(new Date(item.start))}:00`, `${getHours(new Date(item.end))}:00`,item.title, getHours(new Date(item.end)) - getHours(new Date(item.start)) , item.paid), Change the format of the time in the update
-                         createData(format(new Date(item.start.split('T')[0]),'do MMM yyy'), `${getLocalTime(item.start,"Asia/Kolkata")}`, `${getLocalTime(item.end,"Asia/Kolkata")}`,item.title, `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, item.paid, (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
+                         createData(format(new Date(item.start.split('T')[0]),'do MMM yyy'), `${getLocalTime(item.start,timeZone ? timeZone : "Asia/Kolkata")}`, `${getLocalTime(item.end,timeZone ? timeZone :"Asia/Kolkata")}`,item.title, `${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60)} hours ${parseInt(((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) % 60)} minutes`, item.paid, (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
                   
                         )
               })

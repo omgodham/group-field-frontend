@@ -9,7 +9,15 @@ export const getLocalTime = (time,timeZone) => {
 
 export const getTimeZone = () => {
     let timeZone = moment.tz()
-    console.log('timeZones',moment.tz());
-    
-    return timeZone
+    // console.log('timeZones',moment.tz());
+   
+   return fetch("https://worldtimeapi.org/api/ip")
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        console.log(data.timezone,data.datetime,data.dst)
+        return  data.timezone
+    });
+
+    // return timeZone
 }

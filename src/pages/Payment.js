@@ -84,17 +84,20 @@ export default function Payment() {
   const classes = useStyles();
   const [showPaypal, setShowPaypal] = useState(false);
   const [amount, setAmount] = useState(0);
-  const { user , childs } = useSelector((state) => state.user);
+  const { user  } = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
   const history = useHistory()
 
+  const [childs , setChilds ] = useState([]);
+
 
   useEffect(() => {
-    if(user && user?.role !== 'ROLE_PARENT'){
+    if(user && !(user?.role == 'ROLE_PARENT' || user?.role == 'ROLE_STUDENT')){
       return history.push('/dashboard')
     }
+    if(user)
+    setChilds([user])
   },[user])
-
 
   const [lectureIds , setLecturesIds] = useState([]);
   const [childIds,setChildIds] = useState([]);
@@ -184,7 +187,7 @@ export default function Payment() {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell className={classes.tableHeading}>Child</TableCell>
+                <TableCell className={classes.tableHeading}>Student</TableCell>
                 <TableCell align="center" className={classes.tableHeading}>
                   Hours
                 </TableCell>

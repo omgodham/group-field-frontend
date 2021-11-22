@@ -38,7 +38,7 @@ import { logoutAction, verifyToken } from "../redux/actions/authActions";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
-import { setChilds } from "../redux/actions/userActions";
+import { setChilds, setTimeZone } from "../redux/actions/userActions";
 import Logo from "../images/logo.png";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -47,6 +47,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { deleteNotification, getAllNotifications } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close';
+import { getTimeZone } from "../utils/momenttz";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -204,8 +205,14 @@ function Layout(props) {
 	const dispatch = useDispatch();
 	const [notificationsOn,setNotificationsOn] = useState(false);
 
-	useEffect(() => {
+	useEffect(async () => {
 		dispatch(verifyToken(history));
+		try {
+			let thisZone = await getTimeZone();
+			dispatch(setTimeZone(thisZone));
+		} catch (error) {
+			console.log(error)
+		}
 	}, []);
 
 	useEffect(() => {
@@ -240,6 +247,7 @@ useEffect(() => {
 	getAllNotifications().then(data => {
 		// console.log(data)
 		setNotifications(data);
+
 	}).catch(error => console.log(error))		
 },[])
 
@@ -288,8 +296,8 @@ useEffect(() => {
 				path: "/classes",
 			},
 		user &&
-			user.role === "ROLE_PARENT" && {
-				text: "Payments",
+		(user.role === "ROLE_PARENT" || user.role === "ROLE_STUDENT") && {
+				text: "Make Payment",
 				icon: <PaymentIcon />,
 				path: "/payment",
 			},
@@ -368,14 +376,14 @@ const handleDeleteNotification = (id) => {
 								<ListItemText primary="Account Details" />
 							</ListItem>
 						</Link>
-						<Link to="/signup" style={{ textDecoration: "none" }}>
+						{user?.role === 'ROLE_ADMIN' && <Link to="/signup" style={{ textDecoration: "none" }}>
 							<ListItem button className={classes.nested}>
 								<ListItemIcon>
 									<ChevronRightIcon />
 								</ListItemIcon>
 								<ListItemText primary="Create User" />
 							</ListItem>
-						</Link>
+						</Link>}
 					</List>
 				</Collapse>
 			</List>
