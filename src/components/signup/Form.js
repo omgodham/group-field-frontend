@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme =>({
         margin: '20px',
         width: '400px'
     },
-    selectTab:{
+    button:{
       display: 'block',
       border: '1px solid #6b778c',
       borderRadius: '5px',
@@ -253,7 +253,7 @@ const [availableChilds, setAvailableChilds] = useState([]);
               onChange={(e)=>setConfirmPassword(e.target.value)}
             />
 
-            <FormControl variant="outlined" className={[classes.formControl,classes.tab]}>
+            {/* <FormControl variant="outlined" className={[classes.formControl,classes.tab]}>
               <InputLabel id="demo-simple-select-outlined-label">Select Time Zone</InputLabel>
               <Select
                 labelId="demo-simple-select-outlined-label"
@@ -267,7 +267,7 @@ const [availableChilds, setAvailableChilds] = useState([]);
                 </MenuItem>
                 <MenuItem value={30}>Thirty</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             
             <TextField
@@ -285,21 +285,23 @@ const [availableChilds, setAvailableChilds] = useState([]);
             />
             
         
-                       {/* <FormControl className={classes.formControl}> */}
-             <InputLabel id="demo-dialog-select-label">Select Role For User</InputLabel>
+                       <FormControl variant="outlined"  className={[classes.tab,classes.formControl]}>
+             <InputLabel id="demo-simple-select-outlined-label">Select Role For User</InputLabel>
               <Select
-                labelId="demo-dialog-select-label"
-                id="demo-dialog-select"
-                variant='outlined'
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined-label"
                 value={role}
                 onChange={(e) => setValues(prevValues => ({...prevValues,role:e.target.value}))}
-                input={<Input />}
-                className={[classes.tab,classes.selectTab]}
+                label="Select Role For User"
               >
-                {['STUDENT','TEACHER','PARENT'].map(item => {
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {['STUDENT','TEACHER'].map(item => {
                     return  <MenuItem value={'ROLE_' + item}>{item}</MenuItem>
                 })}
               </Select>
+              </FormControl>
               {/* {role === 'ROLE_PARENT' && <><InputLabel id="demo-dialog-select-label">Select children of this parent</InputLabel>
               <Select
                 labelId="demo-dialog-select-label"
@@ -337,7 +339,8 @@ const [availableChilds, setAvailableChilds] = useState([]);
               variant="contained"
               color="primary"
               type="submit"
-              className={classes.tab}
+              className={classes.button}
+              
             >
               Sign Up
             </Button>
