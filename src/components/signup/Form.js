@@ -1,12 +1,15 @@
 import React,{useState,useEffect} from "react";
-import { Grid, Paper, Button, Link, IconButton,Collapse,TextField,Typography, InputLabel, Select, Input, MenuItem, FormControl } from "@material-ui/core";
+import { Grid, Paper, Button, Link, IconButton,Collapse,TextField,Typography, InputLabel, Select, Input, MenuItem, FormControl, Box } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {useDispatch} from 'react-redux'
+import {useDispatch,useSelector} from 'react-redux'
 import { getAvailableChilds, signUpAction } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert';
 import ReactSelect from 'react-select'
 import moment from 'moment-timezone';
+import './phone.css'
+import PhoneInput from 'react-phone-number-input'
+
 
 
 
@@ -49,6 +52,11 @@ const useStyles = makeStyles(theme =>({
       margin: theme.spacing(1),
       minWidth: 150,
     },
+    phoneTab:{
+      width:'400px',
+      height:'60px',
+
+    }
 }))
 
 export default function Form() {
@@ -58,6 +66,7 @@ export default function Form() {
     const [success, setSuccess] = useState(false);
     const [message,setMessage] = useState("");
     const [confirmPassword,setConfirmPassword] = useState("");
+
     
     const [values , setValues] = useState({
         name:"",
@@ -81,22 +90,23 @@ export default function Form() {
     e.preventDefault();
 		if (confirmPassword === password) {
 			try {
-				let user = await signUpAction(values);
-				//  console.log(user)
-				if (user.error) {
-					setMessage(user.error);
-					setOpen(true);
-					setSuccess(false);
-				} else {
-					setMessage("Sign Up Successfully");
-					setOpen(true);
-					setSuccess(true);
-					setValues({
-						name: "",
-						email: "",
-						password: "",
-					});
-				}
+				// let user = await signUpAction(values);
+				 console.log('valuse',values)
+				// if (user.error) {
+				// 	setMessage(user.error);
+				// 	setOpen(true);
+				// 	setSuccess(false);
+				// } else {
+				// 	setMessage("Sign Up Successfully");
+				// 	setOpen(true);
+				// 	setSuccess(true);
+				// 	setValues({
+				// 		name: "",
+				// 		email: "",
+				// 		password: "",
+        //     phone:"",
+				// 	});
+				// }
 			} catch (error) {
 				setMessage(error);
 				setOpen(true);
@@ -253,23 +263,6 @@ const [availableChilds, setAvailableChilds] = useState([]);
               onChange={(e)=>setConfirmPassword(e.target.value)}
             />
 
-            {/* <FormControl variant="outlined" className={[classes.formControl,classes.tab]}>
-              <InputLabel id="demo-simple-select-outlined-label">Select Time Zone</InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                value={timeZone}
-                onChange={handleChange}
-                label="Select Time Zone"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl> */}
-
-            
             <TextField
               id="outlined-basic"
               label="Phone No."
@@ -278,12 +271,21 @@ const [availableChilds, setAvailableChilds] = useState([]);
               name="phone"
               className={classes.tab}
               value={phone}
-              onChange={handleChange}
+              // onChange={handleChange}
               type='number'
-              style={{ marginBottom: "30px" }}
-              InputProps={{ inputProps: { min: 0, max: 10 } }}
+              // style={{ marginBottom: "30px" }}
+              // InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
-            
+
+            {/* <Box className={classes.phoneTab} > */}
+            <PhoneInput
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={(e)=>console.log('phone',e)}
+
+                  />
+                  {/* </Box> */}
+                        
         
                        <FormControl variant="outlined"  className={[classes.tab,classes.formControl]}>
              <InputLabel id="demo-simple-select-outlined-label">Select Role For User</InputLabel>
