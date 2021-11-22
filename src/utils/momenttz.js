@@ -1,5 +1,12 @@
 // import moment from "moment";
 import moment from 'moment-timezone';
+// import LocalCurrency from 'react-local-currency'
+import data from 'currency-codes';
+// var data = require('currency-codes/data');
+const clm = require('country-locale-map');
+
+
+
 
 
 export const getLocalTime = (time,timeZone) => {
@@ -8,8 +15,17 @@ export const getLocalTime = (time,timeZone) => {
 }
 
 export const getTimeZone = () => {
-    let timeZone = moment.tz()
-    console.log('timeZones',moment.tz());
+
+    const zz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
-    return timeZone
+    // let timeZone = moment.tz()
+    // console.log('timeZones',moment.tz()._d);
+    
+    return zz
+}
+
+
+export const localCurrency = () => {
+    let currency = clm.getCurrencyByAlpha2(localStorage.getItem('country'));
+    console.log('currency',currency);
 }

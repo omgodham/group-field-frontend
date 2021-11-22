@@ -47,6 +47,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { deleteNotification, getAllNotifications } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close';
+import axios from "axios";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -250,6 +251,14 @@ useEffect(() => {
 		}).catch(error => console.log(error))		
 	},[notificationsOn])
 
+
+	
+	useEffect(() => {
+		axios.get("https://ipinfo.io?token=43876bc6547234")
+		.then(response => {
+		 localStorage.setItem('country',response.data.country)
+	   })
+	 },[])
 	
 
 	
