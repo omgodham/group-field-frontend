@@ -44,9 +44,15 @@ export default function Paypal({amount,lectureIds,childIds,setShowPaypal}) {
                     const order = await actions.order.capture()
                     console.log(order);
                     setSuccess(true);
-                    updateLectures(lectureIds,childIds).then(data => {
-                        console.log(data)
-                }).catch(err => console.log(err))
+                    for(const childId of childIds){
+                        try {
+                            const data = await updateLectures(lectureIds,childId);
+                        } catch (error) {
+                            console.log(console.error())
+                        }
+                
+                    }
+                
 
 
                 },

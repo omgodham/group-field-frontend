@@ -13,12 +13,15 @@ import {
 	ListItemIcon,
 	Box,
 	Collapse,
+	ListItemAvatar,
+	ListItemSecondaryAction,
+	Paper,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@material-ui/icons/Menu";
-
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import {
 	ExpandLess,
 	ExpandMore,
@@ -40,7 +43,10 @@ import Logo from "../images/logo.png";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import FaceIcon from "@material-ui/icons/Face";
-
+import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { deleteNotification, getAllNotifications } from "./helpers";
+import CloseIcon from '@material-ui/icons/Close';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
 	logo: {
 		margin: "auto",
 		width: "80%",
+		color:'#fff',
 	},
 	drawerPaper: {
 		width: drawerWidth,
@@ -84,16 +91,37 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	appBar: {
-		// [theme.breakpoints.up("sm")]: {
-		//   width: `calc(100% - ${drawerWidth}px)`,
-		//   // marginLeft: drawerWidth,
-		// },
+		[theme.breakpoints.up("sm")]: {
+		  width: "100%",
+		  // marginLeft: drawerWidth,
+		},
 		backgroundColor: "#fefefe",
 		backgroundColor: theme.palette.primary,
 		// boxShadow:'2px 3px 9px 0px hsl(0deg 0% 13% / 52%)'
 		zIndex: theme.zIndex.drawer + 1,
 		display: "100%",
+		display:"flex",
+		flexDirection:'row',
+		justifyContent:'space-between',
+		// position:'relative'
 		// padding:'10px'
+	},
+	appBarlogo:{
+		width:'18%',
+		// height:'35px',
+	},
+	// navbar:{
+	// 	position:'relative'
+	// },
+	notificationBlock:{
+		paddingTop:'20px',
+		position:'absolute',
+		top:'70px',
+		right:'50px',
+		height:'350px',
+		width:'400px',
+		backgroundColor:"white",
+		overflowY:'scroll'
 	},
 	title: {
 		flexGrow: "1",
@@ -153,6 +181,20 @@ const useStyles = makeStyles((theme) => ({
 	nested: {
 		paddingLeft: theme.spacing(2),
 	},
+	notificationIcon:{
+		position:'relative'
+	},
+	notificationCount:{
+		position:'absolute',
+		top:'5px',
+		right:'10px',
+		
+	},
+	closeIcon:{
+		position:'absolute',
+		top:'5px',
+		right:'10px',
+	}
 }));
 
 function Layout(props) {
@@ -160,6 +202,7 @@ function Layout(props) {
 	const location = useLocation();
 	const { user } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
+	const [notificationsOn,setNotificationsOn] = useState(false);
 
 	useEffect(() => {
 		dispatch(verifyToken(history));
@@ -190,7 +233,26 @@ function Layout(props) {
 			}
 		}
 	}, [user]);
+	const [notifications,setNotifications] = useState([])
+;
 
+useEffect(() => {
+	getAllNotifications().then(data => {
+		// console.log(data)
+		setNotifications(data);
+	}).catch(error => console.log(error))		
+},[])
+
+	useEffect(() => {
+		getAllNotifications().then(data => {
+			console.log(data)
+			setNotifications(data);
+		}).catch(error => console.log(error))		
+	},[notificationsOn])
+
+	
+
+	
 	const classes = useStyles();
 
 	const { window } = props;
@@ -221,7 +283,7 @@ function Layout(props) {
 			},
 		user &&
 			(user.role === "ROLE_PARENT" || user.role === "ROLE_STUDENT") && {
-				text: "Classes",
+				text: "Past Classes",
 				icon: <ClassIcon />,
 				path: "/classes",
 			},
@@ -238,7 +300,12 @@ function Layout(props) {
 				path: "/payout",
 			},
 	];
-
+const handleDeleteNotification = (id) => {
+	deleteNotification(id).then(data => {
+		console.log(data)
+		setNotifications(notifications.filter(item => item._id !== id))
+	}).catch(error => console.log(error))
+}
 	const drawer = (
 		<div>
 			<Link to="/dashboard" style={{ textDecoration: "none" }}>
@@ -329,27 +396,50 @@ function Layout(props) {
 		// history.push("/signin");
 	};
 
+	// console.log(notificationsOn)
 	return (
 		<div className={classes.root}>
 			<Box className={classes.navbar}>
 				<AppBar position="fixed" className={classes.appBar} elevation={0}>
+				<Link to="/dashboard" style={{ textDecoration: "none" }}>
+				<Box
+					display="flex"
+					// alignItems="left"
+					// justifyContent="left"
+					className={classes.title}
+				>
+					<img src={Logo} className={classes.appBarlogo}></img>
+				</Box>
+			</Link>
 					<Toolbar>
 						<IconButton
 							color="inherit"
 							aria-label="open drawer"
 							edge="start"
-							color="primary"
+							// color="primary"
 							onClick={handleDrawerToggle}
 							className={classes.menuButton}
 						>
 							<MenuIcon />
 						</IconButton>
+					
 						<Typography
 							variant="h5"
 							noWrap
 							color="textPrimary"
 							className={classes.date}
 						></Typography>
+							<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							edge="start"
+							// color="primary"
+							className={classes.notificationIcon}
+							onClick={() => setNotificationsOn(!notificationsOn)}
+						>
+							<NotificationsIcon />
+							<Typography className={classes.notificationCount} variant='body2'>{notifications.length}</Typography>
+						</IconButton>
 						<Box display="flex" alignItems="center" justifyContent="center">
 							<Typography
 								variant="body2"
@@ -370,8 +460,37 @@ function Layout(props) {
 						>
 							<ExitToAppIcon />
 						</IconButton>
+							
 					</Toolbar>
+					{notificationsOn && notifications.length ? <Paper className={classes.notificationBlock}>
+					<CloseIcon className={classes.closeIcon} onClick={() => setNotificationsOn(false)}/>
+					<div className={classes.demo}>
+            <List dense={true}>
+			{notifications.length ? notifications.map((item,index) => {
+               return <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <AccountCircleIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={`Payment request from ${item.from.name}`}
+                    secondary={`${item.from.name} is requesting of payment of $${item.amount?.toFixed(2)}`}
+					style={{color:'black'}}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteNotification(item._id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              })
+			  : ''}
+            </List>
+          </div>
+				</Paper>:''}
 				</AppBar>
+			
 			</Box>
 			<nav className={classes.drawer} aria-label="mailbox folders">
 				<Hidden smUp implementation="css">

@@ -17,23 +17,26 @@ function CurrentCalendar({selectedChild,admin}) {
       const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [rendered , setIsRendered] = useState(false);
+  const [calendarElement,setCalendarElement] = useState(null);
+
+
     useEffect(() => {
 
      const setTheCalendar = () => {
       setIsRendered(false)
       let tempEvents = [];
         var calendarEl = document.getElementById('calendar');
-     
+
         let thisCalendar =  new Calendar(calendarEl, {
-          eventRenderWait:20,
+          // eventRenderWait:20,
             plugins: [ dayGridPlugin, timeGridPlugin, listPlugin,googleCalendarPlugin ],
              googleCalendarApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-             initialView: 'dayGridMonth',
+             initialView: 'listMonth',
              themeSystem:'bootstrap',
              headerToolbar: {
-                left: 'prev,next today',
+                left:'listMonth',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,listWeek,timeGridDay'
+                right: 'listWeek,timeGridDay'
               },
              events: {
                      googleCalendarId: process.env.REACT_APP_CALENDAR_ID,
@@ -44,9 +47,12 @@ function CurrentCalendar({selectedChild,admin}) {
            
                   // console.log(JSON.stringify(content[0]))
                   tempEvents = content;
-                  setData(content)
+
+
                   return content.eventArray;
                 },
+
+    
                 
           });
           
@@ -59,11 +65,15 @@ function CurrentCalendar({selectedChild,admin}) {
          
             if(admin)  
             dispatch(setAllClasses(tempEvents))
-            
+          
+            // console.log(tempEvents);
+            // let count = 0;
+            setData(tempEvents);
             tempEvents.forEach(thisEvent => {
              if(!selectedChild.lectures.some(item => item.id === thisEvent.id)){
+              // console.log(++count);
               let event = thisCalendar.getEventById(thisEvent.id)
-              
+       
               // newLectures.push(thisEvent);
 
               event.remove();
@@ -72,24 +82,36 @@ function CurrentCalendar({selectedChild,admin}) {
 
            })
           //  console.log(newLectures)
+          // console.log("asd");
            }, 1000);
+
+     
 
            setTimeout(function(){ 
             setIsRendered(true);
-            console.log(admin)
-            if(!admin)
-            thisCalendar.render() 
-           
+            // console.log("admin")
+            if(!admin){         
+              thisCalendar.render() 
+              setCalendarElement(thisCalendar)
+            }
+            
+       
+            document.querySelector('.fc-listMonth-button').innerText = 'Month'
+            // document.querySelector('.fc-listWeek-button').innerText = 'Week'
+            // document.querySelector('.fc-timeGridDay-button').innerText = 'Day'
+       
           }, 2000);
+
+       
 
       }
       
+  
         return setTheCalendar()
 
     },[selectedChild])
 
-
-
+// console.log(calendarElement)
 
 useEffect(() => {
   if(data.length){
@@ -107,6 +129,10 @@ useEffect(() => {
   
 },[data])
     
+let flag = true;
+
+
+
 
     return (
       <>

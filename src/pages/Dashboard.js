@@ -37,7 +37,6 @@ const getToken = ()=>{
             {user && (user.role === 'ROLE_TEACHER' || user.role === 'ROLE_ADMIN') &&
             <AdminDashboard _id={user._id} role={user.role}/> 
             }
-            <Button variant='contained' onClick={getToken}>send money</Button>
         </Box>
 
     )

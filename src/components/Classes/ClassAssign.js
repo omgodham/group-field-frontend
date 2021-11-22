@@ -27,9 +27,7 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 function ClassAssign({id,setOpen,setReload,reload}) {
-    
-//TODO:1.We have lectures to assigned in the classesToShow show list of those lectures in dropdown
-//2.Show all teachers list
+
     const classes = useStyles();
 
  const [selectedChild , setSelectedChild] = useState(null)
@@ -104,7 +102,7 @@ function ClassAssign({id,setOpen,setReload,reload}) {
             {/* {(classesToShow.length && teachers.length) ? */}
             <>
             {selectedChild && <CurrentCalendar selectedChild={selectedChild} admin={true}/>}
-            <Typography variant='h6' color='primary' style={{marginTop:'50px'}}>Create Lesson</Typography>
+            <Typography variant='h6' color='primary' style={{marginTop:'50px'}}>Create Class</Typography>
             <Divider />
                         {/* {id}  */}
                         <form className={classes.container}>
