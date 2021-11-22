@@ -16,6 +16,7 @@ import StudentInfo from "../Dashboard/StudentInfo";
 import ClassroomCard from "./ClassroomCard";
 import { useSelector } from "react-redux";
 import { getClassByPublicId } from "../Classes/helpers";
+import { getTimeZone } from "../../utils/momenttz";
 
 const useStyles = makeStyles({
   root: {
@@ -72,15 +73,6 @@ function AdminDashboard({ _id, role }) {
     };
 
     getStudents();
-    // fetch("https://worldtimeapi.org/api/ip")
-    // .then(response => response.json())
-    // .then(data => {
-    //   // console.log(data)
-    //   fetch(`https://ipapi.co/${data.client_ip}/json/`).then(response => response.json())
-    //   .then(data => {
-    //     console.log(data)
-    //   })
-    // })
   }, []);
 
   return (

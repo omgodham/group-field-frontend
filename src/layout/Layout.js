@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 		// padding:'10px'
 	},
 	appBarlogo:{
-		width:'18%',
+		width:'15%',
 		// height:'35px',
 	},
 	// navbar:{

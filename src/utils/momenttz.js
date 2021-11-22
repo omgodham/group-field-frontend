@@ -15,7 +15,7 @@ export const getTimeZone = () => {
     .then(response => response.json())
     .then(data => {
         console.log(data)
-        console.log(data.timezone,data.datetime,data.dst)
+        // console.log(data.timezone,data.datetime,data.dst)
         return  data.timezone
     });
 
