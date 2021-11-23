@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 function StudentInfo({ id, role, admin, setThisLecture, setUser }) {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState(null);
-  const { timeZone } = useSelector((state) => state.user);
+  const { timeZone,localLearningRate,localCurrency } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
   function createData(category, className, url) {
     return { category, className, url };
@@ -229,7 +229,7 @@ useEffect(() => {
           upcomingLecture?.url
         ),
         (role === "ROLE_PARENT"  || role === "ROLE_STUDENT")  &&
-          createData("Fees Due", hours * currentUser.learningRate),
+          createData("Fees Due",( hours * localLearningRate)?.toFixed(2)),
       ];
     } else if (currentLecture || upcomingLecture) {
       tempRows = [
@@ -245,7 +245,7 @@ useEffect(() => {
           upcomingLecture?.url
         ),
         (role === "ROLE_PARENT"  || role === "ROLE_STUDENT") &&
-          createData("Fees Due", hours * currentUser.learningRate),
+          createData("Fees Due", localCurrency +" " + (hours * localLearningRate)?.toFixed(2)),
       ];
     }
 
@@ -396,7 +396,7 @@ useEffect(() => {
                                 variant="contained"
                                 className={classes.button}
                                 style={{ minWidth: "150px" }}
-                                disabled={row.className === "No Upcoming Class" ? true : false}
+                                disabled={row.className === "No Upcoming Lecture" ? true : false}
                               >
                                 Join Class <NavigateNextIcon />
                               </Button>

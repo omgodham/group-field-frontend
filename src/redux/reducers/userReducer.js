@@ -4,7 +4,8 @@ const initialState = {
   authenticated:false,
   childs:[],
   timeZone:"",
-  localCurrency:""
+  localCurrency:"",
+  localLearningRate:0
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -35,6 +36,11 @@ export const userReducer = (state = initialState, action) => {
           return {
             ...state,
             localCurrency:action.payload
+          };
+          case "SET_LEARNING_RATE":
+          return {
+            ...state,
+            localLearningRate:action.payload
           };
 
     default:

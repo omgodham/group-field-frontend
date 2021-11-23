@@ -19,3 +19,10 @@ export const setChilds = (data) => {
       payload:data
     }
   }
+  
+  export const setLocalRate = (data) => {
+    return {
+      type:'SET_LEARNING_RATE',
+      payload:data
+    }
+  }

@@ -11,6 +11,12 @@ import {
   OutlinedInput,
   Paper,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -28,13 +34,20 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "80vh",
     margin: "auto",
     padding: "30px",
+    display:'flex',
+    alignItems:'center',
+    flexDirection:'column',
+    justifyContent:'center'
+  },
+  table: {
+   maxWidth: 350,
   },
 }));
 
 function AccountDetails() {
   const classes = useStyles();
-
-  const { user } = useSelector((state) => state.user);
+  const [rows,setRows] = useState([])
+  const { user,timeZone,localCurrency,localLearningRate } = useSelector((state) => state.user);
   // console.log('USER',user)
 
   const [unpaidLectures, setUnpaidLectures] = useState([]);
@@ -69,9 +82,24 @@ function AccountDetails() {
       }
     setCalendarId(user?.calendarId);
     // setLectureIds(thislectureIds)
+    if(user){
+
+        let properties = [
+          {key : 'Name',value:user.name}
+          ,{key : 'Email',value:user.email},
+          {key : 'Role',value:user.role},
+          {key : 'Rate',value:localLearningRate.toFixed(2)},
+          {key : 'Phone NUmber',value:user.phone}
+          ,{key : 'Time Zone',value:timeZone}
+           , {key : 'Currency',value:localCurrency}
+          ]
+         setRows(properties) 
+    }
   }, [user]);
 
-  console.log(calendarId);
+
+  
+
 
   const handleRequestClick = (e) => {
     makeRequest({
@@ -114,37 +142,28 @@ function AccountDetails() {
         ""
       )}
       <Divider />
-      <Box display="flex" flexDirection="column">
-        <Box>
-          <Typography variant="h6">Name: </Typography>
+      <TableContainer component={Paper} className={classes.table}>
+      <Table  aria-label="simple table">
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.key}
+              </TableCell>
+              <TableCell align="right">{row.value ? row.value : '-'}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-          <Typography variant="h6">{user?.name}</Typography>
-        </Box>
-        <Typography variant="h6">Email: </Typography>
-        <Typography variant="h6">{user?.email}</Typography>
-        <Box>
-          <Typography variant="h6">Rate: </Typography>
-
-          <Typography variant="h6">{user?.learningRate}</Typography>
-        </Box>
-        <Box>
-          <Typography variant="h6">Phone Number: </Typography>
-
-          <Typography variant="h6">{user?.phone}</Typography>
-        </Box>{" "}
-        {/* <Box>
-          <Typography variant="h6">Time Zone: </Typography>
-
-          <Typography variant="h6">{() => getTimeZone().then(data => data)}</Typography>
-        </Box> */}
-      </Box>
       {user?.role === "ROLE_TEACHER" && (
         <AllClasses
           setUnpaidLectures={setUnpaidLectures}
           unpaidLectures={unpaidLectures}
         />
       )}
-      <form onSubmit={handleSubmit}>
+     {user?.role === "ROLE_ADMIN" && <form onSubmit={handleSubmit}>
         <FormControl>
           <TextField
             id="outlined-basic"
@@ -157,7 +176,7 @@ function AccountDetails() {
             Submit
           </Button>
         </FormControl>
-      </form>
+      </form> }
     </Paper>
   );
 }

@@ -195,6 +195,7 @@ export default function Payment() {
  
   }
 
+  console.log(localValues)
   return (
     <>
       {rows.length ? (
@@ -246,10 +247,10 @@ export default function Payment() {
               </InputLabel>
               <FilledInput
                 id="filled-adornment-amount"
-                value={amount.toFixed(2)}
+                value={localValues[0]?.toFixed(2)}
                 onChange={handleChange}
                 startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
+                  <InputAdornment position="start">{localCurrency}</InputAdornment>
                 }
                 className={classes.amount}
                 disabled={true}

@@ -14,7 +14,8 @@ import moment from 'moment'
 import { convertMoneyToLocalCurrency, getLocalTime } from '../../utils/momenttz';
 import _ from 'lodash' 
 import { ExportToExcel } from './ExportToExcel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLocalRate } from '../../redux/actions/userActions';
 
 const useStyles = makeStyles({
   table: {
@@ -45,7 +46,7 @@ export default function ClassesTable({child,setUnpaidLectures}) {
   const classes = useStyles();
   const { user } = useSelector((state) => state.user);
   const { timeZone ,localCurrency} = useSelector((state) => state.user);
-
+   const dispatch = useDispatch()
   function createData(date, start, end, topic, hours,paymentStatus,time) {
     return { date, start, end, topic, hours,paymentStatus,time};
   }
@@ -61,7 +62,8 @@ export default function ClassesTable({child,setUnpaidLectures}) {
     let tempLectues = [] ;
     if(child){
       let value = await convertMoneyToLocalCurrency('USD',localCurrency,child.learningRate);
-      setLocalLearningRate(value)
+      setLocalLearningRate(value);
+      // dispatch(setLocalRate(value));
     }
  
     for(const lecture of child.lectures){
@@ -154,8 +156,8 @@ useEffect(async () =>{
             {/* <TableCell align='center'>Topic</TableCell> */}
               {/* In Update hide the class topic from the table  */}
             <StyledTableCell align='center'>Duration</StyledTableCell>
-            <StyledTableCell align='center'>Rate</StyledTableCell>
-            <StyledTableCell align='center'>Amount</StyledTableCell>
+            <StyledTableCell align='center'>({localCurrency}) Rate</StyledTableCell>
+            <StyledTableCell align='center'>({localCurrency}) Amount</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -169,14 +171,14 @@ useEffect(async () =>{
               {/* <TableCell align='center'>{row.topic}</TableCell> */}
               <StyledTableCell align='center'>{row.hours}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {child.learningRate.toFixed(2)}</StyledTableCell> */}
-              <StyledTableCell align='center'>{localCurrency} {localLearningRate?.toFixed(2)}</StyledTableCell>
+              <StyledTableCell align='center'>{localLearningRate?.toFixed(2)}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell>  */}
-              <StyledTableCell align='center'>{localCurrency} {localValues[index]?.toFixed(2)}</StyledTableCell> 
+              <StyledTableCell align='center'>{localValues[index]?.toFixed(2)}</StyledTableCell> 
               {/* Changed from payment status to the rate per hour in update */}
             </StyledTableRow>
           ))}
         </TableBody>
-      </Table> : <Typography>No past classes are available</Typography>}
+      </Table> : <CircularProgress />}
       </Box>
     </TableContainer>
   );

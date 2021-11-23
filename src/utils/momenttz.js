@@ -33,7 +33,7 @@ export const getTimeZone = () => {
   // return zz
 };
 
-export const localCurrency = async () => {
+export const getLocalCurrency = async () => {
  return await axios.get("https://ipinfo.io?token=43876bc6547234").then((response) => {
     //  localStorage.setItem('country',response.data.country)
     //  console.log(response)

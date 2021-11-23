@@ -93,10 +93,11 @@ function CurrentCalendar({selectedChild,admin}) {
             if(!admin){         
               thisCalendar.render() 
               setCalendarElement(thisCalendar)
+              document.querySelector('.fc-listMonth-button').innerText = 'Month'
             }
             
        
-            document.querySelector('.fc-listMonth-button').innerText = 'Month'
+            // document.querySelector('.fc-listMonth-button').innerText = 'Month'
             // document.querySelector('.fc-listWeek-button').innerText = 'Week'
             // document.querySelector('.fc-timeGridDay-button').innerText = 'Day'
        
