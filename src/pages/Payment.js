@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
     padding: "30px",
     margin: "auto",
-    minHeight:'500px',
+    minHeight:'82vh',
   },
   table: {
     //   width: '80%',
@@ -50,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
   button: {
     width: "100%",
     marginTop: "10px",
-    backgroundColor: theme.palette.success.main,
+    color: "#F4F6F8",
+    backgroundColor: theme.palette.primary.main,
   },
   paymentPopup: {
     display:'flex',
@@ -78,6 +79,24 @@ const useStyles = makeStyles((theme) => ({
     width:'70px',
     margin:'auto', 
     // marginLeft: 'auto',
+  },
+  amountCont:{  
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    padding:'5px 7px',
+    border:'1px solid #333456',
+    borderRadius:'20px',
+  },
+  totalAmount:{
+    minWidth:'150px',
+    cursor:'default',
+    borderRadius:"15px",
+    padding:'5px 10px',
+    fontSize:'18px',
+
+    // border:''
   }
 }));
 
@@ -196,7 +215,7 @@ export default function Payment() {
   }
 
   return (
-    <>
+    <Box sx={{minHeight:'70vh',position:"relative"}}>
       {rows.length ? (
         <Paper className={classes.paper}>
           <Table className={classes.table} aria-label="simple table">
@@ -240,7 +259,7 @@ export default function Payment() {
             </TableBody>
           </Table>
           <Box className={classes.paymentWrap}>
-            <FormControl fullWidth variant="filled">
+            {/* <FormControl fullWidth variant="filled">
               <InputLabel htmlFor="filled-adornment-amount">
                 Total Amount
               </InputLabel>
@@ -254,7 +273,11 @@ export default function Payment() {
                 className={classes.amount}
                 disabled={true}
               />
-            </FormControl>
+            </FormControl> */}
+            <Box className={classes.amountCont}>
+              <Typography variant="h6" justifyContent='center'>Total Amount</Typography>
+              <Button variant="contained" color='primary' size="large" className={classes.totalAmount}>{amount.toFixed(2)}</Button>
+            </Box>
             {showPaypal ? (
               <Box className={classes.paymentPopup}>
                 <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds} setShowPaypal={setShowPaypal}/>
@@ -277,10 +300,10 @@ export default function Payment() {
           </Box>
         </Paper>
       ) : (
-        <Box display='flex' alignItems='center' justifyContent='center'>
-        <CircularProgress />
+        <Box sx={{position:'absolute',top:'50%',left:'50%'}}>
+          <CircularProgress />
         </Box>
       )}
-    </>
+    </Box>
   );
 }

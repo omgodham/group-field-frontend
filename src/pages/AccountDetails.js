@@ -5,6 +5,7 @@ import {
   Divider,
   FilledInput,
   FormControl,
+  Grid,
   Input,
   InputAdornment,
   InputLabel,
@@ -114,14 +115,33 @@ function AccountDetails() {
         ""
       )}
       <Divider />
-      <Box display="flex" flexDirection="column">
-        <Box>
+      <Grid spacing={3} xs={12}>
+      <Grid item xs={4}>
           <Typography variant="h6">Name: </Typography>
-
-          <Typography variant="h6">{user?.name}</Typography>
-        </Box>
-        <Typography variant="h6">Email: </Typography>
-        <Typography variant="h6">{user?.email}</Typography>
+          <Paper >
+            <Typography variant="h6">{user?.name}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="h6">Email: </Typography>
+          <Paper >
+            <Typography variant="h6">{user?.email}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="h6">Rate: </Typography>
+          <Paper >
+            <Typography variant="h6">{user?.learningRate}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="h6">Phone No: </Typography>
+          <Paper >
+            <Typography variant="h6">{user?.phone}</Typography>
+          </Paper>
+        </Grid>
+        {/* <Typography variant="h6">Phone No.: </Typography>
+        <Typography variant="h6">{user?.phone}</Typography>
         <Box>
           <Typography variant="h6">Rate: </Typography>
 
@@ -131,13 +151,13 @@ function AccountDetails() {
           <Typography variant="h6">Phone Number: </Typography>
 
           <Typography variant="h6">{user?.phone}</Typography>
-        </Box>{" "}
+        </Box>{" "} */}
         {/* <Box>
           <Typography variant="h6">Time Zone: </Typography>
 
           <Typography variant="h6">{() => getTimeZone().then(data => data)}</Typography>
         </Box> */}
-      </Box>
+        </Grid>
       {user?.role === "ROLE_TEACHER" && (
         <AllClasses
           setUnpaidLectures={setUnpaidLectures}

@@ -15,11 +15,15 @@ import { convertMoneyToLocalCurrency, getLocalTime } from '../../utils/momenttz'
 import _ from 'lodash' 
 import { ExportToExcel } from './ExportToExcel';
 import { useSelector } from 'react-redux';
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
+  tableRows:{
+    minHeight:"600px !important",
+  }
 });
 
 
@@ -144,8 +148,8 @@ useEffect(async () =>{
     <TableContainer component={Paper}>
 
       <ExportToExcel apiData={rows} fileName={`${new Date() + child.name}`} />
-      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-      {rows.length ? <Table className={classes.table} aria-label="simple table">
+      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' className={classes.tableRows} >
+      {rows.length ? <Table className={classes.table} aria-label="simple table" >
         <TableHead>
           <TableRow >
             <StyledTableCell align='center'>Date</StyledTableCell>
@@ -158,7 +162,7 @@ useEffect(async () =>{
             <StyledTableCell align='center'>Amount</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {rows.map((row,index) => (
             <StyledTableRow key={row.name} key={index}>
               <StyledTableCell align='center' component="th" scope="row">
@@ -169,14 +173,17 @@ useEffect(async () =>{
               {/* <TableCell align='center'>{row.topic}</TableCell> */}
               <StyledTableCell align='center'>{row.hours}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {child.learningRate.toFixed(2)}</StyledTableCell> */}
-              <StyledTableCell align='center'>{localCurrency} {localLearningRate?.toFixed(2)}</StyledTableCell>
+              <StyledTableCell align='center'>{getSymbolFromCurrency(localCurrency)} {localLearningRate?.toFixed(2)}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell>  */}
-              <StyledTableCell align='center'>{localCurrency} {localValues[index]?.toFixed(2)}</StyledTableCell> 
+              <StyledTableCell align='center'>{getSymbolFromCurrency(localCurrency)} {localValues[index]?.toFixed(2)}</StyledTableCell> 
               {/* Changed from payment status to the rate per hour in update */}
             </StyledTableRow>
           ))}
         </TableBody>
-      </Table> : <Typography>No past classes are available</Typography>}
+      </Table> 
+      : 
+        <CircularProgress />
+      }
       </Box>
     </TableContainer>
   );
