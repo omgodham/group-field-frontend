@@ -68,13 +68,14 @@ const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   modalPaper: {
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    minHeight:'fit-content !important'
   },
   weeklyBlock: {
     padding: "20px",
@@ -126,7 +127,7 @@ useEffect(() => {
 
   //  console.log(moment.tz.names())
 
-   console.log(currentDate.tz('America/Los_Angeles').format('h:m a'))
+  //  console.log(currentDate.tz('America/Los_Angeles').format('h:m a'))
 },[])
 
   const handleOpen = () => {
@@ -270,7 +271,7 @@ useEffect(() => {
               </Box>
               <Box className={classes.weeklyTable}>
                 {weekLectures.map((lect) => (
-                  <Paper className={classes.weekLecture} index={lect._id}>
+                  <Paper className={classes.weekLecture} key={lect._id}>
                     <Box
                       display="flex"
                       flexDirection="column"

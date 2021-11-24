@@ -5,6 +5,7 @@ import {
   Divider,
   FilledInput,
   FormControl,
+  Grid,
   Input,
   InputAdornment,
   InputLabel,
@@ -28,6 +29,8 @@ import { getTime } from "date-fns";
 import { getClassByPublicId } from "../components/Classes/helpers";
 import { makeRequest, updateUser } from "../components/Dashboard/helpers";
 import { getTimeZone } from "../utils/momenttz";
+import getSymbolFromCurrency from "currency-symbol-map";
+import AlertMessage from "../components/alertmessage/AlertMessage";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "90%",
@@ -49,7 +52,8 @@ function AccountDetails() {
   const [rows,setRows] = useState([])
   const { user,timeZone,localCurrency,localLearningRate } = useSelector((state) => state.user);
   // console.log('USER',user)
-
+  const [alertMessage, setAlertMessage] = useState("")
+  const [toggleMessage, setToggleMessage] = useState(false)
   const [unpaidLectures, setUnpaidLectures] = useState([]);
   const [amount, setAmount] = useState(0);
   const [calendarId, setCalendarId] = useState("");
@@ -74,7 +78,7 @@ function AccountDetails() {
                       (1000 * 60) /
                       60
                   );
-                setAmount(hours * user.learningRate);
+                setAmount(hours * localLearningRate);
               }
             })
             .catch((error) => console.log(error));
@@ -89,7 +93,7 @@ function AccountDetails() {
           ,{key : 'Email',value:user.email},
           {key : 'Role',value:user.role},
           {key : 'Rate',value:localLearningRate.toFixed(2)},
-          {key : 'Phone NUmber',value:user.phone}
+          {key : 'Phone Number',value:user.phone}
           ,{key : 'Time Zone',value:timeZone}
            , {key : 'Currency',value:localCurrency}
           ]
@@ -107,7 +111,11 @@ function AccountDetails() {
       from: { name: user.name, id: user._id },
       amount: amount,
     })
-      .then((data) => console.log(data))
+      .then((data) => {
+        // console.log(data);
+        setAlertMessage("Request made for your payment to the admin")
+        setToggleMessage(!toggleMessage);
+      })
       .catch((error) => console.log(error));
   };
 
@@ -116,31 +124,23 @@ function AccountDetails() {
     console.log(calendarId);
     updateUser(calendarId, localStorage.getItem("userId"))
       .then((data) => {
-        console.log(data);
+        // console.log(data);
+        setAlertMessage("Calendar Id Updated")
+        setToggleMessage(!toggleMessage);
       })
       .catch((error) => console.log(error));
   };
+
+  
+  console.log(typeof(alertMessage))
   return (
+
     <Paper className={classes.root}>
+
       <Typography variant="h5" color="textPrimary">
         Account Details
       </Typography>
-      {user?.role === "ROLE_TEACHER" ? (
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="h5" color="textPrimary">
-            Amout for classes is unpaid: {amount.toFixed(2)}
-          </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={handleRequestClick}
-          >
-            Request payment
-          </Button>
-        </Box>
-      ) : (
-        ""
-      )}
+   
       <Divider />
       <TableContainer component={Paper} className={classes.table}>
       <Table  aria-label="simple table">
@@ -157,13 +157,7 @@ function AccountDetails() {
       </Table>
     </TableContainer>
 
-      {user?.role === "ROLE_TEACHER" && (
-        <AllClasses
-          setUnpaidLectures={setUnpaidLectures}
-          unpaidLectures={unpaidLectures}
-        />
-      )}
-     {user?.role === "ROLE_ADMIN" && <form onSubmit={handleSubmit}>
+     {user?.role === "ROLE_ADMIN" && <form onSubmit={handleSubmit} style={{marginTop:'20px'}}>
         <FormControl>
           <TextField
             id="outlined-basic"
@@ -177,6 +171,26 @@ function AccountDetails() {
           </Button>
         </FormControl>
       </form> }
+
+      {user?.role === "ROLE_TEACHER" ? (
+        <Box display="flex" justifyContent="space-between" style={{marginTop:'20px'}}>
+          <Typography variant="h5" color="textPrimary">
+           Request for your payment of {getSymbolFromCurrency(localCurrency)} {amount.toFixed(2)}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleRequestClick}
+            style={{marginLeft:'20px'}}
+            disabled = {!amount}
+          >
+            Request payment
+          </Button>
+        </Box>
+      ) : (
+        ""
+      )}
+  <AlertMessage message={alertMessage} toggleMessage={toggleMessage}/>
     </Paper>
   );
 }

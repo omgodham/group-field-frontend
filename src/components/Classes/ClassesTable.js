@@ -16,11 +16,15 @@ import _ from 'lodash'
 import { ExportToExcel } from './ExportToExcel';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocalRate } from '../../redux/actions/userActions';
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
+  tableRows:{
+    minHeight:"600px !important",
+  }
 });
 
 
@@ -45,7 +49,7 @@ const StyledTableRow = withStyles((theme) => ({
 export default function ClassesTable({child,setUnpaidLectures}) {
   const classes = useStyles();
   const { user } = useSelector((state) => state.user);
-  const { timeZone ,localCurrency} = useSelector((state) => state.user);
+  const { timeZone ,localCurrency,localLearningRate} = useSelector((state) => state.user);
    const dispatch = useDispatch()
   function createData(date, start, end, topic, hours,paymentStatus,time) {
     return { date, start, end, topic, hours,paymentStatus,time};
@@ -54,16 +58,23 @@ export default function ClassesTable({child,setUnpaidLectures}) {
 
 
 
-
+  const [studentLearningRate,setStudentLearnigRate] = useState(0);
   const [lectures,setLectures] = useState([])
   const [rows ,setRows] = useState([])  
-  const [localLearningRate,setLocalLearningRate] = useState(0);
+  // const [localLearningRate,setLocalLearningRate] = useState(0);
   useEffect(async () => {
     let tempLectues = [] ;
-    if(child){
+    if(child && localCurrency){
+      console.log(child)
+      try {
+        
       let value = await convertMoneyToLocalCurrency('USD',localCurrency,child.learningRate);
-      setLocalLearningRate(value);
-      // dispatch(setLocalRate(value));
+            // console.log(value)
+      setStudentLearnigRate(value);
+
+    } catch (error) {
+          console.log(error)
+    }
     }
  
     for(const lecture of child.lectures){
@@ -88,8 +99,8 @@ export default function ClassesTable({child,setUnpaidLectures}) {
         if(setUnpaidLectures)
         setUnpaidLectures(tempLectues)
     },1500)
-  },[child])
-// console.log(lectures);
+  },[child,localCurrency])
+
 const [localValues ,setlocalValues] = useState([]);
   useEffect(() => {
       let tempRows = [];
@@ -97,7 +108,10 @@ const [localValues ,setlocalValues] = useState([]);
       //    {  
         if(lectures.length)  
         {      
-              lectures.forEach(item => {
+          for(const item of lectures) {
+
+         
+              // lectures.forEach(item => {
               
            
                 // var startOfWeek = moment().startOf('week').toDate();
@@ -117,37 +131,38 @@ const [localValues ,setlocalValues] = useState([]);
                            (((getTime(new Date(item.end)) - getTime(new Date(item.start)))/(1000 * 60 )) / 60).toFixed(2))
                   
                         )
-              })
-             if(tempRows.toString() === lectures.toString()) {
-              setlocalValues([])
+              // })
+            }
+            //  if(tempRows.toString() === lectures.toString()) {
+              // setlocalValues([])
               setRows(tempRows)
-             }
+            //  }
               
            } 
   },[lectures])
 
-
-useEffect(async () =>{
-  let temp = [];
-  if(rows.length == child.lectures.length){
-    for(const item of rows){
-      let value = await convertMoneyToLocalCurrency('USD',localCurrency,item.time * child.learningRate)
-      console.log(value)
-      temp.push(value);
-
-    }
-    setlocalValues(temp)
-  }
+// console.log(studentLearningRate);
+// useEffect(async () =>{
+//   let temp = [];
+//   // console.log(rows)
+//   // if(rows.length == child.lectures.length - 1){
+//     for(const item of rows){
+//       let value = await convertMoneyToLocalCurrency('USD',localCurrency,item.time * child.learningRate)
+//       // console.log(value)
+//       temp.push(value);
+//     }
+//     setlocalValues(temp)
+//   // }
   
-},[rows])
+// },[rows])
 
-// console.log(localValues)
+
   return (
     <TableContainer component={Paper}>
 
       <ExportToExcel apiData={rows} fileName={`${new Date() + child.name}`} />
-      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-      {rows.length ? <Table className={classes.table} aria-label="simple table">
+      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' className={classes.tableRows} >
+      {rows.length ? <Table className={classes.table} aria-label="simple table" >
         <TableHead>
           <TableRow >
             <StyledTableCell align='center'>Date</StyledTableCell>
@@ -156,11 +171,11 @@ useEffect(async () =>{
             {/* <TableCell align='center'>Topic</TableCell> */}
               {/* In Update hide the class topic from the table  */}
             <StyledTableCell align='center'>Duration</StyledTableCell>
-            <StyledTableCell align='center'>({localCurrency}) Rate</StyledTableCell>
-            <StyledTableCell align='center'>({localCurrency}) Amount</StyledTableCell>
+            <StyledTableCell align='center'> {getSymbolFromCurrency(localCurrency)} Rate</StyledTableCell>
+            <StyledTableCell align='center'> {getSymbolFromCurrency(localCurrency)} Amount</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {rows.map((row,index) => (
             <StyledTableRow key={row.name} key={index}>
               <StyledTableCell align='center' component="th" scope="row">
@@ -171,9 +186,10 @@ useEffect(async () =>{
               {/* <TableCell align='center'>{row.topic}</TableCell> */}
               <StyledTableCell align='center'>{row.hours}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {child.learningRate.toFixed(2)}</StyledTableCell> */}
-              <StyledTableCell align='center'>{localLearningRate?.toFixed(2)}</StyledTableCell>
+              <StyledTableCell align='center'>{studentLearningRate?.toFixed(2)}</StyledTableCell>
               {/* <StyledTableCell align='center'>$ {(row.time * child.learningRate).toFixed(2)}</StyledTableCell>  */}
-              <StyledTableCell align='center'>{localValues[index]?.toFixed(2)}</StyledTableCell> 
+              {/* <StyledTableCell align='center'>{localValues[index]?.toFixed(2)}</StyledTableCell>  */}
+              <StyledTableCell align='center'>{studentLearningRate ? (row.time * studentLearningRate).toFixed(2) : 0}</StyledTableCell> 
               {/* Changed from payment status to the rate per hour in update */}
             </StyledTableRow>
           ))}

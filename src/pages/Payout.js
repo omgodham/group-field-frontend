@@ -16,6 +16,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { updateLectures } from '../components/payment/helpers'
 import {getTime} from 'date-fns'
+import { convertMoneyToLocalCurrency } from '../utils/momenttz'
+import getSymbolFromCurrency from 'currency-symbol-map'
+import AlertMessage from '../components/alertmessage/AlertMessage'
+import { deleteNotification } from '../layout/helpers'
+import { setAllNotifications } from '../redux/actions/userActions'
 const useStyles = makeStyles(theme => ({
     root:{
         // width: '95%',
@@ -27,15 +32,23 @@ const useStyles = makeStyles(theme => ({
 function Payout() {
 
 const classes = useStyles();
-const {user} = useSelector(state => state.user)
+const {user,localCurrency,notifications} = useSelector(state => state.user)
 const [teacher,setTeachers] = useState([]);
 const [openDialog,setOpenDialog] = useState(false);
 const [responseMsg, setResoponseMsg] = useState('');
+const [alertMessage, setAlertMessage] = useState("")
+const [toggleMessage, setToggleMessage] = useState(false)
+const [teacherValues,setTeacherValues] = useState({
+    totalHours:[],
+    lectureIds:[]
+});
+const {totalHours,lectureIds} = teacherValues;
+const dispatch = useDispatch();
 
 useEffect(() => {
-    
+
          getAllTeachers().then(thisData => {
-            // console.log(thisData);
+           console.log(teacher.toString() === thisData.toString())
             setTeachers(thisData);
          }).catch(error => console.log(error))
 
@@ -59,14 +72,31 @@ const handleClick = (e,id,lectureIds)=>{
 
     // intiatePayment(data)
     // console.log(id,lectureIdss)
-    console.log(lectureIds)
+    // console.log(lectureIds)
     updateLectures(lectureIds,id).then(data => {
-        console.log(data)
+        // console.log(data)
+       
+        setToggleMessage(!toggleMessage)
+        let tempTotalHours = totalHours;
+
+        for(const item of tempTotalHours){
+                if(item.id == id)
+                    item.hours = 0;
+        }
+
+        setTeacherValues(prevValues => ({...prevValues , totalHours:tempTotalHours}));
+
+        deleteNotification(notifications.find(item => item.from.id === id)?._id).then(data => {
+           
+            setAlertMessage("Payment marked as done")
+            dispatch(setAllNotifications(data))
+        })
+
 }).catch(err => console.log(err))
 }
 
 const handleClickOpenDialog = () => {
-    console.log(responseMsg);
+    // console.log(responseMsg);
     setOpenDialog(true);
 };
 
@@ -75,21 +105,16 @@ const handleCloseDialog = () => {
 };
 
 
-const [teacherValues,setTeacherValues] = useState({
-    totalHours:[],
-    lectureIds:[]
-});
 
-const {totalHours,lectureIds} = teacherValues;
 useEffect(() => {
-    console.log(teacher)
-    if(teacher.length){
-      
+    
+    if(teacher.length && localCurrency){
         for(const teach of teacher){
             getRate(teach);
         }
     }
-},[teacher])
+},[teacher,localCurrency])
+
 const getRate = async (thisTeacher) => {
     // console.log('time')
     let hours = 0;
@@ -120,9 +145,9 @@ const getRate = async (thisTeacher) => {
           }
 
         }
-
+        let unpaidAmount = await convertMoneyToLocalCurrency('USD',localCurrency,thisTeacher.learningRate);    
         let tempHours = totalHours;
-        tempHours.push({id:thisTeacher._id,hours:hours});
+        tempHours.push({id:thisTeacher._id,hours:hours,unpaidAmount:unpaidAmount});
         let tempLectureIds = lectureIds;
         tempLectureIds.push({id:thisTeacher._id,currentlectureIds:thisLectureIds});
         setTeacherValues(prevValues => ({totalHours:tempHours,lectureIds:tempLectureIds}))
@@ -137,7 +162,7 @@ const getRate = async (thisTeacher) => {
 }
 
 
-// console.log(teacherValues);
+
 
     return (
         <Box className={classes.root}>
@@ -159,9 +184,10 @@ const getRate = async (thisTeacher) => {
                             {teacher.name}
                         </TableCell>
                         <TableCell align="right" className="email">{teacher.email}</TableCell>
-                        <TableCell align="right" value='50'>{totalHours.length ? (totalHours.find(item => item.id === teacher._id)?.hours * teacher.learningRate)?.toFixed(2) : 0}</TableCell>
+                        {/* <TableCell align="right" value='50'>{totalHours.length ? (totalHours.find(item => item.id === teacher._id)?.hours * teacher.learningRate)?.toFixed(2) : 0}</TableCell> */}
+                        <TableCell align="right" value='50'>{getSymbolFromCurrency(localCurrency)} {totalHours.length ? (totalHours.find(item => item.id === teacher._id)?.hours * totalHours.find(item => item.id === teacher._id)?.unpaidAmount)?.toFixed(2) : 0}</TableCell>
                         <TableCell align="right">
-                            <Button variant='contained' onClick={(e)=>handleClick(e,teacher._id,lectureIds.find(item => item.id === teacher._id)?.currentlectureIds)} color='primary'>MARK PAYMENT COMPLETION</Button>
+                            <Button variant='contained' disabled={!totalHours.find(item => item.id === teacher._id)?.hours} onClick={(e)=>handleClick(e,teacher._id,lectureIds.find(item => item.id === teacher._id)?.currentlectureIds)} color='primary'>MARK PAYMENT COMPLETION</Button>
                         </TableCell>
                         </TableRow>
                     ))}
@@ -187,6 +213,7 @@ const getRate = async (thisTeacher) => {
                 </DialogActions>
             </Dialog>
             {/* <Button variant='contained' onClick={getToken}>send money</Button> */}
+            <AlertMessage message={alertMessage} toggleMessage={toggleMessage}/>
         </Box>
 
     )

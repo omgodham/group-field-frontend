@@ -5,7 +5,8 @@ const initialState = {
   childs:[],
   timeZone:"",
   localCurrency:"",
-  localLearningRate:0
+  localLearningRate:0,
+  notifications:[]
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -41,6 +42,11 @@ export const userReducer = (state = initialState, action) => {
           return {
             ...state,
             localLearningRate:action.payload
+          };
+          case "SET_NOTIFICATIONS":
+          return {
+            ...state,
+            notifications:action.payload
           };
 
     default:

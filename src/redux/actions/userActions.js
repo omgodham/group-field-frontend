@@ -26,3 +26,11 @@ export const setChilds = (data) => {
       payload:data
     }
   }
+
+  
+export const setAllNotifications = (data) => {
+  return {
+    type:'SET_NOTIFICATIONS',
+    payload:data
+  }
+}

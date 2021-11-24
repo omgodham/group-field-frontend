@@ -136,14 +136,14 @@ let flag = true;
 
 
     return (
-      <>
-     <Box display='flex' alignItems='center' justifyContent='center' >
-      {(!rendered && !admin) && <CircularProgress />}
-      </Box>
+      <Box sx={{minHeight:!admin ? '90vh' : "",position:'relative'}}>
+      <Box display='flex' justifyContent='center' sx={{position:'absolute',top:'40%',left:'50%'}}>
+        {(!rendered && !admin) && <CircularProgress />}
+        </Box>
         <div id='calendar' style={{display:'flex',width:'100%',justifyContent:'center' , display:!rendered ? 'none' : ''}}>
        
         </div>
-        </>
+        </Box>
     
         
     )
