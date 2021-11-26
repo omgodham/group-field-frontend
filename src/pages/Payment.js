@@ -29,6 +29,7 @@ import {getTime} from 'date-fns'
 import { updateLectures } from "../components/payment/helpers";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { convertMoneyToLocalCurrency } from "../utils/momenttz";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -214,6 +215,7 @@ export default function Payment() {
  
   }
 
+  console.log(localValues)
   return (
     <Box sx={{minHeight:'70vh',position:"relative"}}>
       {rows.length ? (
@@ -252,7 +254,8 @@ export default function Payment() {
                    {/* Hide in the update part */}
                   <TableCell align="center" className={classes.tableValues}>
                     {/* ${(row.hours * row.rateperhour).toFixed(2)} */}
-                    {localCurrency} {localValues[index]?.toFixed(2)}
+                    {/* {localCurrency} {localValues[index]?.toFixed(2)} */}
+                    {getSymbolFromCurrency(localCurrency)} {localValues[index]?.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -265,10 +268,10 @@ export default function Payment() {
               </InputLabel>
               <FilledInput
                 id="filled-adornment-amount"
-                value={amount.toFixed(2)}
+                value={localValues[0]?.toFixed(2)}
                 onChange={handleChange}
                 startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
+                  <InputAdornment position="start">{localCurrency}</InputAdornment>
                 }
                 className={classes.amount}
                 disabled={true}
@@ -276,7 +279,7 @@ export default function Payment() {
             </FormControl> */}
             <Box className={classes.amountCont}>
               <Typography variant="h6" justifyContent='center'>Total Amount</Typography>
-              <Button variant="contained" color='primary' size="large" className={classes.totalAmount}>{amount.toFixed(2)}</Button>
+              <Button variant="contained" color='primary' size="large" className={classes.totalAmount}>{getSymbolFromCurrency(localCurrency)} {localValues[0]?.toFixed(2)}</Button>
             </Box>
             {showPaypal ? (
               <Box className={classes.paymentPopup}>

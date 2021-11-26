@@ -68,13 +68,14 @@ const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   modalPaper: {
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    minHeight:'fit-content !important'
   },
   weeklyBlock: {
     padding: "20px",
@@ -90,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 function StudentInfo({ id, role, admin, setThisLecture, setUser }) {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState(null);
-  const { timeZone } = useSelector((state) => state.user);
+  const { timeZone,localLearningRate,localCurrency } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
   function createData(category, className, url) {
     return { category, className, url };
@@ -126,7 +127,7 @@ useEffect(() => {
 
   //  console.log(moment.tz.names())
 
-   console.log(currentDate.tz('America/Los_Angeles').format('h:m a'))
+  //  console.log(currentDate.tz('America/Los_Angeles').format('h:m a'))
 },[])
 
   const handleOpen = () => {
@@ -229,7 +230,7 @@ useEffect(() => {
           upcomingLecture?.url
         ),
         (role === "ROLE_PARENT"  || role === "ROLE_STUDENT")  &&
-          createData("Fees Due", hours * currentUser.learningRate),
+          createData("Fees Due",( hours * localLearningRate)?.toFixed(2)),
       ];
     } else if (currentLecture || upcomingLecture) {
       tempRows = [
@@ -245,7 +246,7 @@ useEffect(() => {
           upcomingLecture?.url
         ),
         (role === "ROLE_PARENT"  || role === "ROLE_STUDENT") &&
-          createData("Fees Due", hours * currentUser.learningRate),
+          createData("Fees Due", localCurrency +" " + (hours * localLearningRate)?.toFixed(2)),
       ];
     }
 
@@ -270,7 +271,7 @@ useEffect(() => {
               </Box>
               <Box className={classes.weeklyTable}>
                 {weekLectures.map((lect) => (
-                  <Paper className={classes.weekLecture} index={lect._id}>
+                  <Paper className={classes.weekLecture} key={lect._id}>
                     <Box
                       display="flex"
                       flexDirection="column"
@@ -396,7 +397,7 @@ useEffect(() => {
                                 variant="contained"
                                 className={classes.button}
                                 style={{ minWidth: "150px" }}
-                                disabled={row.className === "No Upcoming Class" ? true : false}
+                                disabled={row.className === "No Upcoming Lecture" ? true : false}
                               >
                                 Join Class <NavigateNextIcon />
                               </Button>

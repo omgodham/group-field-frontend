@@ -93,10 +93,11 @@ function CurrentCalendar({selectedChild,admin}) {
             if(!admin){         
               thisCalendar.render() 
               setCalendarElement(thisCalendar)
+              document.querySelector('.fc-listMonth-button').innerText = 'Month'
             }
             
        
-            document.querySelector('.fc-listMonth-button').innerText = 'Month'
+            // document.querySelector('.fc-listMonth-button').innerText = 'Month'
             // document.querySelector('.fc-listWeek-button').innerText = 'Week'
             // document.querySelector('.fc-timeGridDay-button').innerText = 'Day'
        
@@ -135,7 +136,7 @@ let flag = true;
 
 
     return (
-      <Box sx={{minHeight:'90vh',position:'relative'}}>
+      <Box sx={{minHeight:!admin ? '90vh' : "",position:'relative'}}>
       <Box display='flex' justifyContent='center' sx={{position:'absolute',top:'40%',left:'50%'}}>
         {(!rendered && !admin) && <CircularProgress />}
         </Box>

@@ -38,7 +38,7 @@ import { logoutAction, verifyToken } from "../redux/actions/authActions";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getUserById } from "../components/Dashboard/helpers";
-import { setChilds, setLocalCurrency, setTimeZone } from "../redux/actions/userActions";
+import { setAllNotifications, setChilds, setLocalCurrency, setLocalRate, setTimeZone } from "../redux/actions/userActions";
 import Logo from "../images/logo.png";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -47,8 +47,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { deleteNotification, getAllNotifications } from "./helpers";
 import CloseIcon from '@material-ui/icons/Close';
-import { getTimeZone, localCurrency } from "../utils/momenttz";
+import { convertMoneyToLocalCurrency, getTimeZone, getLocalCurrency } from "../utils/momenttz";
 import axios from "axios";
+import { id } from "date-fns/locale";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -202,7 +203,7 @@ const useStyles = makeStyles((theme) => ({
 function Layout(props) {
 	const history = useHistory();
 	const location = useLocation();
-	const { user } = useSelector((state) => state.user);
+	const { user ,localCurrency,notifications} = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const [notificationsOn,setNotificationsOn] = useState(false);
 
@@ -211,14 +212,14 @@ function Layout(props) {
 		try {
 			let thisZone = await getTimeZone();
 			dispatch(setTimeZone(thisZone));
-			let thisCurrency = await localCurrency();
+			let thisCurrency = await getLocalCurrency();
 			dispatch(setLocalCurrency(thisCurrency));
 		} catch (error) {
 			console.log(error)
 		}
 	}, []);
 
-	useEffect(() => {
+	useEffect(async () => {
 		if (user?.role === "ROLE_PARENT") {
 			let tempChilds = [];
 			if (user) {
@@ -242,26 +243,39 @@ function Layout(props) {
 				return getChilds();
 			}
 		}
-	}, [user]);
-	const [notifications,setNotifications] = useState([])
+		// console.log(localCurrency)
+		if(user && localCurrency){
+			let value = await convertMoneyToLocalCurrency('USD',localCurrency,user.learningRate);
+			console.log(value)
+			dispatch(setLocalRate(value));
+		}
+	
+	}, [user,localCurrency]);
+	const [allNotifications,setNotifications] = useState([])
 ;
 
 useEffect(() => {
 	getAllNotifications().then(data => {
 		// console.log(data)
 		setNotifications(data);
-
+		dispatch(setAllNotifications(data))
 	}).catch(error => console.log(error))		
 },[])
 
 	useEffect(() => {
 		getAllNotifications().then(data => {
-			console.log(data)
+			// console.log(data)
 			setNotifications(data);
+			dispatch(setAllNotifications(data))
 		}).catch(error => console.log(error))		
 	},[notificationsOn])
 
 
+	useEffect(() => {
+	// if(notifications.toString() !== allNotifications.toString()){
+				setNotifications(notifications)
+	// }
+	},[notifications])
 
 	
 
@@ -315,8 +329,8 @@ useEffect(() => {
 	];
 const handleDeleteNotification = (id) => {
 	deleteNotification(id).then(data => {
-		console.log(data)
-		setNotifications(notifications.filter(item => item._id !== id))
+		// console.log(data)
+		setNotifications(allNotifications.filter(item => item._id !== id))
 	}).catch(error => console.log(error))
 }
 	const drawer = (
@@ -451,7 +465,7 @@ const handleDeleteNotification = (id) => {
 							onClick={() => setNotificationsOn(!notificationsOn)}
 						>
 							<NotificationsIcon />
-							<Typography className={classes.notificationCount} variant='body2'>{notifications.length}</Typography>
+							<Typography className={classes.notificationCount} variant='body2'>{allNotifications.length}</Typography>
 						</IconButton>
 						<Box display="flex" alignItems="center" justifyContent="center">
 							<Typography
@@ -475,11 +489,11 @@ const handleDeleteNotification = (id) => {
 						</IconButton>
 							
 					</Toolbar>
-					{notificationsOn && notifications.length ? <Paper className={classes.notificationBlock}>
+					{notificationsOn && allNotifications.length ? <Paper className={classes.notificationBlock}>
 					<CloseIcon className={classes.closeIcon} onClick={() => setNotificationsOn(false)}/>
 					<div className={classes.demo}>
             <List dense={true}>
-			{notifications.length ? notifications.map((item,index) => {
+			{allNotifications.length ? allNotifications.map((item,index) => {
                return <ListItem>
                   <ListItemAvatar>
                     <Avatar>

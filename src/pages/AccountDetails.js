@@ -12,6 +12,12 @@ import {
   OutlinedInput,
   Paper,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -23,21 +29,31 @@ import { getTime } from "date-fns";
 import { getClassByPublicId } from "../components/Classes/helpers";
 import { makeRequest, updateUser } from "../components/Dashboard/helpers";
 import { getTimeZone } from "../utils/momenttz";
+import getSymbolFromCurrency from "currency-symbol-map";
+import AlertMessage from "../components/alertmessage/AlertMessage";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "90%",
     minHeight: "80vh",
     margin: "auto",
     padding: "30px",
+    display:'flex',
+    alignItems:'center',
+    flexDirection:'column',
+    justifyContent:'center'
+  },
+  table: {
+   maxWidth: 350,
   },
 }));
 
 function AccountDetails() {
   const classes = useStyles();
-
-  const { user } = useSelector((state) => state.user);
+  const [rows,setRows] = useState([])
+  const { user,timeZone,localCurrency,localLearningRate } = useSelector((state) => state.user);
   // console.log('USER',user)
-
+  const [alertMessage, setAlertMessage] = useState("")
+  const [toggleMessage, setToggleMessage] = useState(false)
   const [unpaidLectures, setUnpaidLectures] = useState([]);
   const [amount, setAmount] = useState(0);
   const [calendarId, setCalendarId] = useState("");
@@ -62,7 +78,7 @@ function AccountDetails() {
                       (1000 * 60) /
                       60
                   );
-                setAmount(hours * user.learningRate);
+                setAmount(hours * localLearningRate);
               }
             })
             .catch((error) => console.log(error));
@@ -70,9 +86,24 @@ function AccountDetails() {
       }
     setCalendarId(user?.calendarId);
     // setLectureIds(thislectureIds)
+    if(user){
+
+        let properties = [
+          {key : 'Name',value:user.name}
+          ,{key : 'Email',value:user.email},
+          {key : 'Role',value:user.role},
+          {key : 'Rate',value:localLearningRate.toFixed(2)},
+          {key : 'Phone Number',value:user.phone}
+          ,{key : 'Time Zone',value:timeZone}
+           , {key : 'Currency',value:localCurrency}
+          ]
+         setRows(properties) 
+    }
   }, [user]);
 
-  console.log(calendarId);
+
+  
+
 
   const handleRequestClick = (e) => {
     makeRequest({
@@ -80,7 +111,11 @@ function AccountDetails() {
       from: { name: user.name, id: user._id },
       amount: amount,
     })
-      .then((data) => console.log(data))
+      .then((data) => {
+        // console.log(data);
+        setAlertMessage("Request made for your payment to the admin")
+        setToggleMessage(!toggleMessage);
+      })
       .catch((error) => console.log(error));
   };
 
@@ -89,82 +124,40 @@ function AccountDetails() {
     console.log(calendarId);
     updateUser(calendarId, localStorage.getItem("userId"))
       .then((data) => {
-        console.log(data);
+        // console.log(data);
+        setAlertMessage("Calendar Id Updated")
+        setToggleMessage(!toggleMessage);
       })
       .catch((error) => console.log(error));
   };
+
+  
+  console.log(typeof(alertMessage))
   return (
+
     <Paper className={classes.root}>
+
       <Typography variant="h5" color="textPrimary">
         Account Details
       </Typography>
-      {user?.role === "ROLE_TEACHER" ? (
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="h5" color="textPrimary">
-            Amout for classes is unpaid: {amount.toFixed(2)}
-          </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={handleRequestClick}
-          >
-            Request payment
-          </Button>
-        </Box>
-      ) : (
-        ""
-      )}
+   
       <Divider />
-      <Grid spacing={3} xs={12}>
-      <Grid item xs={4}>
-          <Typography variant="h6">Name: </Typography>
-          <Paper >
-            <Typography variant="h6">{user?.name}</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography variant="h6">Email: </Typography>
-          <Paper >
-            <Typography variant="h6">{user?.email}</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography variant="h6">Rate: </Typography>
-          <Paper >
-            <Typography variant="h6">{user?.learningRate}</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography variant="h6">Phone No: </Typography>
-          <Paper >
-            <Typography variant="h6">{user?.phone}</Typography>
-          </Paper>
-        </Grid>
-        {/* <Typography variant="h6">Phone No.: </Typography>
-        <Typography variant="h6">{user?.phone}</Typography>
-        <Box>
-          <Typography variant="h6">Rate: </Typography>
+      <TableContainer component={Paper} className={classes.table}>
+      <Table  aria-label="simple table">
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.key}
+              </TableCell>
+              <TableCell align="right">{row.value ? row.value : '-'}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-          <Typography variant="h6">{user?.learningRate}</Typography>
-        </Box>
-        <Box>
-          <Typography variant="h6">Phone Number: </Typography>
-
-          <Typography variant="h6">{user?.phone}</Typography>
-        </Box>{" "} */}
-        {/* <Box>
-          <Typography variant="h6">Time Zone: </Typography>
-
-          <Typography variant="h6">{() => getTimeZone().then(data => data)}</Typography>
-        </Box> */}
-        </Grid>
-      {user?.role === "ROLE_TEACHER" && (
-        <AllClasses
-          setUnpaidLectures={setUnpaidLectures}
-          unpaidLectures={unpaidLectures}
-        />
-      )}
-      <form onSubmit={handleSubmit}>
+     {user?.role === "ROLE_ADMIN" && <form onSubmit={handleSubmit} style={{marginTop:'20px'}}>
         <FormControl>
           <TextField
             id="outlined-basic"
@@ -177,7 +170,27 @@ function AccountDetails() {
             Submit
           </Button>
         </FormControl>
-      </form>
+      </form> }
+
+      {user?.role === "ROLE_TEACHER" ? (
+        <Box display="flex" justifyContent="space-between" style={{marginTop:'20px'}}>
+          <Typography variant="h5" color="textPrimary">
+           Request for your payment of {getSymbolFromCurrency(localCurrency)} {amount.toFixed(2)}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleRequestClick}
+            style={{marginLeft:'20px'}}
+            disabled = {!amount}
+          >
+            Request payment
+          </Button>
+        </Box>
+      ) : (
+        ""
+      )}
+  <AlertMessage message={alertMessage} toggleMessage={toggleMessage}/>
     </Paper>
   );
 }

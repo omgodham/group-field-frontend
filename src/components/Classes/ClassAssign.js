@@ -97,7 +97,7 @@ function ClassAssign({id,setOpen,setReload,reload}) {
 
   
     return (
-        <div style={{position:'relative'}}>
+        <div style={{position:'relative'}} >
           <CloseIcon className={classes.closeIcon} onClick={() => setOpen(false)}/>
             {/* {(classesToShow.length && teachers.length) ? */}
             <>
