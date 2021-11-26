@@ -27,13 +27,18 @@ import {useHistory} from 'react-router-dom'
 
 import {getTime} from 'date-fns'
 import { updateLectures } from "../components/payment/helpers";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { convertMoneyToLocalCurrency } from "../utils/momenttz";
+import getSymbolFromCurrency from "currency-symbol-map";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
     flexDirection: "column",
-    width: "80%",
+    width: "90%",
     padding: "30px",
-    margin: "50px auto",
+    margin: "auto",
+    minHeight:'82vh',
   },
   table: {
     //   width: '80%',
@@ -46,15 +51,19 @@ const useStyles = makeStyles((theme) => ({
   button: {
     width: "100%",
     marginTop: "10px",
-    backgroundColor: theme.palette.success.main,
+    color: "#F4F6F8",
+    backgroundColor: theme.palette.primary.main,
   },
   paymentPopup: {
-    width: "96%",
+    display:'flex',
+    flexDirection:'column',
+    // width: "96%",
     backgroundColor: theme.palette.background.paper,
     borderRadius: "10px",
     padding: theme.spacing(1),
     marginTop: "10px",
     boxShadow: theme.shadows[5],
+
   },
   amount: {
     backgroundColor: "white",
@@ -65,26 +74,54 @@ const useStyles = makeStyles((theme) => ({
   tableValues: {
     color: "#2b2d2f",
   },
+  cancelBtn:{
+    border:'solid 1px #f44336',
+    color: '#f44336',
+    width:'70px',
+    margin:'auto', 
+    // marginLeft: 'auto',
+  },
+  amountCont:{  
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    padding:'5px 7px',
+    border:'1px solid #333456',
+    borderRadius:'20px',
+  },
+  totalAmount:{
+    minWidth:'150px',
+    cursor:'default',
+    borderRadius:"15px",
+    padding:'5px 10px',
+    fontSize:'18px',
+
+    // border:''
+  }
 }));
 
 export default function Payment() {
   const classes = useStyles();
   const [showPaypal, setShowPaypal] = useState(false);
   const [amount, setAmount] = useState(0);
-  const { user , childs } = useSelector((state) => state.user);
+  const { user ,localCurrency } = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
   const history = useHistory()
+  const [childs , setChilds ] = useState([]);
 
 
   useEffect(() => {
-    if(user && user?.role !== 'ROLE_PARENT'){
+    if(user && !(user?.role == 'ROLE_PARENT' || user?.role == 'ROLE_STUDENT')){
       return history.push('/dashboard')
     }
+    if(user)
+    setChilds([user])
   },[user])
-
 
   const [lectureIds , setLecturesIds] = useState([]);
   const [childIds,setChildIds] = useState([]);
+
 
   useEffect(() => {
 
@@ -131,15 +168,29 @@ export default function Payment() {
     // console.log(childs);
   }, [childs]);
 
-  useEffect(() => {
+  const [localValues ,setlocalValues] = useState([]);
+  useEffect(async() => {
     if(rows.length === childs.length){
       let tempAmt = 0;
-      rows.map(row => {
-        tempAmt = tempAmt + (row.hours * row.rateperhour)
+      
+    //   rows.map(row => {
+    //     tempAmt = tempAmt + (item.hours * item.rateperhour)
+    //     setAmount(tempAmt);
+    //  })
+    let temp = [];
+    //  if(rows.length == child.lectures.length){
+      for(const item of rows){
+        tempAmt = tempAmt + (item.hours * item.rateperhour)
         setAmount(tempAmt);
-     })  
+        let value = await convertMoneyToLocalCurrency('USD',localCurrency,item.hours * item.rateperhour)
+        temp.push(value);
+      }
+
+      setlocalValues(temp)
+    // }  
     }    
   },[rows])
+
 
   function createData(child, hours, rateperhour,lectureId) {
     return { child, hours, rateperhour,lectureId };
@@ -164,14 +215,15 @@ export default function Payment() {
  
   }
 
+  console.log(localValues)
   return (
-    <>
+    <Box sx={{minHeight:'70vh',position:"relative"}}>
       {rows.length ? (
         <Paper className={classes.paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell className={classes.tableHeading}>Child</TableCell>
+                <TableCell className={classes.tableHeading}>Student</TableCell>
                 <TableCell align="center" className={classes.tableHeading}>
                   Hours
                 </TableCell>
@@ -184,7 +236,7 @@ export default function Payment() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {rows.map((row,index) => (
                 <TableRow key={row.child}>
                   <TableCell
                     component="th"
@@ -201,31 +253,38 @@ export default function Payment() {
                   // </TableCell> */}
                    {/* Hide in the update part */}
                   <TableCell align="center" className={classes.tableValues}>
-                    ${(row.hours * row.rateperhour).toFixed(2)}
+                    {/* ${(row.hours * row.rateperhour).toFixed(2)} */}
+                    {/* {localCurrency} {localValues[index]?.toFixed(2)} */}
+                    {getSymbolFromCurrency(localCurrency)} {localValues[index]?.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <Box className={classes.paymentWrap}>
-            <FormControl fullWidth variant="filled">
+            {/* <FormControl fullWidth variant="filled">
               <InputLabel htmlFor="filled-adornment-amount">
                 Total Amount
               </InputLabel>
               <FilledInput
                 id="filled-adornment-amount"
-                value={amount.toFixed(2)}
+                value={localValues[0]?.toFixed(2)}
                 onChange={handleChange}
                 startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
+                  <InputAdornment position="start">{localCurrency}</InputAdornment>
                 }
                 className={classes.amount}
                 disabled={true}
               />
-            </FormControl>
+            </FormControl> */}
+            <Box className={classes.amountCont}>
+              <Typography variant="h6" justifyContent='center'>Total Amount</Typography>
+              <Button variant="contained" color='primary' size="large" className={classes.totalAmount}>{getSymbolFromCurrency(localCurrency)} {localValues[0]?.toFixed(2)}</Button>
+            </Box>
             {showPaypal ? (
               <Box className={classes.paymentPopup}>
-                <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds}/>
+                <Paypal amount={amount.toFixed(2)} lectureIds={lectureIds} childIds={childIds} setShowPaypal={setShowPaypal}/>
+                <Button variant="outlined" className={classes.cancelBtn} onClick={()=>setShowPaypal(false)}>CANCLE</Button>
               </Box>
             ) : (
               <>
@@ -238,16 +297,16 @@ export default function Payment() {
               >
                 Pay With Paypal
               </Button>
-                <Button onClick={handleClick}>Thisi s</Button>
+                {/* <Button onClick={handleClick}>Thisi s</Button> */}
                 </>
             )}
           </Box>
         </Paper>
       ) : (
-        <Box display='flex' alignItems='center' justifyContent='center'>
-        <CircularProgress />
+        <Box sx={{position:'absolute',top:'50%',left:'50%'}}>
+          <CircularProgress />
         </Box>
       )}
-    </>
+    </Box>
   );
 }

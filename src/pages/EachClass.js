@@ -77,7 +77,7 @@ function EachClass({match}) {
             <Box display='flex' justifyContent='left' alignItems='center'>
             <DoneAllIcon className={classes.icons}/>
           <Typography variant='subtitle1' style={{marginLeft:'10px',marginBottom:'10px'}}>
-          Completed Lessons
+          Completed Classes
             </Typography>
             </Box>
         <ClassesTable child={user}/> 

@@ -1,5 +1,6 @@
 import axios from "../../axios";
 import jwtDecode from "jwt-decode";
+import { setAllClasses } from './classActions';
 
 export const SignInAction = (userData, history) => (dispatch) => {
   return axios
@@ -22,7 +23,7 @@ export const verifyToken = (history) => (dispatch) => {
   const token = localStorage.jwt;
   if (token) {
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken)
+    // console.log(decodedToken)
     if (decodedToken.exp * 1000 < Date.now()) {
       dispatch(logoutAction(history));
     } else {
@@ -37,7 +38,15 @@ export const verifyToken = (history) => (dispatch) => {
 export const logoutAction = (history) => (dispatch) => {
   localStorage.removeItem("jwt");
   localStorage.removeItem("userId");
+  dispatch({
+    type: "SET_USER",
+    payload: null,
+  });
+  
+  dispatch(setAllClasses([]));
+
   history.push("/signin");
+
 };
 
 export const getLoggedInUser = () => (dispatch) => {

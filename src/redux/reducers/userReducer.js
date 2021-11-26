@@ -2,7 +2,11 @@ const initialState = {
   user: null,
   loading: true,
   authenticated:false,
-  childs:[]
+  childs:[],
+  timeZone:"",
+  localCurrency:"",
+  localLearningRate:0,
+  notifications:[]
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -24,6 +28,26 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         childs:action.payload
       };
+      case "SET_TIMEZONE":
+        return {
+          ...state,
+          timeZone:action.payload
+        };
+        case "SET_CURRENCY":
+          return {
+            ...state,
+            localCurrency:action.payload
+          };
+          case "SET_LEARNING_RATE":
+          return {
+            ...state,
+            localLearningRate:action.payload
+          };
+          case "SET_NOTIFICATIONS":
+          return {
+            ...state,
+            notifications:action.payload
+          };
 
     default:
       return state;
