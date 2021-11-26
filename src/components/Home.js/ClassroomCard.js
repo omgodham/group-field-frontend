@@ -5,6 +5,8 @@ import DuoIcon from '@material-ui/icons/Duo';
 import { makeStyles } from '@material-ui/styles';
 import { Link } from 'react-router-dom';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
+import { getLocalTime } from '../../utils/momenttz';
+import { useSelector } from 'react-redux';
 const useStyles = makeStyles({
     root: {
       minWidth: 400,
@@ -47,6 +49,9 @@ function ClassroomCard({student,students}) {
     const classes = useStyles();
 
     const [thisLecture, setThisLecture] = useState(null);
+    const { timeZone } = useSelector((state) => state.user);
+    console.log(timeZone)
+
 
    return (
 
@@ -64,10 +69,11 @@ function ClassroomCard({student,students}) {
           {student.name}
         </Typography>
         <Typography variant="h6" component="h2">
-           {thisLecture?.lecture ? thisLecture.lecture.title : 'No Upcoming Lecture'}
+           {thisLecture?.lecture ? thisLecture.lecture.title : 'No Upcoming Class'}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-           {thisLecture?.lecture ? `Next Lesson at ${thisLecture.lecture.start.split('T')[1].split('+')[0]}` : 'No Lecture'}
+           {/* {thisLecture?.lecture ? `Next Class at ${thisLecture.lecture.start.split('T')[1].split('+')[0]}` : 'No Class'} */}
+           {thisLecture?.lecture ? `Next Class at ${getLocalTime(thisLecture.lecture.start,timeZone ? timeZone : "Asia/Kolkata")}` : 'No Class'}
         </Typography>
       </CardContent>
       <CardActions>

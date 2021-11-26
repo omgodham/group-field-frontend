@@ -7,6 +7,7 @@ import { Button, CircularProgress, FormControl, Input, InputLabel, MenuItem, Sel
 import { makeStyles } from '@material-ui/styles'
 import CloseIcon from '@material-ui/icons/Close';
 
+
 const useStyles = makeStyles((theme) => ({
     container: {
       display: 'flex',
@@ -26,13 +27,12 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 function ClassAssign({id,setOpen,setReload,reload}) {
-    
-//TODO:1.We have lectures to assigned in the classesToShow show list of those lectures in dropdown
-//2.Show all teachers list
+
     const classes = useStyles();
 
  const [selectedChild , setSelectedChild] = useState(null)
    const {allClasses} = useSelector(state => state.classes) 
+   const {user} = useSelector(state => state.user) 
     const [classesToShow , setClassesToShow] = useState([]);
     const [thisClasses , setThisClasses] = useState([]);
     const [teachers , setTeachers] = useState([])
@@ -61,12 +61,15 @@ function ClassAssign({id,setOpen,setReload,reload}) {
              }).catch(error => console.log(error))
             }).catch(error => console.log(error))
         }).catch(error => console.log(error) )
+
     },[])
 
-
-
+//TODO:Logged In teacher should be preseleceted
+// useEffect(() => {
+//     setSelectedTeacher(user)
+// },[ user])
     useEffect(() =>{
-        console.log(thisClasses,allClasses);
+        // console.log(thisClasses,allClasses);
         let da = [];
      if(thisClasses.length && allClasses.length){
         allClasses.forEach(thisEvent => {
@@ -92,13 +95,14 @@ function ClassAssign({id,setOpen,setReload,reload}) {
         }).catch(error => console.log(error))
     }
 
+  
     return (
-        <div style={{position:'relative'}}>
+        <div style={{position:'relative'}} >
           <CloseIcon className={classes.closeIcon} onClick={() => setOpen(false)}/>
             {/* {(classesToShow.length && teachers.length) ? */}
             <>
             {selectedChild && <CurrentCalendar selectedChild={selectedChild} admin={true}/>}
-            <Typography variant='h6' color='primary' style={{marginTop:'50px'}}>Create Lesson</Typography>
+            <Typography variant='h6' color='primary' style={{marginTop:'50px'}}>Create Class</Typography>
             <Divider />
                         {/* {id}  */}
                         <form className={classes.container}>

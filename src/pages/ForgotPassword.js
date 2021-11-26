@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router';
-import Form from '../components/signin/Form';
+import Form from '../components/forgot-password/Form';
 import Topbar from '../components/Topbar';
 
 // import { Divider, Grid, useMediaQuery } from '@material-ui/core';
 
-function SignIn() {
+function ForgotPassword() {
     const history = useHistory()
     useEffect(() => {
         if(localStorage.getItem('jwt'))
@@ -14,10 +14,10 @@ function SignIn() {
 
     return (
         <>
-        {/* <Topbar /> */}
+        <Topbar />
         <Form />
         </>
     )
 }
 
-export default SignIn
+export default ForgotPassword
